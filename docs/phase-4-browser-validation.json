@@ -1,0 +1,30 @@
+{
+  "passed": 19,
+  "checks": [
+    "honest unconfigured AI and paper-only workspace",
+    "Centaur positioning exposes missing research feeds and commercial targets honestly",
+    "immutable reference portfolio created paused through reviewed form",
+    "configurable virtual capital visible in portfolio account",
+    "completed-candle warm-up queued and applied without fills",
+    "explicit reviewed forward activation",
+    "completed-bar decision produced a subsequent-quote simulated fill",
+    "traceable fill evidence and bounded event filtering",
+    "reference and insufficient prospective evidence cannot qualify for Phase 5",
+    "review evidence export preserves simulation and qualification limits",
+    "pause and actual reduce-only liquidation lifecycle",
+    "human guardian review is recorded from the displayed evidence without execution authority",
+    "isolated fault and restore drills through the operator dashboard",
+    "private dedicated AI configuration without restart or secret echo",
+    "bounded advisory-only model job and visible output provenance",
+    "explicitly authorized controlled notification delivery with cleared private fields",
+    "durable incident acknowledgement without risk bypass",
+    "usable narrow-screen forward workspace",
+    "main paper account isolated and live execution unavailable"
+  ],
+  "javascript_errors": [],
+  "controlled_broker": true,
+  "controlled_model": true,
+  "controlled_notification": true,
+  "accelerated_clock_for_software_tests_only": true,
+  "real_provider_validation": false
+}

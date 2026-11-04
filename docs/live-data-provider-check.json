@@ -1,0 +1,14 @@
+{
+  "websocket_tls12_probe": {
+    "reachable": true,
+    "http_status": 400,
+    "tls": "TLSv1.2"
+  },
+  "public_instrument_master": {
+    "total_rows": 115628,
+    "nse_eq_count": 10405,
+    "sha256": "090ef0199d6b77a89d16acc330b7216eb0473ec955afa3f4a0e822899666783c",
+    "http_status": 200,
+    "observed_http_date": "Wed, 04 Nov 2026 08:38:52 GMT"
+  }
+}

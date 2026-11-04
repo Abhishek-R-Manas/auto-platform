@@ -1,0 +1,96 @@
+{
+  "checked_at": "2026-11-04T16:34:43.687015+00:00",
+  "directory": "/root/amanas/temp/auto-platform/data/backups/inputs-post-20261104T163442Z",
+  "database_count": 17,
+  "immutable_artifact_count": 483,
+  "intelligence": [
+    {
+      "path": "intelligence/evidence.sqlite3",
+      "sha256": "5db72ca94393433f4741035adb418987ddcc7acdbcd0cf49f511ad6230b8e53d",
+      "file": "evidence.sqlite3",
+      "input_artifacts_verified": 2,
+      "input_observations_verified": 47,
+      "integrity": "ok"
+    }
+  ],
+  "isolated_restore": {
+    "ok": true,
+    "checked": [
+      {
+        "file": "forward.sqlite3",
+        "forward_events_verified": 0,
+        "integrity": "ok"
+      },
+      {
+        "file": "evidence.sqlite3",
+        "input_artifacts_verified": 2,
+        "input_observations_verified": 47,
+        "integrity": "ok"
+      },
+      {
+        "file": "market.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "paper.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "catalog.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "registry.sqlite3",
+        "integrity": "ok"
+      }
+    ],
+    "artifacts_verified": 483,
+    "production_data_replaced": false
+  },
+  "consistency": "Each SQLite backup is consistent. Pause mutation/jobs first when a cross-database instant is required.",
+  "deployed_build_verified": true
+}

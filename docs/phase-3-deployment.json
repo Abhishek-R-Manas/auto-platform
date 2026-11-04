@@ -1,0 +1,108 @@
+{
+  "deployed_at": "2026-11-04T09:59:19.947812+00:00",
+  "pid": 3029980,
+  "previous_pid": 2994865,
+  "url": "http://127.0.0.1:8787/#candidates",
+  "backups": [
+    "/root/amanas/temp/auto-platform/data/pre-phase3-final-account-20261104T095914Z.sqlite3",
+    "/root/amanas/temp/auto-platform/data/pre-phase3-final-catalog-20261104T095914Z.sqlite3",
+    "/root/amanas/temp/auto-platform/data/pre-phase3-final-market-20261104T095914Z.sqlite3",
+    "/root/amanas/temp/auto-platform/data/pre-phase3-final-registry-20261104T095914Z.sqlite3"
+  ],
+  "build": {
+    "version": "research/2.0.0",
+    "code_hash": "b5f2d4b38f863068bdd075aed93bbf51b8325de570288add8c6ce5e5553a0808",
+    "python": "3.13.13",
+    "packages": {
+      "pyarrow": "26.0.1",
+      "fastapi": "0.162.0",
+      "pydantic": "2.14.2",
+      "httpx": "0.28.1"
+    }
+  },
+  "registry": {
+    "mode": "AI_RESEARCH_PAPER_ONLY",
+    "provider": {
+      "provider": "OPENAI_RESPONSES",
+      "configured": false,
+      "model": null,
+      "prompt_version": "artha-candidate/3.0.0",
+      "tools_enabled": false,
+      "live_orders_enabled": false,
+      "message": "Configure ARTHA_AI_API_KEY and ARTHA_AI_MODEL privately on the server"
+    },
+    "audit": {
+      "ok": true,
+      "checked": 8,
+      "head": "150ed670b590ebbf7b6b30ad4020f4a66fbd5c0df2ed423f9a7fbd12e22e8cf7",
+      "note": "Local hash chain detects modification; it is not externally anchored or tamper-proof"
+    },
+    "studies": 1,
+    "versions": 1,
+    "live_orders_enabled": false,
+    "forward_trading_enabled": false,
+    "limitations": [
+      "Real datasets and economic assumptions need operator review",
+      "Historical LLM knowledge can contain future events",
+      "Paper approval creates evidence only; Phase 4 activation is separate",
+      "Unsupported strategy families remain blocked"
+    ]
+  },
+  "synthetic_demonstration": {
+    "dataset_id": "9cd671d64a65ddd42084541b7d545ffd2cc2ff89885c2ba66503477987994e55",
+    "study_id": "6fa08ec06e0642ce922a556594372e39",
+    "version_id": "6b3e72875d09dd805aea6a52d9ac006c1780cab23103b6c59621d5eefc7584c0",
+    "origin": "MANUAL",
+    "screen_evaluation_id": "cdc68c456c0248998633053123a184e3",
+    "holdout_evaluation_id": "7c2e4b6b946d4ea7800e8d38c85a0ac7",
+    "candidate_status": "REJECTED",
+    "reproducibility_passed": true,
+    "screen_jobs": 8,
+    "holdout_jobs": 1,
+    "qualified": false,
+    "main_account_untouched": true,
+    "evaluation_build": {
+      "version": "research/2.0.0",
+      "code_hash": "09decf1ed9d237709c90fbc6dfc7a009afd5d3c60c1613f82208a38aacbf34ef",
+      "python": "3.13.13",
+      "packages": {
+        "pyarrow": "26.0.1",
+        "fastapi": "0.162.0",
+        "pydantic": "2.14.2",
+        "httpx": "0.28.1"
+      }
+    },
+    "source_archive": "/root/amanas/temp/auto-platform/data/releases/09decf1ed9d237709c90fbc6dfc7a009afd5d3c60c1613f82208a38aacbf34ef"
+  },
+  "main_account": {
+    "mode": "PAPER",
+    "entries_paused": true,
+    "reconciliation_ok": true,
+    "records_before": {
+      "fills": 0,
+      "journal": 33,
+      "decisions": 0,
+      "cash_ledger": 1
+    },
+    "records_after": {
+      "fills": 0,
+      "journal": 34,
+      "decisions": 0,
+      "cash_ledger": 1
+    },
+    "live_orders_enabled": false
+  },
+  "real_ai_provider_validated": false,
+  "real_market_quotes_validated": false,
+  "source_archives": [
+    "/root/amanas/temp/auto-platform/data/releases/09decf1ed9d237709c90fbc6dfc7a009afd5d3c60c1613f82208a38aacbf34ef",
+    "/root/amanas/temp/auto-platform/data/releases/b5f2d4b38f863068bdd075aed93bbf51b8325de570288add8c6ce5e5553a0808"
+  ],
+  "initial_backups": [
+    "/root/amanas/temp/auto-platform/data/pre-phase3-account-20261104T095148Z.sqlite3",
+    "/root/amanas/temp/auto-platform/data/pre-phase3-catalog-20261104T095148Z.sqlite3",
+    "/root/amanas/temp/auto-platform/data/pre-phase3-market-20261104T095148Z.sqlite3"
+  ],
+  "final_recovery_guards_verified": true,
+  "main_account_reconciliation_ok": true
+}

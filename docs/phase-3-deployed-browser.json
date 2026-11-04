@@ -1,0 +1,30 @@
+{
+  "actual_deployed_service": true,
+  "real_ai_provider_validated": false,
+  "read_only_check": true,
+  "checks": [
+    "deployed Strategy lab",
+    "honest unconfigured AI",
+    "unused dataset remains available",
+    "authored synthetic registry example",
+    "completed screen and holdout evidence",
+    "synthetic qualification block",
+    "consumed holdout gate",
+    "disabled unconfigured generation",
+    "mobile layout",
+    "audit and execution isolation"
+  ],
+  "javascript_errors": [],
+  "validated_at": "2026-11-04T09:59:19.947399+00:00",
+  "build": {
+    "version": "research/2.0.0",
+    "code_hash": "b5f2d4b38f863068bdd075aed93bbf51b8325de570288add8c6ce5e5553a0808",
+    "python": "3.13.13",
+    "packages": {
+      "pyarrow": "26.0.1",
+      "fastapi": "0.162.0",
+      "pydantic": "2.14.2",
+      "httpx": "0.28.1"
+    }
+  }
+}

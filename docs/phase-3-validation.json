@@ -1,0 +1,139 @@
+{
+  "validated_at": "2026-11-04T09:59:19.948416+00:00",
+  "automated_tests": 145,
+  "known_test_warning": "Starlette TestClient/httpx deprecation",
+  "browser_workflows": 52,
+  "phase3_browser": {
+    "controlled_model_and_data": true,
+    "real_ai_provider_validated": false,
+    "passed": 15,
+    "checks": [
+      "Strategy lab and honest controlled provider status",
+      "immutable study and unopened holdout",
+      "asynchronous generation journal and provenance",
+      "immutable revision and manual/AI origin separation",
+      "candidate comparison and protocol identities",
+      "real worker screening, replay, walk-forward, cost and sensitivity evidence",
+      "finalist freeze and single-use holdout",
+      "independent data and model review record",
+      "backend blocks synthetic-data paper approval",
+      "recorded rejection retains candidate evidence",
+      "complete lineage and evidence export",
+      "audit verification",
+      "main account and execution isolation",
+      "mobile layout",
+      "durable registry after browser reload"
+    ],
+    "javascript_errors": []
+  },
+  "paper_browser": {
+    "status": "passed",
+    "checks": [
+      "dashboard",
+      "order preview",
+      "paper equity entry/exit",
+      "paper option entry/exit",
+      "paper short future entry/exit",
+      "capital update",
+      "journal note",
+      "CSV export",
+      "strategy configuration",
+      "decision evidence",
+      "option leg monitoring",
+      "session archive",
+      "mobile layout",
+      "keyboard dismissal"
+    ],
+    "javascript_errors": []
+  },
+  "research_browser": {
+    "status": "passed",
+    "checks": [
+      "research navigation",
+      "synthetic provenance",
+      "capability preflight",
+      "experiment builder",
+      "process worker completion",
+      "portfolio report",
+      "decision/fill inspection",
+      "report download",
+      "paper review packet",
+      "cost sensitivity suite",
+      "experiment comparison",
+      "CSV file import",
+      "mobile layout"
+    ],
+    "javascript_errors": []
+  },
+  "market_browser": {
+    "controlled_protocol_fixture": true,
+    "actual_provider_connection_validated": false,
+    "checks": [
+      "market-data navigation",
+      "full controlled universe coverage and freshness",
+      "universe pagination",
+      "full-universe symbol search",
+      "stock selection into paper watchlist",
+      "master contract search",
+      "stream delivery and durable capture",
+      "capture to immutable research dataset",
+      "paper-only account and reconciliation",
+      "mobile layout"
+    ],
+    "passed": 10,
+    "javascript_errors": []
+  },
+  "javascript_syntax": "passed: four application scripts",
+  "dependency_check": "passed",
+  "documentation_links": "passed: six modified documents",
+  "real_ai_provider_validated": false,
+  "real_market_quotes_validated": false,
+  "independent_quantitative_and_security_review": "pending",
+  "industry_leading_benchmark": "not established",
+  "deployed_browser": {
+    "actual_deployed_service": true,
+    "real_ai_provider_validated": false,
+    "read_only_check": true,
+    "checks": [
+      "deployed Strategy lab",
+      "honest unconfigured AI",
+      "unused dataset remains available",
+      "authored synthetic registry example",
+      "completed screen and holdout evidence",
+      "synthetic qualification block",
+      "consumed holdout gate",
+      "disabled unconfigured generation",
+      "mobile layout",
+      "audit and execution isolation"
+    ],
+    "javascript_errors": [],
+    "validated_at": "2026-11-04T09:59:19.947399+00:00",
+    "build": {
+      "version": "research/2.0.0",
+      "code_hash": "b5f2d4b38f863068bdd075aed93bbf51b8325de570288add8c6ce5e5553a0808",
+      "python": "3.13.13",
+      "packages": {
+        "pyarrow": "26.0.1",
+        "fastapi": "0.162.0",
+        "pydantic": "2.14.2",
+        "httpx": "0.28.1"
+      }
+    }
+  },
+  "source_archives": [
+    "/root/amanas/temp/auto-platform/data/releases/09decf1ed9d237709c90fbc6dfc7a009afd5d3c60c1613f82208a38aacbf34ef",
+    "/root/amanas/temp/auto-platform/data/releases/b5f2d4b38f863068bdd075aed93bbf51b8325de570288add8c6ce5e5553a0808"
+  ],
+  "final_recovery_guards": "passed: cross-build reuse exclusion, reserved holdout capacity",
+  "build": {
+    "version": "research/2.0.0",
+    "code_hash": "b5f2d4b38f863068bdd075aed93bbf51b8325de570288add8c6ce5e5553a0808",
+    "python": "3.13.13",
+    "packages": {
+      "pyarrow": "26.0.1",
+      "fastapi": "0.162.0",
+      "pydantic": "2.14.2",
+      "httpx": "0.28.1"
+    }
+  }
+}

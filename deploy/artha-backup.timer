@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Artha database backup
+
+[Timer]
+OnCalendar=*-*-* 02:30:00 Asia/Kolkata
+Persistent=true
+RandomizedDelaySec=300
+Unit=artha-backup.service
+
+[Install]
+WantedBy=timers.target

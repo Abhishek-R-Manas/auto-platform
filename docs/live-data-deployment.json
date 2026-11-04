@@ -1,0 +1,73 @@
+{
+  "deployed_at": "2026-11-04T08:51:39.800942+00:00",
+  "pid": 2769716,
+  "previous_pid": 2410020,
+  "url": "http://127.0.0.1:8787/#marketdata",
+  "backups": [
+    "/root/amanas/temp/auto-platform/data/pre-live-data-deploy-20261104T085135Z.sqlite3",
+    "/root/amanas/temp/auto-platform/data/pre-live-data-catalog-20261104T085135Z.sqlite3"
+  ],
+  "build": {
+    "version": "research/2.0.0",
+    "code_hash": "51c6d8a38eaaca612296dd0dfdc027f92e4e39a84d772c60200f07f4caec1911",
+    "python": "3.13.13",
+    "packages": {
+      "pyarrow": "26.0.1",
+      "fastapi": "0.162.0",
+      "pydantic": "2.14.2",
+      "httpx": "0.28.1"
+    }
+  },
+  "market": {
+    "provider": "KITE",
+    "transport": "WEBSOCKET_FULL",
+    "phase": "WAITING_AUTH",
+    "error": "Instrument metadata loaded. Authenticate a subscribed Kite data session for live prices.",
+    "recording_error": null,
+    "enabled": false,
+    "authenticated": false,
+    "order_access": false,
+    "coverage": "CURRENT_NSE_EQ_MASTER",
+    "universe_count": 10405,
+    "received_symbols": 0,
+    "fresh_symbols": 0,
+    "stale_or_missing_symbols": 10405,
+    "subscription_limit": 9000,
+    "connections": {},
+    "reconnects": 0,
+    "messages": 0,
+    "last_message": null,
+    "master_date": "2026-11-04",
+    "websocket_symbols": 0,
+    "snapshot_symbols": 0,
+    "snapshot_batches": 0,
+    "tls_versions": {},
+    "limitations": [
+      "Current broker universe is not a historical listing archive",
+      "NSE EQ-type master includes shares, ETFs and other EQ-type securities",
+      "No ticks before connection are recovered",
+      "Paper fills and margin remain estimates"
+    ]
+  },
+  "main_account": {
+    "mode": "PAPER",
+    "source": "DEMO",
+    "entries_paused": true,
+    "reconciliation_ok": true,
+    "live_orders_enabled": false,
+    "records_before": {
+      "fills": 0,
+      "journal": 27,
+      "decisions": 0,
+      "cash_ledger": 1
+    },
+    "records_after": {
+      "fills": 0,
+      "journal": 28,
+      "decisions": 0,
+      "cash_ledger": 1
+    }
+  },
+  "actual_instrument_metadata_validated": true,
+  "actual_market_quotes_validated": false
+}

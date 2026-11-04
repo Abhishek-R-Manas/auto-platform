@@ -1,0 +1,241 @@
+{
+  "deployed_at": "2026-11-04T15:12:31.775048+00:00",
+  "url": "http://127.0.0.1:8787/#forward",
+  "application_version": "0.5.2",
+  "build": {
+    "version": "research/2.0.0",
+    "code_hash": "91b91fb13d37870ec9c837dbd01a2b1b8a8e510b6c7dbed66076876d9f694541",
+    "python": "3.13.13",
+    "packages": {
+      "pyarrow": "26.0.1",
+      "fastapi": "0.162.0",
+      "pydantic": "2.14.2",
+      "httpx": "0.28.1"
+    }
+  },
+  "previous_pid": 4160560,
+  "source_archive": "/root/amanas/temp/auto-platform/data/releases/91b91fb13d37870ec9c837dbd01a2b1b8a8e510b6c7dbed66076876d9f694541",
+  "backup": "/root/amanas/temp/auto-platform/data/backups/pre-phase4-20261104T151225Z",
+  "backup_databases": 16,
+  "backup_artifacts": 398,
+  "isolated_restore": {
+    "ok": true,
+    "checked": [
+      {
+        "file": "forward.sqlite3",
+        "forward_events_verified": 0,
+        "integrity": "ok"
+      },
+      {
+        "file": "market.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "paper.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "catalog.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "run.sqlite3",
+        "integrity": "ok"
+      },
+      {
+        "file": "registry.sqlite3",
+        "integrity": "ok"
+      }
+    ],
+    "artifacts_verified": 398,
+    "production_data_replaced": false
+  },
+  "service": "Restart=on-failure\nWatchdogUSec=40s\nWatchdogTimestamp=Wed 2026-11-04 20:42:29 IST\nMainPID=29644\nNRestarts=0\nActiveState=active\nSubState=running\n",
+  "timer": "NextElapseUSecRealtime=Thu 2026-11-05 02:34:38 IST\nActiveState=active\n",
+  "health": {
+    "status": "ok",
+    "mode": "PAPER",
+    "live_order_access": false,
+    "reconciliation": {
+      "ok": true,
+      "ledger_cash": 1000000.0,
+      "account_cash": 1000000.0
+    },
+    "candidate_registry": {
+      "ok": true,
+      "checked": 8,
+      "head": "150ed670b590ebbf7b6b30ad4020f4a66fbd5c0df2ed423f9a7fbd12e22e8cf7",
+      "note": "Local hash chain detects modification; it is not externally anchored or tamper-proof"
+    },
+    "ai_configured": false,
+    "forward": {
+      "worker": {
+        "healthy": true,
+        "last_tick": "2026-11-04T15:12:30.961666+00:00",
+        "error": null
+      },
+      "audit": {
+        "ok": true,
+        "checked": 0,
+        "note": "Local SHA-256 evidence chain; not externally anchored or tamper-proof"
+      },
+      "portfolio_count": 0,
+      "open_incidents": 0,
+      "live_orders_enabled": false
+    }
+  },
+  "forward": {
+    "mode": "FORWARD_PAPER_ONLY",
+    "live_orders_enabled": false,
+    "forge": {
+      "name": "Centaur Strategy Forge",
+      "positioning": "Compliance-first generative wealth infrastructure",
+      "current_stage": "SANDBOX",
+      "guardian": "LOCAL_OWNER_ASSERTION",
+      "regulatory_status": "NOT_VERIFIED",
+      "customer_execution_enabled": false,
+      "research_inputs": {
+        "fii_dii": "NOT_CONNECTED",
+        "macro": "NOT_CONNECTED",
+        "iv_skew_feed": "NOT_CONNECTED",
+        "option_greeks": "ESTIMATED_FROM_BOUND_QUOTES"
+      },
+      "commercial_targets": {
+        "community_users": 1000,
+        "scale_users": 10000
+      },
+      "automation_share_pct": null
+    },
+    "build": {
+      "version": "research/2.0.0",
+      "code_hash": "91b91fb13d37870ec9c837dbd01a2b1b8a8e510b6c7dbed66076876d9f694541",
+      "python": "3.13.13",
+      "packages": {
+        "pyarrow": "26.0.1",
+        "fastapi": "0.162.0",
+        "pydantic": "2.14.2",
+        "httpx": "0.28.1"
+      }
+    },
+    "worker": {
+      "healthy": true,
+      "last_tick": "2026-11-04T15:12:30.961666+00:00",
+      "error": null
+    },
+    "audit": {
+      "ok": true,
+      "checked": 0,
+      "note": "Local SHA-256 evidence chain; not externally anchored or tamper-proof"
+    },
+    "portfolio_count": 0,
+    "candle_request_budget_per_minute": 30,
+    "provider": {
+      "provider": "OPENAI_RESPONSES",
+      "configured": false,
+      "model": null,
+      "prompt_version": "artha-forward-monitor/4.0.0",
+      "tools_enabled": false,
+      "live_orders_enabled": false,
+      "message": "Add a dedicated API key and supported model in Forward paper setup",
+      "authority": "ADVISORY_ONLY"
+    },
+    "monitoring": {
+      "enabled": false,
+      "interval_seconds": 7200,
+      "daily_requests": 12,
+      "max_output_tokens": 1500,
+      "total_reserved_tokens": 18000,
+      "consent": false
+    },
+    "reserved_output_tokens": 0,
+    "monitoring_suspended": false,
+    "pending_jobs": 0,
+    "open_incidents": 0,
+    "notifications": [],
+    "notification_policy": {
+      "enabled": false,
+      "consent": false,
+      "daily_limit": 50
+    },
+    "notification_provider": {
+      "provider": "TELEGRAM",
+      "configured": false
+    },
+    "external_notifications": "DISABLED"
+  },
+  "main_account_preserved": true,
+  "main_account": {
+    "mode": "PAPER",
+    "source": "DEMO",
+    "account": {
+      "equity": 1000000.0,
+      "cash": 1000000.0,
+      "margin_used": 0.0,
+      "available_cash": 1000000.0,
+      "reserved_cash": 0.0,
+      "planned_risk": 0.0,
+      "exposure": 0.0,
+      "pnl": 0.0,
+      "day_pnl": 0.0,
+      "week_pnl": 0.0,
+      "stress_loss": 0.0,
+      "drawdown_pct": 0,
+      "capital": 1000000.0,
+      "unrealised": 0.0,
+      "realised_net": 0.0,
+      "total_fees": 0.0
+    },
+    "positions": [],
+    "orders": [],
+    "live_trading_available": false
+  },
+  "entries_paused": true,
+  "kite_keys_still_configured": true,
+  "kite_session_after_restart": false,
+  "real_orders_enabled": false,
+  "genuine_ai_monitor_validated": false,
+  "genuine_telegram_validated": false,
+  "public_multiuser_deployment": false,
+  "original_pre_phase4_financial_state_verified": true,
+  "original_backup": "/root/amanas/temp/auto-platform/data/backups/pre-phase4-20261104T145812Z"
+}

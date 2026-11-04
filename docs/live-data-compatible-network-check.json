@@ -1,0 +1,5 @@
+{
+  "tls_endpoint_reachable": true,
+  "unauthenticated_http_status": 400,
+  "actual_quotes_validated": false
+}

@@ -1,0 +1,17 @@
+{
+  "deployed_at": "2026-11-04T07:23:41.513179+00:00",
+  "status": "running",
+  "pid": 2410020,
+  "url": "http://127.0.0.1:8787/#research",
+  "backup": "/root/amanas/temp/auto-platform/data/pre-phase2-deploy-20261104T072338Z.sqlite3",
+  "paper_only": true,
+  "main_ledger_reconciled": true,
+  "main_entries_paused": true,
+  "synthetic_dataset_id": "60f7db47849796359b1ce80d13cfcaddfb37c3e7ac450d96bceeb6624c8298f2",
+  "synthetic_run_id": "d6dddeee6f4341438d8616ce47c67053",
+  "research_status": "COMPLETED",
+  "research_ledger_reconciled": true,
+  "research_attribution_reconciled": true,
+  "code_hash": "024a61582644c9046ebc5832a6caa2732d301d79b89e854748f6c9000a3d8591",
+  "note": "Deployment smoke used explicitly synthetic data in the isolated research workspace; no main-account or broker orders were submitted"
+}

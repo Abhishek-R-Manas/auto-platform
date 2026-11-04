@@ -1,0 +1,5 @@
+{
+  "tls_endpoint_reachable": false,
+  "error_type": "SSLZeroReturnError",
+  "actual_quotes_validated": false
+}

@@ -1,0 +1,19 @@
+{
+  "proxy_variable_presence": {
+    "HTTPS_PROXY": false,
+    "HTTP_PROXY": false,
+    "ALL_PROXY": false
+  },
+  "endpoints": [
+    {
+      "host": "api.kite.trade",
+      "tls_reachable": true,
+      "http_status": 200
+    },
+    {
+      "host": "ws.kite.trade",
+      "tls_reachable": false,
+      "error_type": "ConnectError"
+    }
+  ]
+}

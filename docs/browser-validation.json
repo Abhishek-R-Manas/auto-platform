@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "checks": [
+    "dashboard",
+    "order preview",
+    "paper equity entry/exit",
+    "paper option entry/exit",
+    "paper short future entry/exit",
+    "capital update",
+    "journal note",
+    "CSV export",
+    "strategy configuration",
+    "decision evidence",
+    "option leg monitoring",
+    "session archive",
+    "mobile layout",
+    "keyboard dismissal"
+  ],
+  "javascript_errors": []
+}

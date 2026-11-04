@@ -1,0 +1,71 @@
+{
+  "observed_at": "2026-11-04T11:40:54.113297+00:00",
+  "real_provider_login_validated": true,
+  "credentials_configured": true,
+  "credential_values_recorded": false,
+  "sample_checks": {
+    "quotes": {
+      "status": "PASSED",
+      "access_verified": true,
+      "checked_at": "2026-11-04T11:38:02.980943+00:00",
+      "symbol": "NSE:RELIANCE",
+      "exchange_time": "2026-11-04T17:07:21+05:30",
+      "fresh": false,
+      "message": "Quote access verified. The sample is old; the market may be closed or the feed quiet."
+    },
+    "history": {
+      "status": "PASSED",
+      "access_verified": true,
+      "checked_at": "2026-11-04T11:38:10.764151+00:00",
+      "symbol": "NSE:RELIANCE",
+      "candles": 10,
+      "first": "2026-10-21T00:00:00+0530",
+      "last": "2026-11-03T00:00:00+0530",
+      "message": "Daily candle access verified on a small equity sample. This does not establish complete historical coverage."
+    }
+  },
+  "market": {
+    "provider": "KITE",
+    "transport": "WEBSOCKET_PLUS_REST",
+    "phase": "STREAMING",
+    "enabled": true,
+    "authenticated": true,
+    "coverage": "CURRENT_NSE_EQ_MASTER",
+    "universe_count": 10405,
+    "received_symbols": 5653,
+    "fresh_symbols": 131,
+    "stale_or_missing_symbols": 10274,
+    "connections": {
+      "1": "CONNECTED",
+      "2": "CONNECTED",
+      "3": "CONNECTED"
+    },
+    "reconnects": 0,
+    "messages": 657,
+    "last_message": "2026-11-04T11:40:53.956800+00:00",
+    "websocket_symbols": 9000,
+    "snapshot_symbols": 1405,
+    "snapshot_batches": 64,
+    "tls_versions": {
+      "2": "TLSv1.2",
+      "1": "TLSv1.2",
+      "3": "TLSv1.2"
+    },
+    "limitations": [
+      "Current broker universe is not a historical listing archive",
+      "NSE EQ-type master includes shares, ETFs and other EQ-type securities",
+      "No ticks before connection are recovered",
+      "Paper fills and margin remain estimates"
+    ]
+  },
+  "paper_mode": "PAPER",
+  "paper_source": "DEMO",
+  "entries_paused": true,
+  "reconciliation_ok": true,
+  "live_orders_enabled": false,
+  "ai_configured": false,
+  "complete_historical_coverage_validated": false,
+  "market_session_forward_execution_validated": false,
+  "authentication_source_changed": false,
+  "note": "Owner browser login and genuine provider sample checks succeeded. Earlier login-state rejection was followed by a successful login; its precise cause is unconfirmed. No request tokens, session tokens, API credentials, or owner identifiers are retained in this record."
+}

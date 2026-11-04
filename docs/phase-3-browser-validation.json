@@ -1,0 +1,23 @@
+{
+  "controlled_model_and_data": true,
+  "real_ai_provider_validated": false,
+  "passed": 15,
+  "checks": [
+    "Strategy lab and honest controlled provider status",
+    "immutable study and unopened holdout",
+    "asynchronous generation journal and provenance",
+    "immutable revision and manual/AI origin separation",
+    "candidate comparison and protocol identities",
+    "real worker screening, replay, walk-forward, cost and sensitivity evidence",
+    "finalist freeze and single-use holdout",
+    "independent data and model review record",
+    "backend blocks synthetic-data paper approval",
+    "recorded rejection retains candidate evidence",
+    "complete lineage and evidence export",
+    "audit verification",
+    "main account and execution isolation",
+    "mobile layout",
+    "durable registry after browser reload"
+  ],
+  "javascript_errors": []
+}

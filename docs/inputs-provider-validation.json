@@ -1,0 +1,96 @@
+{
+  "checked_at": "2026-11-04T16:09:08.878701+00:00",
+  "genuine_public_sources": true,
+  "jobs": [
+    {
+      "source": "RBI",
+      "status": "SUCCEEDED",
+      "result": {
+        "artifact_id": "c5084e0dce109f75ec22a9fcc28c8bbba7ed1207f14ddcc669c4e2f7084b4b3b",
+        "observations": 10,
+        "warnings": []
+      },
+      "error": null
+    },
+    {
+      "source": "MOSPI",
+      "status": "SUCCEEDED",
+      "result": {
+        "artifact_id": "74f04f0ee2223dc6765aef462a4aead25e65913833d9672664a57c8cd9502dd6",
+        "observations": 37,
+        "warnings": []
+      },
+      "error": null
+    }
+  ],
+  "numeric_features": {
+    "macro.CPI_INDEX.2024": {
+      "value": 109.49,
+      "available_at": "2026-11-04T16:09:06.997642+00:00",
+      "valid_until": "2026-12-29T23:59:59+00:00",
+      "observation_id": "e3c46e8d8f618b11615f3bf75b5b04d74de7bca4a333582341d94b6379431abe",
+      "artifact_id": "74f04f0ee2223dc6765aef462a4aead25e65913833d9672664a57c8cd9502dd6",
+      "source": "MOSPI",
+      "source_url": "https://mcp.mospi.gov.in/",
+      "unit": "INDEX",
+      "period": "2026-09-30",
+      "base_year": "2024"
+    },
+    "macro.CPI_YOY.2024": {
+      "value": 5.54,
+      "available_at": "2026-11-04T16:09:06.997642+00:00",
+      "valid_until": "2026-12-29T23:59:59+00:00",
+      "observation_id": "085e64b12eb2cf0761e42aec27a00e4140f5d80b6a595f26ec62e477c0e31f69",
+      "artifact_id": "74f04f0ee2223dc6765aef462a4aead25e65913833d9672664a57c8cd9502dd6",
+      "source": "MOSPI",
+      "source_url": "https://mcp.mospi.gov.in/",
+      "unit": "PERCENT",
+      "period": "2026-09-30",
+      "base_year": "2024"
+    },
+    "macro.GDP_YOY.2022-23": {
+      "value": 7.8,
+      "available_at": "2026-11-04T16:09:06.997642+00:00",
+      "valid_until": "2026-12-27T23:59:59+00:00",
+      "observation_id": "3dc17b27e868781b0d010c6eb153aa36b346711b8fbd320b4ea9840ad4da8a7a",
+      "artifact_id": "74f04f0ee2223dc6765aef462a4aead25e65913833d9672664a57c8cd9502dd6",
+      "source": "MOSPI",
+      "source_url": "https://mcp.mospi.gov.in/",
+      "unit": "PERCENT",
+      "period": "2026-06-30",
+      "base_year": "2022-23"
+    },
+    "macro.IIP_INDEX.2022-23": {
+      "value": 124.3,
+      "available_at": "2026-11-04T16:09:06.997642+00:00",
+      "valid_until": "2026-12-29T23:59:59+00:00",
+      "observation_id": "c727e0284210b3cb28c4bcfb691979032f088978809a49a23395fffc6b66c4e6",
+      "artifact_id": "74f04f0ee2223dc6765aef462a4aead25e65913833d9672664a57c8cd9502dd6",
+      "source": "MOSPI",
+      "source_url": "https://mcp.mospi.gov.in/",
+      "unit": "INDEX",
+      "period": "2026-09-30",
+      "base_year": "2022-23"
+    },
+    "macro.IIP_YOY.2022-23": {
+      "value": 6.7,
+      "available_at": "2026-11-04T16:09:06.997642+00:00",
+      "valid_until": "2026-12-29T23:59:59+00:00",
+      "observation_id": "d07d7c699ad7df13b68912b8ca9c46658a8bb7e8b78da1defbebfa7b069af44a",
+      "artifact_id": "74f04f0ee2223dc6765aef462a4aead25e65913833d9672664a57c8cd9502dd6",
+      "source": "MOSPI",
+      "source_url": "https://mcp.mospi.gov.in/",
+      "unit": "PERCENT",
+      "period": "2026-09-30",
+      "base_year": "2022-23"
+    }
+  },
+  "rbi_release_count": 10,
+  "audit": {
+    "ok": true,
+    "checked": 2,
+    "note": "Local source/evidence hashes; no external trust anchor"
+  },
+  "kite_login_attempted": false,
+  "orders_enabled": false
+}

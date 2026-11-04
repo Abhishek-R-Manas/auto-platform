@@ -1,0 +1,15 @@
+{
+  "actual_deployed_service": true,
+  "read_only": true,
+  "real_provider_login_validated": false,
+  "real_credentials_entered_by_agent": false,
+  "checks": [
+    "guided \u20b9500 Connect page",
+    "exact registered callback guidance",
+    "empty credential inputs",
+    "authentication and data-check gates",
+    "mobile layout",
+    "main account and registry retained"
+  ],
+  "javascript_errors": []
+}

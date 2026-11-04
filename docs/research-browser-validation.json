@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "checks": [
+    "research navigation",
+    "synthetic provenance",
+    "capability preflight",
+    "experiment builder",
+    "process worker completion",
+    "portfolio report",
+    "decision/fill inspection",
+    "report download",
+    "paper review packet",
+    "cost sensitivity suite",
+    "experiment comparison",
+    "CSV file import",
+    "mobile layout"
+  ],
+  "javascript_errors": []
+}

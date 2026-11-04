@@ -1,0 +1,95 @@
+{
+  "checked_at": "2026-11-04T16:32:01.661191+00:00",
+  "application_version": "0.6.0",
+  "build": {
+    "version": "research/2.0.0",
+    "code_hash": "f0a6f4f55216202dee1c3879400afe79f53dd70a353b2e5d91fdcc0b4ff823ab",
+    "python": "3.13.13",
+    "packages": {
+      "pyarrow": "26.0.1",
+      "fastapi": "0.162.0",
+      "pydantic": "2.14.2",
+      "httpx": "0.28.1"
+    }
+  },
+  "pytest": {
+    "passed": 248,
+    "failed": 0,
+    "seconds": 62.38,
+    "input_feed_tests": 27
+  },
+  "browser": {
+    "passed": 96,
+    "artifacts": [
+      {
+        "file": "browser-validation.json",
+        "passed": 14
+      },
+      {
+        "file": "research-browser-validation.json",
+        "passed": 13
+      },
+      {
+        "file": "market-browser-validation.json",
+        "passed": 10
+      },
+      {
+        "file": "phase-3-browser-validation.json",
+        "passed": 15
+      },
+      {
+        "file": "onboarding-browser-validation.json",
+        "passed": 12
+      },
+      {
+        "file": "phase-4-browser-validation.json",
+        "passed": 19
+      },
+      {
+        "file": "inputs-browser-validation.json",
+        "passed": 13
+      }
+    ],
+    "javascript_errors": []
+  },
+  "syntax": {
+    "python_sources": 55,
+    "javascript_sources": 7
+  },
+  "dependency_check": "No broken requirements found",
+  "genuine_public_sources": {
+    "validated": true,
+    "evidence": "inputs-provider-validation.json",
+    "sources": [
+      "MOSPI",
+      "RBI"
+    ]
+  },
+  "genuine_kite_chain_validated": false,
+  "genuine_fii_report_imported": false,
+  "fii_transport": "Official downloaded CSV, reviewed import; no unattended website scraping",
+  "broker": "Existing Kite quote connection only",
+  "dhan_installed": false,
+  "live_broker_orders_enabled": false,
+  "skills_used": false,
+  "coverage": [
+    "immutable source artifacts, revisions and base years",
+    "first-receipt cutoffs and no historical lookahead",
+    "source validation, redaction and atomic rejection",
+    "synchronized estimated IV, skew and Greeks",
+    "independent Kite/public workers and discarded late results",
+    "forward readiness, guardian snapshot hashes and dated AI facts",
+    "account isolation and input-store backup/restore"
+  ],
+  "deployed_browser": {
+    "passed": 9,
+    "evidence": "inputs-deployed-browser.json"
+  },
+  "deployed_build_verified": true,
+  "post_activation_backup": {
+    "databases": 17,
+    "immutable_research_artifacts": 483,
+    "restore_ok": true,
+    "evidence": "inputs-backup-validation.json"
+  }
+}

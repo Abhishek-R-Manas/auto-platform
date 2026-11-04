@@ -1,0 +1,33 @@
+{
+  "deployed_at": "2026-11-04T10:52:17.036880+00:00",
+  "pid": 3246657,
+  "previous_pid": 3029980,
+  "url": "http://127.0.0.1:8787/#setup",
+  "backups": [
+    "/root/amanas/temp/auto-platform/data/pre-onboarding-account-20261104T105212Z.sqlite3",
+    "/root/amanas/temp/auto-platform/data/pre-onboarding-catalog-20261104T105212Z.sqlite3",
+    "/root/amanas/temp/auto-platform/data/pre-onboarding-market-20261104T105212Z.sqlite3",
+    "/root/amanas/temp/auto-platform/data/pre-onboarding-registry-20261104T105212Z.sqlite3"
+  ],
+  "source_archive": "/root/amanas/temp/auto-platform/data/releases/005d4f9ddf16faec4e167205b029070690b151103fa862029ed2b810e8b54c10",
+  "build": {
+    "version": "research/2.0.0",
+    "code_hash": "005d4f9ddf16faec4e167205b029070690b151103fa862029ed2b810e8b54c10",
+    "python": "3.13.13",
+    "packages": {
+      "pyarrow": "26.0.1",
+      "fastapi": "0.162.0",
+      "pydantic": "2.14.2",
+      "httpx": "0.28.1"
+    }
+  },
+  "main_account_untouched": true,
+  "main_reconciliation_ok": true,
+  "entries_paused": true,
+  "candidate_versions_preserved": 1,
+  "live_orders_enabled": false,
+  "real_provider_login_validated": false,
+  "credential_values_returned": false,
+  "credentials_configured": false,
+  "session_available": false
+}

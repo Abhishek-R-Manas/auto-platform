@@ -1,0 +1,22 @@
+{
+  "passed": 13,
+  "checks": [
+    "research inputs setup and honest empty source status",
+    "official CSV file import with review, scope and INR-crore units",
+    "duplicate report import is idempotent",
+    "inconsistent institutional net values rejected without partial ingestion",
+    "official-format CPI, IIP and constant-price GDP data jobs",
+    "dated RBI release notices with publication and receipt times",
+    "bounded quote universe and model settings persist",
+    "Kite-only IV, skew and per-leg sensitivity surface",
+    "selected dated inputs and frozen policy added to a new forward protocol",
+    "historical enrichment creates a child without backfilling later-received data",
+    "source artifact and observation evidence audit",
+    "usable narrow-screen inputs workspace without horizontal overflow",
+    "original paper account isolated and live execution unavailable"
+  ],
+  "javascript_errors": [],
+  "controlled_broker": true,
+  "controlled_official_data": true,
+  "real_provider_validation": false
+}

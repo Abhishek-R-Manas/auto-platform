@@ -1,0 +1,13 @@
+{
+  "deployed_real_instrument_metadata": true,
+  "actual_live_prices_received": false,
+  "phase": "WAITING_AUTH",
+  "checks": [
+    "deployed market-data page",
+    "10405 genuine provider instrument entries",
+    "RELIANCE search",
+    "honest missing-price status",
+    "authentication gate"
+  ],
+  "javascript_errors": []
+}

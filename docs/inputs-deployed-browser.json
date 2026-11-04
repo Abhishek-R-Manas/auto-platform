@@ -1,0 +1,33 @@
+{
+  "checked_at": "2026-11-04T16:34:23.113097+00:00",
+  "application_version": "0.6.0",
+  "build": {
+    "version": "research/2.0.0",
+    "code_hash": "f0a6f4f55216202dee1c3879400afe79f53dd70a353b2e5d91fdcc0b4ff823ab",
+    "python": "3.13.13",
+    "packages": {
+      "pyarrow": "26.0.1",
+      "fastapi": "0.162.0",
+      "pydantic": "2.14.2",
+      "httpx": "0.28.1"
+    }
+  },
+  "url": "http://127.0.0.1:8787/#forward",
+  "passed": 9,
+  "checks": [
+    "deployed 0.6.0 app and independent forward supervisor healthy",
+    "research inputs workspace loaded with verified source evidence",
+    "five real MoSPI numeric series rendered with units, periods and availability",
+    "real RBI release notices and successful public-source jobs displayed",
+    "hourly macro and ten-second market-window Kite scheduling enabled",
+    "FII report import and pending fresh Kite session shown without fabricated data",
+    "CSV templates and two immutable real-source artifacts available",
+    "deployed desktop and narrow-screen layouts verified without horizontal overflow",
+    "paper balances, positions, orders and paused state preserved during acceptance"
+  ],
+  "javascript_errors": [],
+  "genuine_public_sources": true,
+  "genuine_fii_report_imported": false,
+  "genuine_kite_chain_validated": false,
+  "live_broker_orders_enabled": false
+}

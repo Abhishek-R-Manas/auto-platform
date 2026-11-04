@@ -1,0 +1,41 @@
+{
+  "checked_at": "2026-11-04T05:49:43.017601+00:00",
+  "tests": {
+    "command": ".venv/bin/python -m pytest -q",
+    "passed": 62,
+    "failed": 0,
+    "warnings": [
+      "Starlette TestClient warns that its httpx integration is deprecated"
+    ]
+  },
+  "javascript": {
+    "command": "node --check static/app.js",
+    "status": "passed"
+  },
+  "dependencies": {
+    "command": ".venv/bin/python -m pip check",
+    "status": "passed"
+  },
+  "browser": {
+    "status": "passed",
+    "checks": [
+      "dashboard",
+      "order preview",
+      "paper equity entry/exit",
+      "paper option entry/exit",
+      "paper short future entry/exit",
+      "capital update",
+      "journal note",
+      "CSV export",
+      "strategy configuration",
+      "decision evidence",
+      "option leg monitoring",
+      "session archive",
+      "mobile layout",
+      "keyboard dismissal"
+    ],
+    "javascript_errors": []
+  },
+  "scope": "Isolated databases; the main paper account was not opened or changed",
+  "external_validation": "Authenticated Kite account, subscription permissions and a live market session require server-side user credentials; controlled ingestion tests passed"
+}

@@ -1,0 +1,36 @@
+# Private configuration; keep only the empty setup example.
+.env
+.env.*
+!.env.example
+
+# Runtime account data, source archives, snapshots and pre-change copies.
+/data/
+/.before-*/
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.sqlite3-*
+*.db
+*.db-*
+*.log
+
+# Local Python environments, bytecode and tooling caches.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Local build and editor artifacts.
+build/
+dist/
+*.egg-info/
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,18 @@
+{
+  "controlled_protocol_fixture": true,
+  "actual_provider_connection_validated": false,
+  "checks": [
+    "market-data navigation",
+    "full controlled universe coverage and freshness",
+    "universe pagination",
+    "full-universe symbol search",
+    "stock selection into paper watchlist",
+    "master contract search",
+    "stream delivery and durable capture",
+    "capture to immutable research dataset",
+    "paper-only account and reconciliation",
+    "mobile layout"
+  ],
+  "passed": 10,
+  "javascript_errors": []
+}

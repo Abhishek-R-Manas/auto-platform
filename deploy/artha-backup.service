@@ -1,0 +1,14 @@
+[Unit]
+Description=Consistent Artha SQLite database backups
+
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root/amanas/temp/auto-platform
+ExecStart=/root/amanas/temp/auto-platform/.venv/bin/python -B tools/forward_ops.py backup
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/root/amanas/temp/auto-platform/data

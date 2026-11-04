@@ -1,0 +1,20 @@
+{
+  "controlled_broker": true,
+  "real_provider_login_validated": false,
+  "passed": 12,
+  "checks": [
+    "guided paid Connect setup page",
+    "exact callback URL guidance",
+    "honest unconfigured step gates",
+    "private credential save and cleared fields without restart",
+    "no credential values in status responses",
+    "broker sign-in callback returns safely to setup",
+    "independent quote and candle access checks",
+    "observed stream freshness rather than login-only readiness",
+    "explicit stock-quote connection to simulated paper desk",
+    "paper-only account and reconciliation",
+    "mobile onboarding layout",
+    "progress survives browser refresh"
+  ],
+  "javascript_errors": []
+}

@@ -1,0 +1,100 @@
+{
+  "validated_at": "2026-11-04T08:51:39.800491+00:00",
+  "automated_tests": 118,
+  "paper_browser": {
+    "status": "passed",
+    "checks": [
+      "dashboard",
+      "order preview",
+      "paper equity entry/exit",
+      "paper option entry/exit",
+      "paper short future entry/exit",
+      "capital update",
+      "journal note",
+      "CSV export",
+      "strategy configuration",
+      "decision evidence",
+      "option leg monitoring",
+      "session archive",
+      "mobile layout",
+      "keyboard dismissal"
+    ],
+    "javascript_errors": []
+  },
+  "research_browser": {
+    "status": "passed",
+    "checks": [
+      "research navigation",
+      "synthetic provenance",
+      "capability preflight",
+      "experiment builder",
+      "process worker completion",
+      "portfolio report",
+      "decision/fill inspection",
+      "report download",
+      "paper review packet",
+      "cost sensitivity suite",
+      "experiment comparison",
+      "CSV file import",
+      "mobile layout"
+    ],
+    "javascript_errors": []
+  },
+  "market_browser": {
+    "controlled_protocol_fixture": true,
+    "actual_provider_connection_validated": false,
+    "checks": [
+      "market-data navigation",
+      "full controlled universe coverage and freshness",
+      "universe pagination",
+      "full-universe symbol search",
+      "stock selection into paper watchlist",
+      "master contract search",
+      "stream delivery and durable capture",
+      "capture to immutable research dataset",
+      "paper-only account and reconciliation",
+      "mobile layout"
+    ],
+    "passed": 10,
+    "javascript_errors": []
+  },
+  "javascript_syntax": "passed: app.js, research.js, market-data.js",
+  "dependency_check": "passed",
+  "documentation_links": "passed: five modified documents",
+  "actual_market_quotes_validated": false,
+  "limitation": "Actual metadata is loaded; subscribed Kite credentials and authentication are still required for genuine prices",
+  "actual_instrument_master_validated": true,
+  "websocket_tls_compatibility": "verified endpoint reachability with TLS 1.2+, no credentials",
+  "deployed_browser": {
+    "deployed_real_instrument_metadata": true,
+    "actual_live_prices_received": false,
+    "phase": "WAITING_AUTH",
+    "checks": [
+      "deployed market-data page",
+      "10405 genuine provider instrument entries",
+      "RELIANCE search",
+      "honest missing-price status",
+      "authentication gate"
+    ],
+    "javascript_errors": []
+  },
+  "provider_check": {
+    "websocket_tls12_probe": {
+      "reachable": true,
+      "http_status": 400,
+      "tls": "TLSv1.2"
+    },
+    "public_instrument_master": {
+      "total_rows": 115628,
+      "nse_eq_count": 10405,
+      "sha256": "090ef0199d6b77a89d16acc330b7216eb0473ec955afa3f4a0e822899666783c",
+      "http_status": 200,
+      "observed_http_date": "Wed, 04 Nov 2026 08:38:52 GMT"
+    }
+  },
+  "compatible_endpoint_probe": {
+    "tls_endpoint_reachable": true,
+    "unauthenticated_http_status": 400,
+    "actual_quotes_validated": false
+  }
+}

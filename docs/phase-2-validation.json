@@ -1,0 +1,86 @@
+{
+  "checked_at": "2026-11-04T07:32:18.069269+00:00",
+  "tests": {
+    "passed": 93,
+    "failed": 0,
+    "command": ".venv/bin/python -m pytest -q",
+    "warning": "Starlette TestClient/httpx deprecation"
+  },
+  "paper_browser": {
+    "status": "passed",
+    "checks": [
+      "dashboard",
+      "order preview",
+      "paper equity entry/exit",
+      "paper option entry/exit",
+      "paper short future entry/exit",
+      "capital update",
+      "journal note",
+      "CSV export",
+      "strategy configuration",
+      "decision evidence",
+      "option leg monitoring",
+      "session archive",
+      "mobile layout",
+      "keyboard dismissal"
+    ],
+    "javascript_errors": []
+  },
+  "research_browser": {
+    "status": "passed",
+    "checks": [
+      "research navigation",
+      "synthetic provenance",
+      "capability preflight",
+      "experiment builder",
+      "process worker completion",
+      "portfolio report",
+      "decision/fill inspection",
+      "report download",
+      "paper review packet",
+      "cost sensitivity suite",
+      "experiment comparison",
+      "CSV file import",
+      "mobile layout"
+    ],
+    "javascript_errors": []
+  },
+  "source_scope": "Disposable accounts; owner validation of real datasets and market-model assumptions remains pending",
+  "limitations": [
+    "No expired-options history supplied by Kite",
+    "Exact SPAN/portfolio margin and order-book queue adapters are not implemented",
+    "AI generation and full forward AI supervision remain later roadmap phases"
+  ],
+  "javascript": {
+    "status": "passed",
+    "commands": [
+      "node --check static/app.js",
+      "node --check static/research.js"
+    ]
+  },
+  "dependencies": {
+    "status": "passed",
+    "command": ".venv/bin/python -m pip check"
+  },
+  "documentation": {
+    "local_links_checked": 35,
+    "example_manifest": "validated"
+  },
+  "deployment": {
+    "deployed_at": "2026-11-04T07:23:41.513179+00:00",
+    "status": "running",
+    "pid": 2410020,
+    "url": "http://127.0.0.1:8787/#research",
+    "backup": "/root/amanas/temp/auto-platform/data/pre-phase2-deploy-20261104T072338Z.sqlite3",
+    "paper_only": true,
+    "main_ledger_reconciled": true,
+    "main_entries_paused": true,
+    "synthetic_dataset_id": "60f7db47849796359b1ce80d13cfcaddfb37c3e7ac450d96bceeb6624c8298f2",
+    "synthetic_run_id": "d6dddeee6f4341438d8616ce47c67053",
+    "research_status": "COMPLETED",
+    "research_ledger_reconciled": true,
+    "research_attribution_reconciled": true,
+    "code_hash": "024a61582644c9046ebc5832a6caa2732d301d79b89e854748f6c9000a3d8591",
+    "note": "Deployment smoke used explicitly synthetic data in the isolated research workspace; no main-account or broker orders were submitted"
+  }
+}
