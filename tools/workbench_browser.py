@@ -65,6 +65,14 @@ def serve(database,manual_trading=False):
             return {'ok':True}
         @app.post('/fixture/uncertain')
         def uncertain():broker.uncertain=True;return {'ok':True}
+    @app.post('/fixture/irregular-contract-grid')
+    def irregular_contract_grid():
+        expiry=min(r['expiry'] for r in fixture.rows if r['exchange']=='NFO')
+        fixture.rows[:]=[r for r in fixture.rows if not (r['exchange']=='NFO' and r['expiry']==expiry and r['instrument_type']=='CE' and float(r['strike'])==25100)]
+        for row in fixture.rows:
+            if row['exchange']=='NFO' and row['expiry']==expiry and row['instrument_type']=='CE' and float(row['strike']) in {25000,25050}:row['tick_size']='.1' if float(row['strike'])==25000 else '.25'
+        fixture.master_hash='b'*64
+        return {'ok':True}
     @app.post('/fixture/logout')
     def logout():app.state.kite.token='';return {'ok':True}
     uvicorn.run(app,host='127.0.0.1',port=8796,access_log=False,log_level='error',timeout_graceful_shutdown=2)
@@ -96,8 +104,8 @@ def main():
                 expect(page.locator('#view-home')).to_be_visible();expect(page.locator('#home-next-step')).to_contain_text('Connect your market');checks.append('guided home has a clear connection next step')
                 sidebar=page.locator('#workspace-sidebar');toggle=page.locator('#sidebar-toggle');more=page.locator('#more-tools');summary=more.locator('summary')
                 expect(toggle).to_have_attribute('aria-expanded','false');assert sidebar.bounding_box()['width']==64;content_x=page.locator('.app-shell').bounding_box()['x'];assert content_x==64
-                toggle.hover();expect(toggle).to_have_attribute('aria-expanded','true');assert sidebar.bounding_box()['width']==240;assert page.locator('.app-shell').bounding_box()['x']==content_x
-                expect(sidebar.locator('[data-view="builder"] .nav-label')).to_be_visible();checks.append('hamburger hover reveals navigation without shifting workspace width')
+                sidebar.locator('button[data-view="orders"]').hover();expect(toggle).to_have_attribute('aria-expanded','true');assert sidebar.bounding_box()['width']==240;assert page.locator('.app-shell').bounding_box()['x']==content_x
+                expect(sidebar.locator('[data-view="builder"] .nav-label')).to_be_visible();checks.append('hovering a sidebar navigation icon expands the full rail without shifting workspace width')
                 summary.hover();expect(summary).to_have_attribute('aria-expanded','true');page.locator('#more-tools-menu [data-view="research"]').hover();expect(page.locator('#more-tools-menu')).to_be_visible()
                 page.screenshot(path=str(ROOT/'docs/screenshots/navigation-hover-controlled.png'),full_page=False)
                 page.locator('#more-tools-menu [data-view="research"]').click();expect(page.locator('#view-research')).to_be_visible();expect(toggle).to_have_attribute('aria-expanded','false');expect(summary).to_have_attribute('aria-expanded','false');assert sidebar.bounding_box()['width']==64;checks.append('More tools hover flyout remains reachable and navigation closes both disclosures')

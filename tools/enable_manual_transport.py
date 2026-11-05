@@ -16,7 +16,7 @@ def main():
     validation=json.loads((ROOT/'docs/workspace-validation.json').read_text());deployed=json.loads((ROOT/'docs/workspace-deployment.json').read_text())
     identity=fingerprints()['sha256']
     if not validation['all_passed'] or identity!=validation['identity']['sha256'] or identity!=deployed['asset_identity']:raise ValueError('Exact source must be fully validated and deployed before enabling the connection')
-    if get('/openapi.json')['info']['version']!='0.19.0':raise ValueError('Expected manual-trading release is not running')
+    if get('/openapi.json')['info']['version']!='0.20.0':raise ValueError('Expected manual-trading release is not running')
     before=get('/api/pilot/status');state=get('/api/state');health=get('/api/health');watch=get('/api/workspace/watchlist')
     if before['armed'] or before['orders'] or before['mandate'] or not before['audit']['ok'] or health['status']!='ok':raise ValueError('Initial connection enablement requires a healthy, empty and inactive broker journal')
     archive();suffix=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ');backup=ROOT/'data/backups'/('pre-live-connection-'+suffix);snapshot(ROOT/'data',backup);assert restore_check(backup)['ok']
@@ -41,7 +41,7 @@ def main():
         if any(watch[k]!=new_watch[k] for k in ('name','keys')):raise ValueError('Watchlist changed')
         if health['candidate_registry']['head']!=new_health['candidate_registry']['head']:raise ValueError('Strategy registry changed')
         post=ROOT/'data/backups'/('post-live-connection-'+suffix);snapshot(ROOT/'data',post);assert restore_check(post)['ok']
-        record=dict(checked_at=datetime.now(timezone.utc).isoformat(),version='0.19.0',identity=identity,transport_enabled=True,account_armed=False,mandate_configured=False,authenticated=after['authenticated'],owner_limits_required=True,broker_static_ip_and_delivery_confirmation_required=True,paper_state_preserved=True,watchlist_preserved=True,cached_portfolio_preserved=True,audit_ok=True,pre_backup_restore_ok=True,post_backup_restore_ok=True,real_orders_sent=False,genuine_order_acceptance_tested=False,phase5_strategy_qualified=False)
+        record=dict(checked_at=datetime.now(timezone.utc).isoformat(),version='0.20.0',identity=identity,transport_enabled=True,account_armed=False,mandate_configured=False,authenticated=after['authenticated'],owner_limits_required=True,broker_static_ip_and_delivery_confirmation_required=True,paper_state_preserved=True,watchlist_preserved=True,cached_portfolio_preserved=True,audit_ok=True,pre_backup_restore_ok=True,post_backup_restore_ok=True,real_orders_sent=False,genuine_order_acceptance_tested=False,phase5_strategy_qualified=False)
         (ROOT/'docs/manual-trading-activation.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(record))
     except BaseException:
         if changed:

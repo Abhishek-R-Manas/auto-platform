@@ -78,6 +78,18 @@ class Workspace:
             group=groups.setdefault(row['name'],dict(name=row['name'],key=self.kite.underlying_key(row),expiries=set()))
             group['expiries'].add(row['expiry'])
         return dict(master_available=available,underlyings=[dict(g,expiries=sorted(g['expiries'])) for g in sorted(groups.values(),key=lambda x:(x['name'] not in {'NIFTY','BANKNIFTY'},x['name']))],templates=catalog(),authenticated=self.kite.status()['authenticated'])
+    def contract_grid(self,underlying,expiry,kind):
+        """Current instrument terms only; no quote request or basket/account mutation."""
+        contracts=[]
+        for key,row in self._master().items():
+            if row['exchange']!='NFO' or row.get('name')!=underlying or row['instrument_type']!=kind or row.get('expiry')!=expiry or expiry<self.clock().date().isoformat():continue
+            try:
+                strike=float(row['strike']);tick=float(row['tick_size']);lot=int(row['lot_size'])
+                if not all(math.isfinite(v) and v>0 for v in (strike,tick,lot)):continue
+            except (ValueError,TypeError,KeyError,OverflowError):continue
+            contracts.append(dict(key=key,kind=kind,strike=strike,expiry=datetime.fromisoformat(expiry).replace(hour=15,minute=30,tzinfo=IST).isoformat(),lot_size=lot,tick_size=tick))
+        return dict(underlying=underlying,expiry=expiry,kind=kind,contracts=sorted(contracts,key=lambda c:(c['strike'],c['key'])),source='KITE_INSTRUMENT_MASTER',execution_authority=False)
+
     def watchlist(self,identifier=None,selected=None,interval='day'):
         document=self.watchlists();identifier=identifier or document['active_id'];item=next((i for i in document['lists'] if i['id']==identifier),None)
         if item is None:raise ValueError('Watchlist not found')

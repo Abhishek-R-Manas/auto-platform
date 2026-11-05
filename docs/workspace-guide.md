@@ -1,4 +1,4 @@
-# Trading workspace · 0.19.0
+# Trading workspace · 0.20.0
 
 The primary navigation follows a customer’s work: **Home → Trade → Orders / Portfolio**, or **Home → Strategy Builder → My Strategies**. Connections holds broker sign-in and optional private AI configuration. Historical research, forward supervision, journal, capital/risk and live permissions remain under More tools.
 
@@ -115,3 +115,9 @@ The library scrolls independently beside the four-leg overview at 1366×768. Sma
 ## Compact navigation · 0.19
 
 Every page starts with a 64px icon rail. Hover over the hamburger to reveal the sidebar as an overlay; leaving the navigation collapses it. More tools opens a hover flyout that remains reachable while moving into it. Selecting a page closes both disclosures. Keyboard activation, Escape, outside dismissal and touch taps remain available. Opening either menu never changes the workspace width or trading state.
+
+## Contract-aware controls · 0.20
+
+Strike arrows select the adjacent listed strike for that underlying, expiry and option type, including irregular gaps. Entry-price arrows use the selected instrument master tick; selecting another contract updates the tick. A saved matching chain supplies the new contract premium; without one the existing manual entry is retained and disclosed. A different lot size requires explicit quantity review. Missing instrument terms are never replaced with a guessed exchange tick. Hypothetical strikes use the configured model spacing, with entry assumptions retained. Desktop and mobile share these controls; typing remains available for manual analysis assumptions.
+
+Hover anywhere over the navigation rail to reveal the sidebar; hamburger, touch and keyboard activation remain available. More tools still opens on hover.

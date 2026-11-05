@@ -1,9 +1,9 @@
 {
-  "deployed_at": "2026-11-05T16:19:28.676809+00:00",
-  "version": "0.19.0",
+  "deployed_at": "2026-11-05T17:03:49.592010+00:00",
+  "version": "0.20.0",
   "build": {
     "version": "research/2.0.0",
-    "code_hash": "bd16d28295a3daed63a41513ef21e554749577cced90550342c7486ba0810c02",
+    "code_hash": "4707d8a1a2d121e563d6f283d2f2e5b02fc70d584c53af6dd96b01e4be58f440",
     "python": "3.13.13",
     "packages": {
       "pyarrow": "26.0.1",
@@ -12,12 +12,12 @@
       "httpx": "0.28.1"
     }
   },
-  "asset_identity": "0f6a4470adb7415d295d3c1fd94d9b134198eaf887df9ea36fde4236c1ace108",
-  "source_archive": "/root/amanas/temp/auto-platform/data/releases/bd16d28295a3daed63a41513ef21e554749577cced90550342c7486ba0810c02",
-  "pre_backup": "/root/amanas/temp/auto-platform/data/backups/pre-workspace-20261105T161830Z",
+  "asset_identity": "d06bb0da4344c7c9636a557154c672938bae53f18a734d95028515c227da25a8",
+  "source_archive": "/root/amanas/temp/auto-platform/data/releases/4707d8a1a2d121e563d6f283d2f2e5b02fc70d584c53af6dd96b01e4be58f440",
+  "pre_backup": "/root/amanas/temp/auto-platform/data/backups/pre-workspace-20261105T170251Z",
   "pre_databases": 20,
   "pre_restore_ok": true,
-  "post_backup": "/root/amanas/temp/auto-platform/data/backups/post-workspace-20261105T161830Z",
+  "post_backup": "/root/amanas/temp/auto-platform/data/backups/post-workspace-20261105T170251Z",
   "post_databases": 20,
   "post_restore_ok": true,
   "paper_financial_state_preserved": true,
@@ -31,8 +31,8 @@
       "armed": false,
       "audit": {
         "ok": true,
-        "checked": 41,
-        "head": "424e026b7139a326cb8d3c28c704741468176927037f633bdc0fe500bf58e98d"
+        "checked": 43,
+        "head": "d8bb0bc82bf69c5a52aafa381b9e211cdbd6b3a9f5a8f8288d1710df93f33a23"
       }
     },
     "status": "ok",
@@ -53,7 +53,7 @@
     "forward": {
       "worker": {
         "healthy": true,
-        "last_tick": "2026-11-05T16:19:03.868352+00:00",
+        "last_tick": "2026-11-05T17:03:24.549085+00:00",
         "error": null
       },
       "audit": {

@@ -14,6 +14,8 @@ def router(service,forward,pilot=None):
     api=APIRouter(prefix='/api/workspace',tags=['Trading desk and strategy builder'])
     @api.get('/meta')
     def meta():return service.meta()
+    @api.get('/contract-grid')
+    def contract_grid(underlying:Annotated[str,Field(pattern=r'^[A-Z0-9 &_.\-]{1,40}$')],expiry:Annotated[str,Field(pattern=r'^\d{4}-\d{2}-\d{2}$')],kind:Literal['CE','PE']):return service.contract_grid(underlying,expiry,kind)
     @api.get('/watchlist')
     def watchlist(watchlist_id:Annotated[str,Field(pattern=r'^[a-zA-Z0-9_-]{1,40}$')]|None=None):return service.watchlist(watchlist_id)
     @api.post('/watchlist')

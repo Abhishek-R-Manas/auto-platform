@@ -241,3 +241,5 @@ Builder 0.16 presents editable legs, payoff, risk/premium metrics, net Greeks an
 Builder 0.18 has a visible strategy library with market-view buttons, search and recipe-derived payoff thumbnails. The structure filter and strategy-selection dropdowns are removed; selected cards use a light background without a left border. Calendar previews retain later-leg model value and are labeled accordingly.
 
 Workspace 0.19 uses a collapsed navigation rail on every page, with a hamburger hover overlay and hoverable More tools. Keyboard and touch controls remain available.
+
+Workspace 0.20 adds contract-aware strike and premium steps and expands navigation when hovering anywhere on the sidebar rail.

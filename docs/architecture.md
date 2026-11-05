@@ -267,3 +267,7 @@ Manual authority records an explicit SELECTED or ALL_NSE_EQ instrument_scope in 
 ## Navigation disclosures · 0.19
 
 The versioned navigation controller manages temporary sidebar and More tools disclosures over the existing shell routes. The compact rail reserves 64px on every view; expanded panels use overlays without shifting charts. Navigation and dismissal reset both disclosures. No account, broker or strategy state is modified.
+
+## Contract stepping · 0.20
+
+The read-only contract-grid API returns scoped instrument-master strike, expiry, lot and tick terms without quote or order calls. The builder uses this grid for adjacent-contract selection and premium steps. Metadata remains outside immutable baskets. Cached matching chain observations can reprice a selected contract; unavailable prices retain explicit manual entry assumptions. Hypothetical strike spacing remains a model input.

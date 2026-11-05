@@ -1,8 +1,9 @@
 {
-  "passed": 26,
+  "passed": 28,
   "checks": [
     "choosing an options template switches from stock rules to the options editor",
     "hypothetical four-leg strategy includes per-leg values and Greeks",
+    "hypothetical strike arrows use configured model spacing and preserve entry assumptions",
     "call put straddle and condor thumbnails follow different payoff profiles",
     "visible market-view buttons and search filter strategies without dropdowns or changing the active basket",
     "calendar previews disclose their model basis and empty filters have a working reset",
@@ -26,6 +27,7 @@
     "selected broker position import preserves direction units and broker average",
     "payoff chart supports keyboard price inspection",
     "mobile editor, controls and matrix stay within the viewport",
+    "desktop and mobile premiums use contract ticks and strike arrows bind adjacent listed contracts across irregular gaps",
     "all analysis journeys preserve paper finances and broker inactivity"
   ],
   "javascript_errors": [],

@@ -1,4 +1,4 @@
-"""Record actual isolated acceptance outcomes for the 0.19.0 workspace."""
+"""Record actual isolated acceptance outcomes for the 0.20.0 workspace."""
 import json,os,subprocess,sys,time
 from datetime import datetime,timezone
 from pathlib import Path
@@ -30,7 +30,7 @@ def main():
         entry=dict(command=command,passed=result.returncode==0,seconds=round(time.monotonic()-start,2),output=output);checks.append(entry)
         if reuse and command==commands[0]:entry['reused_passed_runtime_check_at']=reuse['validated_at']
         print(json.dumps(dict(command=command,passed=entry['passed'],seconds=entry['seconds'],summary=output[-2200:])),flush=True)
-        record=dict(version='0.19.0',checked_at=datetime.now(timezone.utc).isoformat(),build=CURRENT_BUILD,identity=identity,checks=checks,all_passed=len(checks)==len(commands) and all(c['passed'] for c in checks),real_broker_orders_sent=False,genuine_provider_validation=False,live_transport_enabled=False,phase5_qualified=False)
+        record=dict(version='0.20.0',checked_at=datetime.now(timezone.utc).isoformat(),build=CURRENT_BUILD,identity=identity,checks=checks,all_passed=len(checks)==len(commands) and all(c['passed'] for c in checks),real_broker_orders_sent=False,genuine_provider_validation=False,live_transport_enabled=False,phase5_qualified=False)
         (ROOT/'docs/workspace-validation.json').write_text(json.dumps(record,indent=2)+'\n')
         if result.returncode:raise SystemExit(result.returncode)
     if identity!=fingerprints():raise ValueError('Source changed during final validation')

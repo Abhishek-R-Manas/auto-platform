@@ -1,4 +1,4 @@
-"""Backed-up deployment of 0.19.0 with explicit preservation of an inactive broker connection."""
+"""Backed-up deployment of 0.20.0 with explicit preservation of an inactive broker connection."""
 import argparse,json,subprocess,sys,time
 from datetime import datetime,timezone
 from pathlib import Path
@@ -37,7 +37,7 @@ def main():
     for _ in range(90):
         try:
             health=get('/api/health');version=get('/openapi.json')['info']['version']
-            if version=='0.19.0':break
+            if version=='0.20.0':break
         except Exception:pass
         time.sleep(1)
     else:raise RuntimeError('Updated service did not become available')
