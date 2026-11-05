@@ -1,0 +1,19 @@
+{
+  "checked_at": "2026-11-05T04:04:46.562814+00:00",
+  "passed": 9,
+  "checks": [
+    "deployed price-chart controls",
+    "market data independent of paper desk",
+    "persistent chart API honest cached/session state",
+    "deployed pilot transport and orders disabled",
+    "explicit real-money mode and confirmation boundary",
+    "broker pilot audit with zero orders",
+    "deployed pilot mobile layout",
+    "deployed chart mobile layout",
+    "owner financial state preserved by read-only browser checks"
+  ],
+  "javascript_errors": [],
+  "read_only": true,
+  "real_orders_sent": false,
+  "genuine_provider_access_tested": false
+}

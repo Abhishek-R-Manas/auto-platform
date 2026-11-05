@@ -1,0 +1,25 @@
+{
+  "checked_at": "2026-11-05T07:28:55.293302+00:00",
+  "passed": 15,
+  "checks": [
+    "guided home and next step",
+    "primary navigation Trade",
+    "deployed named watchlist controls and chart freshness label",
+    "primary navigation Strategy Builder",
+    "primary navigation My Strategies",
+    "primary navigation Connections",
+    "primary navigation Home",
+    "full 51-template catalog visible",
+    "mobile Home",
+    "mobile Trade",
+    "mobile Strategy Builder",
+    "mobile Connections",
+    "live transport disabled and zero real orders",
+    "healthy financial reconciliation",
+    "read-only journey preserves financial state"
+  ],
+  "javascript_errors": [],
+  "read_only": true,
+  "real_orders_sent": false,
+  "genuine_provider_access_tested": false
+}

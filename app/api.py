@@ -31,6 +31,11 @@ from .forward.service import ForwardService
 from .forward.api import router as forward_router
 from .intelligence.service import DataFeeds
 from .intelligence.api import router as intelligence_router
+from .charts import MarketCharts, router as charts_router
+from .pilot.service import Pilot
+from .pilot.api import router as pilot_router
+from .workbench.service import Workspace
+from .workbench.api import router as workspace_router
 
 ROOT=Path(__file__).resolve().parent.parent
 
@@ -118,11 +123,19 @@ def create_app(db_path=None,background=True,config_path=None):
     forward.provider.key=lab.provider.key;forward.provider.model=lab.provider.model
     intelligence=DataFeeds(research_root.parent/"intelligence",kite)
     forward.intelligence=intelligence
+    charts=MarketCharts(research_root.parent/"charts",kite)
+    pilot=Pilot(research_root.parent/"pilot",kite,forward)
+    workspace=Workspace(research_root.parent/"workspace",kite,hub,research)
     intelligence.policy_guard=forward.lock
     oauth_states={}
     setup=ConnectionSetup(kite,hub,engine,config)
     setup.ai_status=lambda:lab.provider.status()['configured']
-    setup.rotation_lock=forward.lock;setup.forward_exposure=forward.has_exposure;setup.pause_forward=forward.pause_for_credentials
+    class RotationGuard:
+        def __enter__(self):
+            pilot.lock.acquire();forward.lock.acquire()
+        def __exit__(self,*args):
+            forward.lock.release();pilot.lock.release()
+    setup.rotation_lock=RotationGuard();setup.forward_exposure=lambda:pilot.has_exposure() or forward.has_exposure();setup.pause_forward=forward.pause_for_credentials
 
     def apply_live_quotes(quotes,instruments):
         with engine.lock:
@@ -174,6 +187,13 @@ def create_app(db_path=None,background=True,config_path=None):
             try:await asyncio.wait_for(stop.wait(),timeout=1)
             except TimeoutError:pass
 
+    async def pilot_loop(stop):
+        while not stop.is_set():
+            try:await asyncio.to_thread(pilot.tick)
+            except Exception:await asyncio.to_thread(pilot.pause)
+            try:await asyncio.wait_for(stop.wait(),timeout=2)
+            except TimeoutError:pass
+
     async def input_loop(stop):
         while not stop.is_set():
             try:await asyncio.to_thread(intelligence.tick)
@@ -189,8 +209,9 @@ def create_app(db_path=None,background=True,config_path=None):
         while not stop.is_set():
             latest=forward.last_tick
             age=(datetime.now(timezone.utc)-datetime.fromisoformat(latest)).total_seconds() if latest else (datetime.now(timezone.utc)-launched).total_seconds()
-            if age<30 and forward.last_error is None:notify('WATCHDOG=1')
-            else:notify('STATUS=Forward supervisor stalled; service-manager watchdog will recover paused')
+            pilot_age=(datetime.now(timezone.utc)-datetime.fromisoformat(pilot.last_tick)).total_seconds() if pilot.last_tick else (datetime.now(timezone.utc)-launched).total_seconds()
+            if age<30 and forward.last_error is None and (not pilot.watch_required or pilot_age<30):notify('WATCHDOG=1')
+            else:notify('STATUS=Financial supervisor stalled; service-manager watchdog will recover paused')
             try:await asyncio.wait_for(stop.wait(),timeout=5)
             except TimeoutError:pass
         notify('STOPPING=1')
@@ -204,8 +225,11 @@ def create_app(db_path=None,background=True,config_path=None):
         forward_task=asyncio.create_task(forward_loop(stop)) if background else None
         watchdog_task=asyncio.create_task(service_watchdog(stop)) if background else None
         input_task=asyncio.create_task(input_loop(stop)) if background else None
+        pilot_task=asyncio.create_task(pilot_loop(stop)) if background else None
         yield
         stop.set()
+        if pilot_task:await pilot_task
+        pilot.close();charts.close();workspace.close()
         if input_task:await input_task
         if watchdog_task:await watchdog_task
         if forward_task:await forward_task
@@ -223,8 +247,8 @@ def create_app(db_path=None,background=True,config_path=None):
         await asyncio.to_thread(research.close)
         engine.close()
 
-    app=FastAPI(title="Artha Paper Trading",version="0.6.0",lifespan=lifespan,
-                description="Single-user paper execution only. No live order routes.",docs_url="/api/docs",redoc_url=None)
+    app=FastAPI(title="Artha Paper Trading",version="0.9.0",lifespan=lifespan,
+                description="Single-user paper research, cached market charts and a separately gated supervised broker pilot.",docs_url="/api/docs",redoc_url=None)
     app.state.engine=engine
     app.state.kite=kite
     app.state.market_hub=hub
@@ -233,6 +257,12 @@ def create_app(db_path=None,background=True,config_path=None):
     app.state.onboarding=setup
     app.state.forward=forward
     app.state.intelligence=intelligence
+    app.state.workspace=workspace
+    app.include_router(workspace_router(workspace,forward))
+    app.state.charts=charts
+    app.state.pilot=pilot
+    app.include_router(charts_router(charts))
+    app.include_router(pilot_router(pilot))
     app.include_router(intelligence_router(intelligence,research.catalog))
     app.include_router(forward_router(forward))
     app.include_router(onboarding_router(setup,oauth_states))
@@ -284,13 +314,13 @@ def create_app(db_path=None,background=True,config_path=None):
 
     @app.get("/")
     def index():
-        return FileResponse(ROOT/"static/index.html")
+        return FileResponse(ROOT/"static/workspace-v09.html")
 
     @app.get("/api/health")
     def health():
         audit=lab.verify_audit()
         forward_health=forward.status()
-        return dict(status="ok" if audit["ok"] and forward_health['audit']['ok'] and forward_health['worker']['healthy'] else "degraded",mode="PAPER",live_order_access=False,reconciliation=engine.reconcile(),candidate_registry=audit,ai_configured=lab.provider.status()["configured"],forward={key:forward_health[key] for key in ('worker','audit','portfolio_count','open_incidents','live_orders_enabled')})
+        return dict(pilot=dict(transport_enabled=pilot.broker.enabled,armed=pilot.status()["armed"],audit=pilot.audit()),status="ok" if pilot.audit()["ok"] and audit["ok"] and forward_health['audit']['ok'] and forward_health['worker']['healthy'] else "degraded",mode="PAPER",live_order_access=False,reconciliation=engine.reconcile(),candidate_registry=audit,ai_configured=lab.provider.status()["configured"],forward={key:forward_health[key] for key in ('worker','audit','portfolio_count','open_incidents','live_orders_enabled')})
 
     @app.get("/api/state")
     def state():

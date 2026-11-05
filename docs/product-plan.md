@@ -112,3 +112,8 @@ rejections and pending reasons; usability by browser workflows and narrow-screen
 Trade evaluation must use results after costs, drawdown and stated simulation uncertainty.
 A mature release additionally needs competitive benchmarking, specialist review, broker
 validation and operational experience. Phase 1 makes no trading-edge claim.
+
+
+## Phase 5 preparation status — 2026-11-05
+
+[Release 0.7.0](phase-5.md) adds persistent market charts and an isolated manually confirmed NSE/CNC broker pilot, planned-loss checks, verified-fill native stop-limit protection, reconciliation and recovery controls. Real order transport remains disabled. No forward portfolio or qualified strategy existed at deployment. Qualification, explicit account/capital authority and genuine broker acceptance remain required; this release does not complete Phase 5 operating qualification or Phase 6 automation.

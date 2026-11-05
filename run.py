@@ -27,4 +27,4 @@ if __name__=="__main__":
         raise SystemExit("A paper workspace process is already running. Stop it before starting another.")
     from app.api import create_app
     print(f"Artha paper workspace: http://127.0.0.1:{args.port}",flush=True)
-    uvicorn.run(create_app(),host="127.0.0.1",port=args.port,workers=1,access_log=False)
+    uvicorn.run(create_app(),host="127.0.0.1",port=args.port,workers=1,access_log=False,timeout_graceful_shutdown=8)

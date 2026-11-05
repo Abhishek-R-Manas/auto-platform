@@ -85,6 +85,7 @@ def main():
                     raise
                 expect(page.locator('#setup-login-status')).to_contain_text('Session available',timeout=15000)
                 assert 'request_token' not in page.url;checks.append('broker sign-in callback returns safely to setup')
+                page.locator('#connection-details').evaluate('e=>e.open=true')
                 page.locator('#setup-check-quotes').click();expect(page.locator('#setup-quotes-result')).to_contain_text('Verified:',timeout=10000)
                 page.locator('#setup-check-history').click();expect(page.locator('#setup-history-result')).to_contain_text('Verified:',timeout=10000);checks.append('independent quote and candle access checks')
                 page.locator('#setup-connect').click();expect(page.locator('#setup-overall')).to_have_text('QUOTES ARRIVING',timeout=15000)

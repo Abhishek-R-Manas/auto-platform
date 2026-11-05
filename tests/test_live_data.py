@@ -93,6 +93,8 @@ def test_scanner_covers_every_master_entry_and_marks_old_quotes_stale(hub):
 
 def test_stream_batches_all_symbols_into_multiple_connections(hub,monkeypatch):
     hub.enable(True)
+    hub.set_workspace_instruments({'NFO:OPTION':{'instrument_token':2}})
+    hub.set_forward_instruments({'NFO:OPTION':{'instrument_token':514}})
     universe={i*256+1:dict(key=f'NSE:S{i}',symbol=f'S{i}',name='Example',kind='EQ') for i in range(1,3006)}
     monkeypatch.setattr(hub.kite,'equity_universe',lambda:universe)
     subscriptions=[]
@@ -116,7 +118,7 @@ def test_stream_batches_all_symbols_into_multiple_connections(hub,monkeypatch):
         stop.set();await asyncio.wait_for(task,3)
     asyncio.run(run())
     assert len(subscriptions)==2 and max(map(len,subscriptions))==3000
-    assert set().union(*(set(x) for x in subscriptions))==set(universe)
+    assert set().union(*(set(x) for x in subscriptions))==set(universe)|{2,514}
 
 
 def test_transport_exceptions_are_redacted_and_retried(hub,monkeypatch):

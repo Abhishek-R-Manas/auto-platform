@@ -40,3 +40,5 @@
 
 #input-status,#input-import-result,#input-enrich-result {overflow-wrap:anywhere}
 #input-feature-selection {min-height:120px}
+
+#price-chart svg{display:block;width:100%;min-height:180px} .pilot-json{white-space:pre-wrap;overflow-wrap:anywhere;max-height:360px;overflow:auto} #view-pilot .form-row{flex-wrap:wrap} #view-pilot small{display:block}

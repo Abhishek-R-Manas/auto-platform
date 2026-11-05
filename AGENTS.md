@@ -2,6 +2,11 @@
 
 ## Read first
 
+- [Workspace 0.9 guide](docs/workspace-guide.md): guided Home, trading desk and 51-template builder. The workspace revamp does not activate or qualify Phase 5. Main document is `static/workspace-v09.html`, with `shell.js`, `workspace-v09.js`, `workspace-v09.css`, `pilot-workbench.js` and locally licensed chart vendor assets. Legacy files remain for archived releases. Workspace data has independent SQLite storage and hash-verified draft/chain backups.
+
+- [Phase 5 preparation](docs/phase-5.md): cached broker charts and the isolated, disabled-by-default manually confirmed NSE/CNC pilot. Qualification, owner limits, genuine broker acceptance and broader automated protection remain pending. Do not represent this as a fully qualified or activated Phase 5 release.
+
+
 This project is a local paper-trading foundation for a broader AI trading platform.
 Before further research planning or implementation, read:
 
@@ -63,6 +68,12 @@ validation references as work progresses.
 
 ## Repository map
 
+- `app/displaybars.py`, `app/workbench/`: persistent named watchlists and same-origin streamed display snapshots. Developing bars are partial display observations; preserve independent execution quote consumption.
+- `app/charts.py`, `static/charts.js`: persistent display-only completed broker candles; never execution liquidity.
+- `app/pilot/`, `static/pilot.js`: separate real-money mandate/reconciliation/order journal. The market-data allowlist and paper adapters remain restricted. `ARTHA_LIVE_TRANSPORT_ENABLED` defaults off and requires explicit reviewed deployment authority.
+- `tests/test_pilot_charts.py`, `tools/pilot_charts_browser.py`: isolated controlled acceptance; `docs/phase-5.md` records current scope and remaining work.
+
+
 - `app/intelligence/`: immutable dated inputs, fixed official-source adapters, source jobs and estimated Kite surfaces. `static/inputs.js`, `tests/test_intelligence.py` and `tools/inputs_browser.py` cover the operator flow.
 - Selected external features require the immutable `evidence_policy_hash`. Preserve first-receipt cutoffs, unknown publication times, source scope/base years and old revisions. Never scrape restricted public websites, backfill later-known facts into earlier decisions, or silently relabel derived IV as broker-provided Greeks.
 
@@ -96,25 +107,19 @@ Runtime is Python 3.13. `requirements.lock` and `requirements-dev.lock` pin the 
 environments. Existing checks from the project directory:
 
 ```bash
-.venv/bin/python -m pytest -q
-node --check static/app.js
-node --check static/research.js
-node --check static/market-data.js
-node --check static/candidates.js
-node --check static/onboarding.js
-node --check static/forward.js
-node --check static/inputs.js
-.venv/bin/python -m pip check
-.venv/bin/python tools/browser_smoke.py
-.venv/bin/python tools/research_browser.py
-.venv/bin/python tools/market_browser.py
-.venv/bin/python tools/candidates_browser.py
-.venv/bin/python tools/onboarding_browser.py
-.venv/bin/python tools/forward_browser.py
-.venv/bin/python tools/inputs_browser.py
+.venv/bin/python -B tools/validate_workbench.py
+.venv/bin/python -B tools/workbench_deployed_browser.py
 ```
 
+The first command runs full pytest, six isolated browser suites, dependency checks and all
+JavaScript syntax checks, recording exact source/asset fingerprints. The second is a
+read-only deployed UI check. `--resume` is restricted to browser-harness changes with
+unchanged runtime, assets, unit tests and dependency locks; reused passed unit evidence
+retains its original validation timestamp. Legacy `browser_smoke.py`, `market_browser.py`
+and `pilot_charts_browser.py` describe earlier navigation and are retained for those releases.
+
+
 Use checks appropriate to the change. Documentation-only edits need link/content checks;
-application changes need relevant regression and acceptance coverage. The browser tool
-uses a temporary database and port 8788. The normal launcher uses loopback port 8787 and
+application changes need relevant regression and acceptance coverage. The current workspace browser tool
+uses a temporary database and port 8796. The normal launcher uses loopback port 8787 and
 a single-process lock. Update validation artifacts only from actual check outcomes.

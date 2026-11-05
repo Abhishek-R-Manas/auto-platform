@@ -34,8 +34,8 @@ let state=null, activeView='overview', marketKind='ALL', chartWindow='all', filt
 let refreshing=false, formsInitialised=false, symbolSignature='', ticketSide='BUY', previewTimer, previewSequence=0;
 let toastTimer, lastFocus=null, requestSignature='', requestId='', submitting=false;
 const riskLabels={trade_pct:'Per-trade planned loss · %',open_pct:'Aggregate open risk · %',daily_pct:'Daily loss threshold · %',weekly_pct:'Weekly loss threshold · %',drawdown_pct:'Drawdown threshold · %',margin_pct:'Futures margin utilisation · %',slippage_bps:'Adverse slippage · basis points',overnight_stress_pct:'Overnight stress budget · %'};
-const headings={forward:['Supervise every forward decision.','Run controlled paper portfolios, inspect risk and preserve prospective evidence.'],setup:['Connect your market.','Set up your Kite data subscription and verify access with a guided connection flow.'],candidates:['Build hypotheses. Demand evidence.','Create AI-assisted strategies, evaluate them reproducibly and preserve every research decision.'],marketdata:['The market, with evidence.','Browse the NSE universe, inspect quote freshness and record forward research data.'],research:['Research every assumption.','Replay historical data, compare strategies and inspect the evidence behind simulated results.'],overview:['A clear view of every decision.','Explore the market. Test your process. Keep your capital virtual.'],positions:['Know what you hold.','Track positions, protective exits and exposure across your account.'],orders:['Every order, accounted for.','Follow a paper order from intention to execution.'],strategies:['Make the process repeatable.','Test transparent rules before considering real capital.'],risk:['Give every decision a boundary.','Define virtual capital, risk budgets and operating controls.'],journal:['Keep the reasoning.','Build a durable record of decisions and observations.'],settings:['Your workspace, connected.','Choose your data source and understand the simulation boundaries.']};
-const navNames={forward:'Forward paper',setup:'Connection setup',candidates:'Strategy lab',marketdata:'NSE market data',research:'Research lab',overview:'Overview',positions:'Positions',orders:'Orders',strategies:'Strategies',risk:'Risk & capital',journal:'Trading journal',settings:'Settings'};
+const headings={pilot:["A bounded real-money pilot.","Review qualified evidence, reconcile your broker account and confirm each real order."],forward:['Supervise every forward decision.','Run controlled paper portfolios, inspect risk and preserve prospective evidence.'],setup:['Connect your market.','Set up your Kite data subscription and verify access with a guided connection flow.'],candidates:['Build hypotheses. Demand evidence.','Create AI-assisted strategies, evaluate them reproducibly and preserve every research decision.'],marketdata:['The market, with evidence.','Browse the NSE universe, inspect quote freshness and record forward research data.'],research:['Research every assumption.','Replay historical data, compare strategies and inspect the evidence behind simulated results.'],overview:['A clear view of every decision.','Explore the market. Test your process. Keep your capital virtual.'],positions:['Know what you hold.','Track positions, protective exits and exposure across your account.'],orders:['Every order, accounted for.','Follow a paper order from intention to execution.'],strategies:['Make the process repeatable.','Test transparent rules before considering real capital.'],risk:['Give every decision a boundary.','Define virtual capital, risk budgets and operating controls.'],journal:['Keep the reasoning.','Build a durable record of decisions and observations.'],settings:['Your workspace, connected.','Choose your data source and understand the simulation boundaries.']};
+const navNames={pilot:"Real-money pilot",forward:'Forward paper',setup:'Connection setup',candidates:'Strategy lab',marketdata:'NSE market data',research:'Research lab',overview:'Overview',positions:'Positions',orders:'Orders',strategies:'Strategies',risk:'Risk & capital',journal:'Trading journal',settings:'Settings'};
 
 function toast(message,error=false){ clearTimeout(toastTimer); $('toast').textContent=message; $('toast').classList.remove('hidden'); $('toast').classList.toggle('error',error); toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),6000); }
 async function api(path,body){
@@ -53,6 +53,10 @@ async function action(path,body={},message){try{const data=await api(path,body);
 function navigate(view){
   if(!headings[view])return;
   activeView=view;
+  $('workspace-mode').textContent=view==='pilot'?'REAL MONEY · GATED PILOT':view==='marketdata'?'MARKET DATA':'Paper trading';
+  $('workspace-mode').classList.toggle('amber',view==='pilot');
+  $('new-trade').classList.toggle('hidden',['pilot','marketdata'].includes(view));
+  document.querySelector('.mode-strip').classList.toggle('hidden',['pilot','marketdata'].includes(view));
   document.querySelectorAll('.view').forEach(el=>el.classList.toggle('hidden',el.id!==`view-${view}`));
   document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===view));
   $('session-management').classList.toggle('hidden',view!=='settings');
@@ -102,7 +106,7 @@ function renderOrders(){
 
 function render(){
   const a=state.account;
-  $('date-label').textContent=new Date(state.clock).toLocaleDateString('en-IN',{weekday:'long',day:'2-digit',month:'long',year:'numeric',timeZone:'Asia/Kolkata'}).toUpperCase()+` · ${state.source==='DEMO'?'VIRTUAL SESSION':'IST'}`;
+  $('date-label').textContent=new Date(['pilot','marketdata'].includes(activeView)?Date.now():state.clock).toLocaleDateString('en-IN',{weekday:'long',day:'2-digit',month:'long',year:'numeric',timeZone:'Asia/Kolkata'}).toUpperCase()+` · ${['pilot','marketdata'].includes(activeView)?'IST':state.source==='DEMO'?'VIRTUAL SESSION':'IST'}`;
   $('metric-equity').textContent=money(a.equity);$('metric-pnl').textContent=money(a.pnl);$('metric-pnl').className=signClass(a.pnl);
   $('metric-return').textContent=percent(a.pnl/a.capital*100);$('metric-return').className=signClass(a.pnl);
   $('metric-cash').textContent=money(a.available_cash);$('metric-margin').textContent=`${money(a.margin_used,0)} est. margin · ${money(a.reserved_cash,0)} reserved`;
@@ -128,7 +132,7 @@ function render(){
   $('market-clock').textContent=`${timeOf(state.clock)} IST`;
   $('playback').textContent=state.auto_feed?'Pause feed':'Play feed';$('playback').disabled=state.source!=='DEMO';$('step-market').disabled=state.source!=='DEMO';
   $('market-footnote').textContent=state.source==='DEMO'?'Synthetic prices · illustrative derivative lot sizes':'Kite quotes · estimated execution and funding';
-  $('footer-status').textContent=`${state.source==='DEMO'?'Synthetic market':'Kite market data'} · Paper execution · ${state.reconcile.ok?'Ledger reconciled':'Reconciliation failed'}`;
+  $('footer-status').textContent=activeView==='pilot'?'Separate broker pilot · explicit real-money confirmation':activeView==='marketdata'?'Kite market observations · timestamped historical cache':`${state.source==='DEMO'?'Synthetic market':'Kite market data'} · Paper execution · ${state.reconcile.ok?'Ledger reconciled':'Reconciliation failed'}`;
   const strategy=state.strategies[0];$('strategy-state').textContent=strategy.status;$('strategy-status-full').textContent=strategy.status;$('strategy-signal').textContent=strategy.last_signal;
   $('strategy-dot').style.background=strategy.enabled?'#5a987a':'#b9c5b5';
   $('greek-totals').innerHTML=[['Gamma',state.greeks.gamma,4],['Theta · ₹/day',state.greeks.theta,2],['Vega · ₹/IV point',state.greeks.vega,2]].map(([label,value,digits])=>`<div><span>${label}</span><strong>${number(value,digits)}</strong></div>`).join('');

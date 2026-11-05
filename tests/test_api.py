@@ -17,7 +17,7 @@ def client(tmp_path):
 def test_dashboard_and_state_are_real_backend_responses(client):
     page=client.get("/")
     assert page.status_code==200
-    assert "Paper trading workspace" in page.text
+    assert "Trading &amp; strategy workspace" in page.text
     state=client.get("/api/state").json()
     assert state["mode"]=="PAPER"
     assert state["account"]["equity"]==1_000_000

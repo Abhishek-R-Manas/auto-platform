@@ -1,0 +1,176 @@
+{
+  "version": "0.7.0",
+  "checked_at": "2026-11-05T03:59:46.324041+00:00",
+  "build": {
+    "version": "research/2.0.0",
+    "code_hash": "fd6b28391700dcda03e26dd0442168ec4e070482aba7d90754f05aa8f5e18ef7",
+    "python": "3.13.13",
+    "packages": {
+      "pyarrow": "26.0.1",
+      "fastapi": "0.162.0",
+      "pydantic": "2.14.2",
+      "httpx": "0.28.1"
+    }
+  },
+  "checks": [
+    {
+      "command": [
+        "/root/amanas/temp/auto-platform/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "passed": true,
+      "seconds": 66.32,
+      "output": "........................................................................ [ 24%]\n........................................................................ [ 48%]\n........................................................................ [ 72%]\n........................................................................ [ 97%]\n........                                                                 [100%]\n=============================== warnings summary ===============================\n.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1\n  /root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n296 passed, 1 warning in 65.27s (0:01:05)\n"
+    },
+    {
+      "command": [
+        "/root/amanas/temp/auto-platform/.venv/bin/python",
+        "-B",
+        "tools/pilot_charts_browser.py"
+      ],
+      "passed": true,
+      "seconds": 5.89,
+      "output": "{\"passed\": 11, \"checks\": [\"saved completed-candle chart and close\", \"controlled broker refresh\", \"explicit execution-mode separation\", \"reconcile and exact account arming\", \"preview then explicit one-time controlled order\", \"paper account isolation\", \"broker reconciliation and cancellation acknowledgement\", \"explicit pause\", \"pilot mobile layout\", \"saved chart survives logout with honest source label\", \"chart mobile layout\"], \"javascript_errors\": [], \"controlled_broker\": true, \"real_orders_sent\": false}\n/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n"
+    },
+    {
+      "command": [
+        "/root/amanas/temp/auto-platform/.venv/bin/python",
+        "-B",
+        "tools/browser_smoke.py"
+      ],
+      "passed": true,
+      "seconds": 9.58,
+      "output": "{\n  \"status\": \"passed\",\n  \"checks\": [\n    \"dashboard\",\n    \"order preview\",\n    \"paper equity entry/exit\",\n    \"paper option entry/exit\",\n    \"paper short future entry/exit\",\n    \"capital update\",\n    \"journal note\",\n    \"CSV export\",\n    \"strategy configuration\",\n    \"decision evidence\",\n    \"option leg monitoring\",\n    \"session archive\",\n    \"mobile layout\",\n    \"keyboard dismissal\"\n  ],\n  \"javascript_errors\": []\n}\n"
+    },
+    {
+      "command": [
+        "/root/amanas/temp/auto-platform/.venv/bin/python",
+        "-B",
+        "tools/market_browser.py"
+      ],
+      "passed": true,
+      "seconds": 12.27,
+      "output": "{\"controlled_protocol_fixture\": true, \"actual_provider_connection_validated\": false, \"checks\": [\"market-data navigation\", \"full controlled universe coverage and freshness\", \"universe pagination\", \"full-universe symbol search\", \"stock selection into paper watchlist\", \"master contract search\", \"stream delivery and durable capture\", \"capture to immutable research dataset\", \"paper-only account and reconciliation\", \"mobile layout\"], \"passed\": 10, \"javascript_errors\": []}\n"
+    },
+    {
+      "command": [
+        "/root/amanas/temp/auto-platform/.venv/bin/python",
+        "-B",
+        "tools/onboarding_browser.py"
+      ],
+      "passed": true,
+      "seconds": 11.52,
+      "output": "{\"controlled_broker\": true, \"real_provider_login_validated\": false, \"passed\": 12, \"checks\": [\"guided paid Connect setup page\", \"exact callback URL guidance\", \"honest unconfigured step gates\", \"private credential save and cleared fields without restart\", \"no credential values in status responses\", \"broker sign-in callback returns safely to setup\", \"independent quote and candle access checks\", \"observed stream freshness rather than login-only readiness\", \"explicit stock-quote connection to simulated paper desk\", \"paper-only account and reconciliation\", \"mobile onboarding layout\", \"progress survives browser refresh\"], \"javascript_errors\": []}\n"
+    },
+    {
+      "command": [
+        "/root/amanas/temp/auto-platform/.venv/bin/python",
+        "-B",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "passed": true,
+      "seconds": 0.59,
+      "output": "No broken requirements found.\n"
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/app.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/candidates.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/charts.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/forward.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/inputs.js"
+      ],
+      "passed": true,
+      "seconds": 0.15,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/market-data.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/onboarding.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/pilot.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/research.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    }
+  ],
+  "all_passed": true,
+  "real_broker_orders_sent": false,
+  "genuine_provider_validation": false,
+  "live_transport_enabled": false,
+  "phase5_qualified": false
+}

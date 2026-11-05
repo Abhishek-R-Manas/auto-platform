@@ -53,6 +53,31 @@ def check_database(path):
                 observations+=len(artifact['observations']);previous=expected
             if db.execute('SELECT count(*) FROM artifacts').fetchone()[0]!=sequence or db.execute('SELECT count(*) FROM observations').fetchone()[0]!=observations:raise ValueError('Input backup evidence counts failed')
             result['input_artifacts_verified']=sequence;result['input_observations_verified']=observations
+        if {'settings','intents','previews','events'}<=tables:
+            previous='0'*64;sequence=0;latest={};mandate=None;snapshot_hash=None
+            for row in db.execute('SELECT sequence,document FROM events ORDER BY sequence'):
+                event=json.loads(row[1]);expected=event.pop('hash');sequence+=1
+                if event['sequence']!=sequence or row[0]!=sequence or event['previous_hash']!=previous or digest(event)!=expected:raise ValueError('Pilot event chain failed')
+                previous=expected
+                if event['kind']=='MANDATE':mandate=event['details']
+                if event['kind']=='RECONCILIATION':snapshot_hash=event['details']['hash']
+                if event['kind'] in {'SEND_RESERVED','BROKER_ACK','SEND_UNCERTAIN','RECONCILED_ORDER','CANCEL_RESERVED','CANCEL_ACK','CANCEL_UNCERTAIN','RESTART_UNCERTAIN'}:latest[event['details']['id']]=event['details']
+            actual={json.loads(row[0])['id']:json.loads(row[0]) for row in db.execute('SELECT document FROM intents')}
+            if latest!=actual:raise ValueError('Pilot order/event backup mismatch')
+            settings={row[0]:json.loads(row[1]) for row in db.execute('SELECT name,document FROM settings')}
+            if settings.get('integrity_halt'):raise ValueError('Pilot evidence has a latched integrity halt')
+            if settings.get('mandate')!=mandate:raise ValueError('Pilot mandate backup mismatch')
+            if settings.get('snapshot') is not None and digest(settings['snapshot'])!=snapshot_hash:raise ValueError('Pilot broker snapshot backup mismatch')
+            result['pilot_events_verified']=sequence
+        if {'drafts','chains','quote_cache'}<=tables:
+            for identifier,value in db.execute('SELECT id,document FROM drafts'):
+                item=json.loads(value)
+                if item['id']!=identifier or digest(dict(basket=item['basket'],parent_id=item['parent_id']))!=identifier:raise ValueError('Workspace draft backup integrity failed')
+            for identifier,value in db.execute('SELECT id,document FROM chains'):
+                item=json.loads(value);expected=item.pop('id')
+                if expected!=identifier or digest(item)!=identifier:raise ValueError('Workspace chain backup integrity failed')
+            result['workspace_drafts_verified']=db.execute('SELECT count(*) FROM drafts').fetchone()[0]
+            result['workspace_chains_verified']=db.execute('SELECT count(*) FROM chains').fetchone()[0]
         result['integrity']='ok' 
     return result
 

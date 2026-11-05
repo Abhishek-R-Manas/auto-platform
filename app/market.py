@@ -150,6 +150,7 @@ class KiteData:
         if not selected or len(selected)>50: raise ValueError("Choose between one and fifty paper-watchlist instruments")
         if any(r["exchange"] not in {"NSE","NFO"} or r["instrument_type"] not in {"EQ","FUT","CE","PE"} for r in selected):
             raise ValueError("Only NSE equities and NFO futures/options are supported")
+        if any(r.get("segment")=="INDICES" for r in selected):raise ValueError("Cash indices are chart references; choose a tradable stock, future or option for paper execution")
         refs={self.underlying_key(r) for r in selected if r["instrument_type"]!="EQ"}
         reference=self._quotes(sorted(refs)) if refs else {}
         instruments={}

@@ -1,11 +1,17 @@
 # Artha — Centaur Strategy Forge
 
 A local, single-user trading workspace for virtual equities, futures and options.
-All orders execute in a simulator. **There is no live broker order adapter or live mode.**
+The paper desk and research/forward books execute in a simulator. A separate, disabled-by-default supervised broker pilot is now implemented; see [Phase 5 preparation and activation gates](docs/phase-5.md). Phase 5 qualification and real-money activation remain pending.
 
 AI-assisted options research with a human guardian, independent risk controls and auditable
 prospective evidence. The commercial ambition is compliance-first generative wealth
 infrastructure for mass-affluent investors; this release remains a local paper sandbox.
+
+## Guided Home, trading desk and strategy builder
+
+Start at **Home** for the connection/practice next step. **Trade** brings named watchlists, a streamed quote feed, saved historical/developing charts, quote/depth and the Buy/Sell ticket together. **Strategy Builder** provides 51 options templates, custom baskets, expiry payoff, price/date/IV scenarios, Greeks, model POP and expected P&L, OI/IV views and a stock/futures rule editor. **My Strategies** keeps immutable drafts, comparisons, backtests and paused forward-paper tests in one place.
+
+Read [the workspace guide and capability boundaries](docs/workspace-guide.md). Real option basket execution, broker SPAN margin and complete proprietary Sensibull parity are not implemented. The separate stock pilot remains transport OFF, with live qualification pending. Saved data remains accessible without a current sign-in; fresh broker data needs a valid Kite session.
 
 ## Phase 4 forward workspace
 
@@ -50,7 +56,7 @@ Then open the same localhost URL on your computer. This release is not a public,
 
 ## First paper session
 
-1. Start with **Synthetic market**. Demo quotes and derivative lot sizes are illustrative, not current market specifications. One tick advances one simulated market minute; automatic playback runs every two seconds.
+1. Choose **Explore practice trading** on Home, or **Synthetic market** in More tools. Demo quotes and derivative lot sizes are illustrative, not current market specifications. One tick advances one simulated market minute; automatic playback runs every two seconds.
 2. Under **Risk & capital**, select your virtual allocation. The starting value is ₹10 lakh. Allocation changes require a flat account and no pending orders and preserve existing P&L.
 3. Open **New paper trade**. Select an instrument, direction, quantity or lots, stop and optional target. Use **Calculate size from risk budget** to compute an eligible quantity.
 4. Review funding, estimated charges and entry checks. Place a paper order and follow it in **Orders** and **Positions**.
@@ -127,10 +133,10 @@ Stop the server before copying its database for a straightforward backup. For on
 .venv/bin/python -m pytest -q
 node --check static/app.js
 .venv/bin/python -m playwright install chromium
-.venv/bin/python tools/browser_smoke.py
+.venv/bin/python -B tools/validate_workbench.py
 ```
 
-The browser script starts an isolated server/database on localhost:8788, exercises the workflows, checks narrow-screen layout and JavaScript errors, and writes screenshots and results under `docs/`. It does not use or change the main paper account. Browser binaries use Playwright's configured cache.
+The release validator runs pytest, six isolated browser suites, dependency checks and JavaScript syntax checks, and records exact source/asset fingerprints plus screenshots under `docs/`. The workspace browser suite uses localhost:8796. It does not use or change the main paper account. Browser binaries use Playwright's configured cache.
 
 See [implementation status](docs/phase-1.md) and [architecture](docs/architecture.md). No Git operations, repository initialisation, commits or remote publication were performed.
 

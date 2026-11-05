@@ -1,0 +1,19 @@
+{
+  "passed": 11,
+  "checks": [
+    "saved completed-candle chart and close",
+    "controlled broker refresh",
+    "explicit execution-mode separation",
+    "reconcile and exact account arming",
+    "preview then explicit one-time controlled order",
+    "paper account isolation",
+    "broker reconciliation and cancellation acknowledgement",
+    "explicit pause",
+    "pilot mobile layout",
+    "saved chart survives logout with honest source label",
+    "chart mobile layout"
+  ],
+  "javascript_errors": [],
+  "controlled_broker": true,
+  "real_orders_sent": false
+}

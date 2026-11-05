@@ -20,6 +20,7 @@ from websockets.asyncio.client import connect
 from websockets.exceptions import InvalidStatus
 
 from .engine import IST
+from .displaybars import DisplayBars
 from .research.catalog import canonical
 from .research.schemas import ImportData, Manifest
 
@@ -69,9 +70,10 @@ def decode_frame(frame):
             for at in (64,124):
                 levels=[(integer(i),integer(i+4)/100) for i in range(at,at+60,12)]
                 depth.append(next(((quantity,price) for quantity,price in levels if quantity>0 and price>0),None))
-            item.update(cumulative_volume=integer(16),oi=integer(48))
+            item.update(cumulative_volume=integer(16),oi=integer(48),open=integer(28)/100,high=integer(32)/100,low=integer(36)/100,close=integer(40)/100,last_trade_time=datetime.fromtimestamp(integer(44),IST).isoformat() if integer(44) else None)
             if all(depth) and depth[0][1]<=depth[1][1]:
                 item.update(bid=depth[0][1],ask=depth[1][1],bid_quantity=depth[0][0],ask_quantity=depth[1][0])
+        if length==32:item.update(high=integer(8)/100,low=integer(12)/100,open=integer(16)/100,close=integer(20)/100)
         if not math.isfinite(item['last']) or item['last']<=0: continue
         result.append(item)
     if offset!=len(frame): raise ValueError('Trailing bytes in market frame')
@@ -196,7 +198,7 @@ class MarketHub:
         self.phase='WAITING_AUTH' if self.store.enabled() else 'IDLE'
         self.error=None;self.recording_error=None;self.connections={};self.reconnects=0;self.messages=0
         self.last_message=None;self.loaded_date=None;self.generation=0
-        self.streamed_tokens=set();self.snapshot_tokens=set();self.snapshot_batches=0;self.tls_versions={};self.forward_instruments={}
+        self.streamed_tokens=set();self.snapshot_tokens=set();self.snapshot_batches=0;self.tls_versions={};self.forward_instruments={};self.workspace_instruments={};self.display_bars=DisplayBars()
 
     def enable(self,enabled):
         self.store.set_enabled(enabled)
@@ -212,6 +214,12 @@ class MarketHub:
             if instruments!=self.forward_instruments:
                 self.forward_instruments=dict(instruments);self.generation+=1
 
+    def set_workspace_instruments(self,instruments):
+        # Display subscriptions do not alter execution instruments or consume liquidity.
+        with self.lock:
+            if instruments!=self.workspace_instruments:
+                self.workspace_instruments=dict(instruments);self.display_bars.select({v['instrument_token'] for v in instruments.values()});self.generation+=1
+
     def forward_quotes(self,instruments):
         # Independent snapshot reader: never consumes the original paper desk's dirty set.
         with self.lock:
@@ -219,7 +227,7 @@ class MarketHub:
 
     def signature(self):
         source,instruments=self.desired()
-        with self.lock:forward=tuple(sorted((k,v['instrument_token']) for k,v in self.forward_instruments.items()))
+        with self.lock:forward=tuple(sorted(('forward:'+k,v['instrument_token']) for k,v in self.forward_instruments.items())+sorted(('workspace:'+k,v['instrument_token']) for k,v in self.workspace_instruments.items()))
         return (self.generation,self.kite.key,self.kite.token,source,
                 tuple((k,i.get('instrument_token'),i.get('underlying_token')) for k,i in instruments.items()),forward)
 
@@ -265,7 +273,7 @@ class MarketHub:
                 # Discard out-of-order and future packets; never refresh cached timestamps.
                 if exchange>now+2 or (old and exchange<datetime.fromisoformat(old['exchange_time']).timestamp()): continue
                 q.update(received_at=now,transport=transport)
-                self.quotes[token]=q;self.dirty.add(token)
+                self.quotes[token]=q;self.dirty.add(token);self.display_bars.observe(q)
 
     def drain(self,instruments):
         now=time.time();updates={}
@@ -326,7 +334,7 @@ class MarketHub:
                 last=float(raw.get('last_price',0))
                 if not math.isfinite(last) or last<=0: continue
                 q=dict(instrument_token=token,last=last,exchange_time=stamp.isoformat(),
-                    cumulative_volume=max(0,int(raw.get('volume',0))),oi=max(0,int(raw.get('oi',0))))
+                    cumulative_volume=max(0,int(raw.get('volume',0))),oi=max(0,int(raw.get('oi',0))),**{k:raw.get('ohlc',{}).get(k) for k in ('open','high','low','close')})
                 buys=[v for v in raw.get('depth',{}).get('buy',[]) if v.get('price',0)>0 and v.get('quantity',0)>0]
                 sells=[v for v in raw.get('depth',{}).get('sell',[]) if v.get('price',0)>0 and v.get('quantity',0)>0]
                 if buys and sells and float(buys[0]['price'])<=float(sells[0]['price']):
@@ -358,7 +366,7 @@ class MarketHub:
                         if not item.get('instrument_token'): raise FeedConfigurationError('Reconnect the paper watchlist to refresh instrument tokens')
                         priority.add(item['instrument_token'])
                         if item.get('underlying_token'): priority.add(item['underlying_token'])
-                with self.lock:priority.update(item['instrument_token'] for item in self.forward_instruments.values())
+                with self.lock:priority.update(item['instrument_token'] for item in [*self.forward_instruments.values(),*self.workspace_instruments.values()])
                 if len(priority)>9000: raise FeedConfigurationError('Paper watchlists exceed provider streaming capacity')
                 ordered=sorted(priority)+sorted(set(self.universe)-priority)[:9000-len(priority)]
                 self.streamed_tokens=set(ordered);self.snapshot_tokens=set(self.universe)-self.streamed_tokens

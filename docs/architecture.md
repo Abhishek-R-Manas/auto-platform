@@ -1,6 +1,6 @@
 # Architecture: paper desk and historical research
 
-This is a single-user modular application, running as one managed process with isolated SQLite stores. The only installed execution implementation is the paper simulator. The engine enforces that implementation.
+This is a single-user modular application, running as one managed process with isolated SQLite stores. The original paper engine installs and enforces only its simulator. Release 0.7.0 adds a separate disabled-by-default broker pilot, described in the final section and the Phase 5 guide.
 
 ```mermaid
 flowchart LR
@@ -214,3 +214,21 @@ Forward protocols select named inputs and freeze their source policy. Readiness 
 entries; completed-bar signal records and bounded advisory AI context retain evidence ids.
 Guardian packets include the selected input snapshot. Source outages cannot grant execution
 authority or weaken independent risk. See [the input operator guide](inputs.md).
+
+
+## Market charts and Phase 5 preparation (0.7.0)
+
+`app/charts.py` stores validated completed Kite candles in an independent persistent chart cache. Its API/UI show historical provenance and work after logout. This cache never supplies executable liquidity.
+
+`app/pilot/` introduces a separate fixed-route broker transport and durable supervised order journal. The deployment capability defaults off; qualification, current guardian evidence, immutable account/capital mandate, reconciliation, session arming and per-order confirmation are distinct gates. Intentions and capital reservations commit before external sends, acknowledgements are reconciled against actual broker orders/trades, and uncertain sends never auto-retry. Original simulation books and market-data allowlists remain independent.
+
+This is Phase 5 preparation for manually confirmed NSE/CNC LIMIT orders. Actual pilot qualification/activation, overnight/GTT broker protection, automated strategy entry dispatch, derivatives and final settlement/fee reconciliation remain pending. See [the exact operating contract](phase-5.md).
+
+
+## Workspace 0.9 customer flow
+
+The root document is `static/workspace-v09.html`. `shell.js` preserves the paper engine UI actions while `workspace-v09.js` owns guided Home, persistent watchlists, the chart desk, visual option/rule editing and explicit test handoffs. TradingView Lightweight Charts 5.2.1 is bundled locally with its license and notice; completed broker candle cache and latest quotes remain separate.
+
+`app/workbench/` provides strict schemas, the 51 signed-leg recipe catalog, pure payoff/model analytics, immutable draft revisions and saved chain observations through `/api/workspace`. It never owns broker execution. Historical handoffs require explicit dataset identity/mapping; forward handoffs require current master contract identity and create paused REFERENCE books through the existing independent forward service. `data/workspace/workspace.sqlite3` is included in all-store backup and draft/chain hash verification. Price scenarios and model statistics carry no execution or approval authority. See [the customer guide and boundaries](workspace-guide.md).
+
+Named watchlists are a mutable bounded settings collection in the workspace store, migrated from the earlier single list on first save. SSE snapshots use cached master identities and read only the requested quote subset, without provider requests or consuming dirty execution quotes. `MarketHub` prioritizes the union of display, paper and forward subscriptions within existing provider connection limits. Accepted broker observations feed bounded `DisplayBars`; these bars and the LTP line never enter historical, research or execution stores. The browser merges display bars by timestamp with authoritative completed candles and labels partial coverage and data age.
