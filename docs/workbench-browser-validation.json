@@ -1,7 +1,12 @@
 {
-  "passed": 33,
+  "passed": 38,
   "checks": [
     "guided home has a clear connection next step",
+    "hamburger hover reveals navigation without shifting workspace width",
+    "More tools hover flyout remains reachable and navigation closes both disclosures",
+    "leaving sidebar and More tools dismisses their temporary overlays",
+    "keyboard activation and Escape dismiss both menus and restore hamburger focus",
+    "touch navigation supports menu taps outside dismissal and collapsed reload without overflow",
     "explicit practice path from home into trading desk",
     "watchlist-chart context opens a risk-checked paper order",
     "submitted paper order visible in Orders",
@@ -35,7 +40,7 @@
     "broker-independent hypothetical templates with explicit dates spot lot size and strike spacing",
     "server shuts down within its bound with an active quote stream"
   ],
-  "controlled_push_to_dom_ms": 109,
+  "controlled_push_to_dom_ms": 116,
   "javascript_errors": [],
   "controlled_data": true,
   "real_broker_orders_sent": false,

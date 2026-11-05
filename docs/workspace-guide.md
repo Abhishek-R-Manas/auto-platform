@@ -1,4 +1,4 @@
-# Trading workspace · 0.18.0
+# Trading workspace · 0.19.0
 
 The primary navigation follows a customer’s work: **Home → Trade → Orders / Portfolio**, or **Home → Strategy Builder → My Strategies**. Connections holds broker sign-in and optional private AI configuration. Historical research, forward supervision, journal, capital/risk and live permissions remain under More tools.
 
@@ -111,3 +111,7 @@ The builder now lists strategies in the workspace instead of hiding the catalog 
 Each thumbnail is calculated from that recipe using normalized illustrative inputs: spot 100, strike spacing 5, 25% IV, 6.5% rate, and first/later expiries at 30/60 days. Single-expiry profiles show contract P&L; calendars retain modeled value in surviving legs and are labeled **First-expiry model**. These drawings are shapes, not market quotes or return estimates. Economically equivalent strategies may share a profile. The actual builder still uses the owner's selected contracts, inputs and costs.
 
 The library scrolls independently beside the four-leg overview at 1366×768. Smaller screens show the filters and a horizontally scrolling strategy list. [Controlled laptop preview](screenshots/strategy-library-laptop-controlled.png) uses fictional data. The browser suite verifies filter composition, search/reset, selection, preview differences, unchanged baskets while browsing, and the retained laptop/mobile layout.
+
+## Compact navigation · 0.19
+
+Every page starts with a 64px icon rail. Hover over the hamburger to reveal the sidebar as an overlay; leaving the navigation collapses it. More tools opens a hover flyout that remains reachable while moving into it. Selecting a page closes both disclosures. Keyboard activation, Escape, outside dismissal and touch taps remain available. Opening either menu never changes the workspace width or trading state.

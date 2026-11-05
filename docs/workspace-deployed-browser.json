@@ -1,8 +1,9 @@
 {
-  "checked_at": "2026-11-05T15:48:01.265108+00:00",
-  "passed": 23,
+  "checked_at": "2026-11-05T16:19:35.626074+00:00",
+  "passed": 24,
   "checks": [
     "guided home and next step",
+    "collapsed navigation hamburger hover and More tools flyout work without changing workspace width",
     "primary navigation Trade",
     "deployed named watchlist controls and chart freshness label",
     "primary navigation Strategy Builder",

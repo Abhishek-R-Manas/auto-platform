@@ -263,3 +263,7 @@ Manual authority records an explicit SELECTED or ALL_NSE_EQ instrument_scope in 
 ## Template library · 0.18
 
 `templates.catalog()` adds pure structure metadata and normalized payoff profiles from each signed recipe. The browser renders those points as SVG and applies visible market-view buttons and search without altering the active analysis basket. Single-expiry miniatures use intrinsic payoff; multi-expiry miniatures use the shared option model at the first expiry. No market request, account mutation or new execution path is introduced by catalog filtering or preview generation.
+
+## Navigation disclosures · 0.19
+
+The versioned navigation controller manages temporary sidebar and More tools disclosures over the existing shell routes. The compact rail reserves 64px on every view; expanded panels use overlays without shifting charts. Navigation and dismissal reset both disclosures. No account, broker or strategy state is modified.

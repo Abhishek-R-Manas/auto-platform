@@ -239,3 +239,5 @@ Strategy builder 0.15 adds contract-aware adjustments, manual P&L, per-leg/scena
 Builder 0.16 presents editable legs, payoff, risk/premium metrics, net Greeks and broker margin together on laptop/desktop. Templates use a searchable menu; precise settings remain expandable. See [the workspace guide](docs/workspace-guide.md#single-view-builder--016).
 
 Builder 0.18 has a visible strategy library with market-view buttons, search and recipe-derived payoff thumbnails. The structure filter and strategy-selection dropdowns are removed; selected cards use a light background without a left border. Calendar previews retain later-leg model value and are labeled accordingly.
+
+Workspace 0.19 uses a collapsed navigation rail on every page, with a hamburger hover overlay and hoverable More tools. Keyboard and touch controls remain available.
