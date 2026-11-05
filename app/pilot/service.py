@@ -6,6 +6,7 @@ import copy,json,math,secrets,sqlite3,threading,uuid
 from typing import Annotated,Literal
 from pydantic import Field,StrictBool,StrictInt,model_validator,field_validator
 from ..engine import IST
+from ..portfolio import portfolio_view,broker_rows
 from ..finance import paise,fees
 from ..risk import budget_checks
 from ..research.schemas import Strict
@@ -75,6 +76,7 @@ class Pilot:
         initial_audit=self.audit()
         with self.transaction():
             if not initial_audit["ok"]:self._set("integrity_halt",True)
+            if initial_audit['ok'] and self._get('snapshot') is not None:self._set('portfolio_snapshot',self._get('snapshot'))
             self._set('armed',False);self._set('snapshot',None)
             for item in self.orders():
                 if initial_audit['ok'] and item['status'] in {'SENDING','CANCEL_SENDING'}:
@@ -116,6 +118,8 @@ class Pilot:
                 if self._get('mandate')!=mandate:return {'ok':False,'reason':'Pilot mandate/event integrity failed'}
                 snapshot=self._get('snapshot')
                 if snapshot is not None and digest(snapshot)!=snapshot_hash:return {'ok':False,'reason':'Pilot snapshot/event integrity failed'}
+                display=self._get('portfolio_snapshot')
+                if display is not None and digest(display)!=snapshot_hash:return {'ok':False,'reason':'Portfolio display snapshot/event integrity failed'}
                 if current!=latest:return {'ok':False,'reason':'Pilot order/event integrity failed'}
             except (ValueError,TypeError,KeyError):return {'ok':False,'reason':'Malformed pilot evidence'}
             return dict(ok=True,checked=sequence,head=previous)
@@ -193,7 +197,7 @@ class Pilot:
                     for item in updates:
                         self._save(item);self._event('RECONCILED_ORDER',item)
                         if item.get('origin')=='PROTECTIVE' and item['status']=='REJECTED':self._set('protection_error','Broker rejected a protective order; review in Kite and explicitly restore protection');self._set('armed',False)
-                    self._set('snapshot',snap);self._event('RECONCILIATION',{'hash':digest(snap),'account_id':snap['account_id']})
+                    self._set('snapshot',snap);self._set('portfolio_snapshot',snap);self._event('RECONCILIATION',{'hash':digest(snap),'account_id':snap['account_id']})
                     self._set('reconcile_error',None)
                     if m and self._loss(snap)>=paise(m['daily_loss']):self._set('armed',False);self._set('loss_halt_day',str(self.clock().date()));self._event('LOSS_HALT',{'loss_paise':self._loss(snap)})
                 self.session=(self.kite.key,self.kite.token)
@@ -457,9 +461,10 @@ class Pilot:
 
     def status(self):
         with self.lock:
-            snap=self._get('snapshot');m=self._get('mandate')
-            return dict(broker_portfolio={kind:[{k:v for k,v in row.items() if k in {'exchange','tradingsymbol','product','quantity','average_price','last_price','pnl','day_change','close_price'}} for row in (snap['holdings'] if kind=='holdings' else snap['positions']['net'])] for kind in ('holdings','positions')} if snap else None,worker={'last_tick':self.last_tick,'watch_required':self.watch_required},mode='SUPERVISED_REAL_MONEY_PILOT',transport_enabled=self.broker.enabled,armed=bool(self._get('armed')),authenticated=self.kite.status()['authenticated'],mandate=m,
-                protection=self.protection(),reconciliation=dict(observed_at=snap['observed_at'] if snap else None,account_id=snap['account_id'] if snap else None,error=self._get('reconcile_error'),net_funds=self._funds(snap)/100 if snap else None,gross_daily_loss=self._loss(snap)/100 if snap else None),orders=self.orders(),audit=self.audit(),
+            snap=self._get('snapshot');m=self._get('mandate');audit=self.audit()
+            display=(self._get('portfolio_snapshot') or snap) if audit['ok'] else None
+            return dict(portfolio_view=portfolio_view(display),broker_portfolio=broker_rows(display),worker={'last_tick':self.last_tick,'watch_required':self.watch_required},mode='SUPERVISED_REAL_MONEY_PILOT',transport_enabled=self.broker.enabled,armed=bool(self._get('armed')),authenticated=self.kite.status()['authenticated'],mandate=m,
+                protection=self.protection(),reconciliation=dict(observed_at=snap['observed_at'] if snap else None,account_id=snap['account_id'] if snap else None,error=self._get('reconcile_error'),net_funds=self._funds(snap)/100 if snap else None,gross_daily_loss=self._loss(snap)/100 if snap else None),orders=self.orders(),audit=audit,
                 prerequisites=['Qualified forward portfolio and current guardian approval','Exact broker account and explicit capital/loss/order mandate','Whitelisted static IP and delivery-sale authorization','Reviewed deployment transport capability, fresh reconciliation and explicit arming'],
                 limitations=['Manual confirmation for every NSE/CNC LIMIT order; no AI or strategy order dispatch','Loss halt pauses entries and requests cancellation of known entry remainders; it cannot guarantee cancellation or liquidation','Verified buy fills receive authorized native stop-limit exits; gaps can remain unfilled; supervise in Kite','Pilot capital limits lifetime gross purchases, not reinvestment','Broker trade fills are authoritative; contract-note fees and settlement still need owner review','Orders absent from the daily broker book require manual investigation; never resubmit an uncertain order'])
 

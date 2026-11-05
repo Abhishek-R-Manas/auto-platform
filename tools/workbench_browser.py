@@ -16,6 +16,10 @@ def serve(database):
     KiteData.master=lambda self:fixture.master()
     for key in ('KITE_API_KEY','KITE_API_SECRET','KITE_ACCESS_TOKEN','ARTHA_AI_API_KEY','ARTHA_AI_MODEL','ARTHA_LIVE_TRANSPORT_ENABLED'):os.environ.pop(key,None)
     app=create_app(database,background=False)
+    from test_portfolio_view import snapshot as portfolio_fixture
+    app.state.pilot.broker.snapshot=portfolio_fixture
+    @app.post('/fixture/portfolio')
+    def portfolio_snapshot():return app.state.pilot.reconcile()
     app.state.kite.key='controlled-key';app.state.kite.secret='controlled-secret';app.state.kite.master_hash=fixture.master_hash
     @app.post('/fixture/login')
     def login():app.state.kite.token='controlled-session';return {'ok':True}

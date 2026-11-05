@@ -2,7 +2,7 @@
 
 ## Read first
 
-- [Workspace 0.9 guide](docs/workspace-guide.md): guided Home, trading desk and 51-template builder. The workspace revamp does not activate or qualify Phase 5. Main document is `static/workspace-v09.html`, with `shell.js`, `workspace-v09.js`, `workspace-v09.css`, `pilot-workbench.js` and locally licensed chart vendor assets. Legacy files remain for archived releases. Workspace data has independent SQLite storage and hash-verified draft/chain backups.
+- [Workspace 0.10 guide](docs/workspace-guide.md): guided Home, trading desk and 51-template builder. The workspace revamp does not activate or qualify Phase 5. Main document is `static/workspace-v010.html`, with `shell.js`, `workspace-v010.js`, `workspace-v09.css`, `portfolio.js`, `portfolio.css`, `pilot-workbench.js` and locally licensed chart vendor assets. Legacy files remain for archived releases. Workspace data has independent SQLite storage and hash-verified draft/chain backups.
 
 - [Phase 5 preparation](docs/phase-5.md): cached broker charts and the isolated, disabled-by-default manually confirmed NSE/CNC pilot. Qualification, owner limits, genuine broker acceptance and broader automated protection remain pending. Do not represent this as a fully qualified or activated Phase 5 release.
 
@@ -68,6 +68,7 @@ validation references as work progresses.
 
 ## Repository map
 
+- `app/portfolio.py`: pure broker portfolio presentation, integer paise totals, explicit T+1/MTF/position scopes. Portfolio fixtures and screenshots must never contain private owner holdings. The audited `portfolio_snapshot` cache is display-only; the separate execution snapshot must still clear on restart. Recovery may restore only a matching display cache from a verified backup.
 - `app/displaybars.py`, `app/workbench/`: persistent named watchlists and same-origin streamed display snapshots. Developing bars are partial display observations; preserve independent execution quote consumption.
 - `app/charts.py`, `static/charts.js`: persistent display-only completed broker candles; never execution liquidity.
 - `app/pilot/`, `static/pilot.js`: separate real-money mandate/reconciliation/order journal. The market-data allowlist and paper adapters remain restricted. `ARTHA_LIVE_TRANSPORT_ENABLED` defaults off and requires explicit reviewed deployment authority.
@@ -111,7 +112,7 @@ environments. Existing checks from the project directory:
 .venv/bin/python -B tools/workbench_deployed_browser.py
 ```
 
-The first command runs full pytest, six isolated browser suites, dependency checks and all
+The first command runs full pytest, seven isolated browser suites, dependency checks and all
 JavaScript syntax checks, recording exact source/asset fingerprints. The second is a
 read-only deployed UI check. `--resume` is restricted to browser-harness changes with
 unchanged runtime, assets, unit tests and dependency locks; reused passed unit evidence

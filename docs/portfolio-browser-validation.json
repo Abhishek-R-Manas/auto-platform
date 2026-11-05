@@ -1,0 +1,26 @@
+{
+  "passed": 16,
+  "checks": [
+    "portfolio opens at broker holdings with an honest disconnected state",
+    "holdings summary and table use hand-checked snapshot totals",
+    "search preserves T+1 and MTF visibility",
+    "holding breakdown explains quantity and weighted cost",
+    "numeric sorting works from column headings",
+    "product filter includes the MTF component",
+    "CSV export follows visible rows and decimal amounts",
+    "positions separate signed exposure from broker P&L",
+    "closed positions remain available without inflating open count",
+    "paper view stays separate and viewing broker data preserves the execution account",
+    "filtered empty state offers a working reset",
+    "mobile uses compact holding cards without horizontal overflow",
+    "mobile holding breakdown is keyboard-accessible",
+    "explicit Sync Zerodha refreshes the same read-only snapshot",
+    "paper-account shortcut opens the paper portfolio directly",
+    "portfolio actions preserve paper account and submit no broker orders"
+  ],
+  "javascript_errors": [],
+  "controlled_data": true,
+  "real_broker_reads": false,
+  "real_orders_sent": false,
+  "private_portfolio_artifacts_created": false
+}

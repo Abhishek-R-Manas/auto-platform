@@ -1,18 +1,21 @@
 {
-  "checked_at": "2026-11-05T07:28:55.293302+00:00",
-  "passed": 15,
+  "checked_at": "2026-11-05T08:25:21.829331+00:00",
+  "passed": 18,
   "checks": [
     "guided home and next step",
     "primary navigation Trade",
     "deployed named watchlist controls and chart freshness label",
     "primary navigation Strategy Builder",
     "primary navigation My Strategies",
+    "primary navigation Portfolio",
+    "cached broker holdings rendered without a new broker read or private screenshot",
     "primary navigation Connections",
     "primary navigation Home",
     "full 51-template catalog visible",
     "mobile Home",
     "mobile Trade",
     "mobile Strategy Builder",
+    "mobile Portfolio",
     "mobile Connections",
     "live transport disabled and zero real orders",
     "healthy financial reconciliation",
@@ -20,6 +23,7 @@
   ],
   "javascript_errors": [],
   "read_only": true,
+  "private_portfolio_artifacts_created": false,
   "real_orders_sent": false,
   "genuine_provider_access_tested": false
 }

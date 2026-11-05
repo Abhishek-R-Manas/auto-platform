@@ -1,9 +1,9 @@
 {
-  "deployed_at": "2026-11-05T07:28:49.805413+00:00",
-  "version": "0.9.0",
+  "deployed_at": "2026-11-05T08:25:15.817942+00:00",
+  "version": "0.10.1",
   "build": {
     "version": "research/2.0.0",
-    "code_hash": "a1af84f4b253b6a339342c0f7325d81c0926d8d902be9ae595a85ea1b1528b53",
+    "code_hash": "326ee91aa3dbeccf70dad685c9ffe7d75f0b2ae75c70fd0a6cd06203ce4c1d17",
     "python": "3.13.13",
     "packages": {
       "pyarrow": "26.0.1",
@@ -12,16 +12,22 @@
       "httpx": "0.28.1"
     }
   },
-  "asset_identity": "d54a4fb7db23ed8b7f000d8e7478bfb1dc5753e23915a652d2fba055772885fb",
-  "source_archive": "/root/amanas/temp/auto-platform/data/releases/a1af84f4b253b6a339342c0f7325d81c0926d8d902be9ae595a85ea1b1528b53",
-  "pre_backup": "/root/amanas/temp/auto-platform/data/backups/pre-workspace-20261105T072814Z",
+  "asset_identity": "55478beca520fe9f9e8432286efe973bc5bdef58598644ca413a4191947a5ba6",
+  "source_archive": "/root/amanas/temp/auto-platform/data/releases/326ee91aa3dbeccf70dad685c9ffe7d75f0b2ae75c70fd0a6cd06203ce4c1d17",
+  "pre_backup": "/root/amanas/temp/auto-platform/data/backups/pre-workspace-20261105T082421Z",
   "pre_databases": 20,
   "pre_restore_ok": true,
-  "post_backup": "/root/amanas/temp/auto-platform/data/backups/post-workspace-20261105T072814Z",
+  "post_backup": "/root/amanas/temp/auto-platform/data/backups/post-workspace-20261105T082421Z",
   "post_databases": 20,
   "post_restore_ok": true,
   "paper_financial_state_preserved": true,
   "watchlist_preserved": true,
+  "cached_broker_portfolio_preserved": true,
+  "display_recovery": {
+    "restored": true,
+    "execution_snapshot_restored": false,
+    "arming_changed": false
+  },
   "candidate_registry_preserved": true,
   "health": {
     "pilot": {
@@ -29,8 +35,8 @@
       "armed": false,
       "audit": {
         "ok": true,
-        "checked": 7,
-        "head": "10f06d7ed4c55e4585b1d63d906cde313ad5a43483c61a460aed60401d83fd07"
+        "checked": 12,
+        "head": "4b575cdc11ae6871fbc641ee5b62aa46dc83f80dd868b525b514f833240613a9"
       }
     },
     "status": "ok",
@@ -51,7 +57,7 @@
     "forward": {
       "worker": {
         "healthy": true,
-        "last_tick": "2026-11-05T07:28:34.851766+00:00",
+        "last_tick": "2026-11-05T08:24:58.369028+00:00",
         "error": null
       },
       "audit": {

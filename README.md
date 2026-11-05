@@ -11,6 +11,8 @@ infrastructure for mass-affluent investors; this release remains a local paper s
 
 Start at **Home** for the connection/practice next step. **Trade** brings named watchlists, a streamed quote feed, saved historical/developing charts, quote/depth and the Buy/Sell ticket together. **Strategy Builder** provides 51 options templates, custom baskets, expiry payoff, price/date/IV scenarios, Greeks, model POP and expected P&L, OI/IV views and a stock/futures rule editor. **My Strategies** keeps immutable drafts, comparisons, backtests and paused forward-paper tests in one place.
 
+**Portfolio** separates broker Holdings, Positions and the paper account with summary totals, searchable sortable tables, quantity breakdowns, CSV export and mobile cards.
+
 Read [the workspace guide and capability boundaries](docs/workspace-guide.md). Real option basket execution, broker SPAN margin and complete proprietary Sensibull parity are not implemented. The separate stock pilot remains transport OFF, with live qualification pending. Saved data remains accessible without a current sign-in; fresh broker data needs a valid Kite session.
 
 ## Phase 4 forward workspace
@@ -136,7 +138,7 @@ node --check static/app.js
 .venv/bin/python -B tools/validate_workbench.py
 ```
 
-The release validator runs pytest, six isolated browser suites, dependency checks and JavaScript syntax checks, and records exact source/asset fingerprints plus screenshots under `docs/`. The workspace browser suite uses localhost:8796. It does not use or change the main paper account. Browser binaries use Playwright's configured cache.
+The release validator runs pytest, seven isolated browser suites, dependency checks and JavaScript syntax checks, and records exact source/asset fingerprints plus screenshots under `docs/`. The workspace browser suite uses localhost:8796. It does not use or change the main paper account. Browser binaries use Playwright's configured cache.
 
 See [implementation status](docs/phase-1.md) and [architecture](docs/architecture.md). No Git operations, repository initialisation, commits or remote publication were performed.
 

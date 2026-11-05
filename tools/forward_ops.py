@@ -68,6 +68,7 @@ def check_database(path):
             if settings.get('integrity_halt'):raise ValueError('Pilot evidence has a latched integrity halt')
             if settings.get('mandate')!=mandate:raise ValueError('Pilot mandate backup mismatch')
             if settings.get('snapshot') is not None and digest(settings['snapshot'])!=snapshot_hash:raise ValueError('Pilot broker snapshot backup mismatch')
+            if settings.get('portfolio_snapshot') is not None and digest(settings['portfolio_snapshot'])!=snapshot_hash:raise ValueError('Portfolio display snapshot backup mismatch')
             result['pilot_events_verified']=sequence
         if {'drafts','chains','quote_cache'}<=tables:
             for identifier,value in db.execute('SELECT id,document FROM drafts'):

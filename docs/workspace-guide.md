@@ -1,4 +1,4 @@
-# Trading workspace · 0.9.0
+# Trading workspace · 0.10.1
 
 The primary navigation follows a customer’s work: **Home → Trade → Orders / Portfolio**, or **Home → Strategy Builder → My Strategies**. Connections holds broker sign-in and optional private AI configuration. Historical research, forward supervision, journal, capital/risk and live permissions remain under More tools.
 
@@ -19,6 +19,16 @@ Charts combine saved completed history with an LTP line and display-only develop
 The locally bundled TradingView Lightweight Charts 5.2.1 canvas supports candles/line, volume, pan/zoom, crosshair, keyboard navigation and calculated SMA20/SMA50. This is the open-source chart library, not the proprietary TradingView full terminal. No runtime chart CDN is used; licenses, notice and integrity metadata are in static/vendor.
 
 Choose the execution account before Buy/Sell. The paper ticket retains independent risk, estimated charges, sizing, stops/targets and order evidence. The live ticket shows the separately gated, manually confirmed NSE/CNC pilot, including its actual disabled state. Orders and Portfolio separate paper records from explicitly reconciled broker snapshots. Reading a broker portfolio cannot enable execution.
+
+## Portfolio
+
+Portfolio opens on the broker Holdings tab, independently from the execution-account selector. Holdings shows total investment, synced current value, unrealized P&L and day change above a compact sortable table. Search instruments, filter products, open the row breakdown or download the visible rows as CSV. Mobile uses holding cards. Positions has separate broker P&L, realised/unrealised totals and an open/all-positions filter; closed positions remain available. The paper portfolio keeps its own tab and independent account.
+
+The snapshot refresh button is **Sync Zerodha**. Viewing the page does not fetch a broker account automatically, enable orders or mix broker holdings into paper capital. A separate hash-verified display cache keeps holdings visible after logout and restart. Execution reconciliation is still cleared on restart; display data can never authorize orders. Recovery from a verified backup is allowed only when it matches the current audited reconciliation hash, and restores no execution or arming state. Dates and “Prices as at sync” identify the data basis; this redesign does not claim tick-by-tick portfolio repricing.
+
+Holding quantities include reported settled, T+1 and MTF units. Cost uses the applicable standard and MTF average costs; pledged quantities are not added again, and used quantities are shown separately. Holding P&L is value minus displayed cost, excluding charges, financing and unverified corporate-action corrections. Missing amounts remain unavailable. Position P&L uses broker values, while signed position value is exposure rather than account capital. Presentation uses integer paise and never alters the stored broker snapshot or execution balances.
+
+Design references: [Kite Portfolio manual](https://kite.trade/docs/kite/portfolio/) and [Kite quantity guidance](https://kite.trade/forum/discussion/13001/t1-t2-and-realized-qty). The design remains Artha-branded. Controlled screenshots use fictional portfolios; deployment checks do not save private holdings screenshots or exports.
 
 ## Build options strategies
 

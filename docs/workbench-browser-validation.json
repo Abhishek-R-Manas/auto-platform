@@ -35,7 +35,7 @@
     "broker-independent hypothetical templates with explicit dates spot lot size and strike spacing",
     "server shuts down within its bound with an active quote stream"
   ],
-  "controlled_push_to_dom_ms": 208,
+  "controlled_push_to_dom_ms": 35,
   "javascript_errors": [],
   "controlled_data": true,
   "real_broker_orders_sent": false,
