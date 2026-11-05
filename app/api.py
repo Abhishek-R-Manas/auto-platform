@@ -247,7 +247,7 @@ def create_app(db_path=None,background=True,config_path=None):
         await asyncio.to_thread(research.close)
         engine.close()
 
-    app=FastAPI(title="Artha Paper Trading",version="0.10.1",lifespan=lifespan,
+    app=FastAPI(title="Artha Paper Trading",version="0.18.0",lifespan=lifespan,
                 description="Single-user paper research, cached market charts and a separately gated supervised broker pilot.",docs_url="/api/docs",redoc_url=None)
     app.state.engine=engine
     app.state.kite=kite
@@ -258,7 +258,7 @@ def create_app(db_path=None,background=True,config_path=None):
     app.state.forward=forward
     app.state.intelligence=intelligence
     app.state.workspace=workspace
-    app.include_router(workspace_router(workspace,forward))
+    app.include_router(workspace_router(workspace,forward,pilot))
     app.state.charts=charts
     app.state.pilot=pilot
     app.include_router(charts_router(charts))
@@ -314,7 +314,7 @@ def create_app(db_path=None,background=True,config_path=None):
 
     @app.get("/")
     def index():
-        return FileResponse(ROOT/"static/workspace-v010.html")
+        return FileResponse(ROOT/"static/workspace-v018.html")
 
     @app.get("/api/health")
     def health():

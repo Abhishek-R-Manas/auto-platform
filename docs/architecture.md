@@ -225,14 +225,41 @@ authority or weaken independent risk. See [the input operator guide](inputs.md).
 This is Phase 5 preparation for manually confirmed NSE/CNC LIMIT orders. Actual pilot qualification/activation, overnight/GTT broker protection, automated strategy entry dispatch, derivatives and final settlement/fee reconciliation remain pending. See [the exact operating contract](phase-5.md).
 
 
-## Workspace 0.10 customer flow
+## Workspace 0.14 customer flow
 
-The root document is `static/workspace-v010.html`. `shell.js` preserves the paper engine UI actions while `workspace-v010.js` owns guided Home, persistent watchlists, the chart desk, visual option/rule editing and explicit test handoffs. TradingView Lightweight Charts 5.2.1 is bundled locally with its license and notice; completed broker candle cache and latest quotes remain separate.
+The root document is `static/workspace-v014.html`. `shell-v011.js` preserves the paper engine UI actions while `workspace-v011.js` owns guided Home, persistent watchlists, the chart desk, visual option/rule editing and explicit test handoffs. TradingView Lightweight Charts 5.2.1 is bundled locally with its license and notice; completed broker candle cache and latest quotes remain separate.
 
 `app/workbench/` provides strict schemas, the 51 signed-leg recipe catalog, pure payoff/model analytics, immutable draft revisions and saved chain observations through `/api/workspace`. It never owns broker execution. Historical handoffs require explicit dataset identity/mapping; forward handoffs require current master contract identity and create paused REFERENCE books through the existing independent forward service. `data/workspace/workspace.sqlite3` is included in all-store backup and draft/chain hash verification. Price scenarios and model statistics carry no execution or approval authority. See [the customer guide and boundaries](workspace-guide.md).
 
 Named watchlists are a mutable bounded settings collection in the workspace store, migrated from the earlier single list on first save. SSE snapshots use cached master identities and read only the requested quote subset, without provider requests or consuming dirty execution quotes. `MarketHub` prioritizes the union of display, paper and forward subscriptions within existing provider connection limits. Accepted broker observations feed bounded `DisplayBars`; these bars and the LTP line never enter historical, research or execution stores. The browser merges display bars by timestamp with authoritative completed candles and labels partial coverage and data age.
 
-`app/portfolio.py` derives display rows and integer-paise summaries from the existing broker snapshot without modifying it. `static/portfolio.js` and `portfolio.css` implement the separate holdings/positions/paper views, sorting, filters, details and explicit CSV export. Entering the portfolio defaults to broker holdings without changing the selected execution account. Broker snapshots remain private runtime data, excluded from source archives and published validation artifacts.
+`app/portfolio.py` derives display rows and integer-paise summaries from the existing broker snapshot without modifying it. `static/portfolio-v011.js` and `portfolio.css` implement the separate holdings/positions/paper views, sorting, filters, details and explicit CSV export. Entering the portfolio defaults to broker holdings without changing the selected execution account. Broker snapshots remain private runtime data, excluded from source archives and published validation artifacts.
 
 The pilot retains an independent `portfolio_snapshot` display cache bound to the latest audited reconciliation hash. Restart clears execution reconciliation and arming, while preserving the separately validated display. The scoped recovery operator can restore only display data from a verified backup matching the current audit anchor; it never restores execution reconciliation, sessions, orders, account balances or authority.
+
+
+Manual trading authority uses `ManualMandate` at `/api/pilot/manual/mandate`. It shares integer-paise risk checks, capital reservations, broker reconciliation and protective exits with the existing execution service. It has no forward portfolio binding and cannot claim or confer strategy qualification. The reviewed calendar has a fixed expiry and rejects special sessions. The status readiness contract uses only local evidence; no GET places, cancels or reads broker orders. `tools/enable_manual_transport.py` installs the reviewed systemd connection capability only after exact-source validation, deployment, consistent backups and verification of an empty inactive broker journal; failure restores the previous capability configuration. See [manual trading](manual-trading.md).
+
+
+`app/pilot/onboarding.py` supplies a side-effect-free draft preflight at `/api/pilot/manual/review`; manual authority saving reuses its funding/permission/risk checks. `trading-onboarding-v014.js` owns four-stage client navigation, inline errors, review invalidation, request-time form locking and saved-authority hydration. Setup verification remains valid for the current authenticated session/day, whereas execution readiness still independently requires a fresh 15-second reconciliation. The owner-confirmed external whitelist/delivery actions never become API-verified claims.
+
+
+Manual authority records an explicit SELECTED or ALL_NSE_EQ instrument_scope in the audited mandate. `app/pilot/universe.py` centralizes current NSE one-unit equity eligibility and the saved-universe label. All scope applies to manual authority only, and missing legacy fields retain selected-symbol behavior. Onboarding and actual execution independently validate membership while all reservations and risk budgets remain global to the account.
+
+
+`app/pilot/limits.py` distinguishes explicit BROKER_FUNDS authority from CUSTOM/legacy limits. Broker-funded mandates store null budget fields, skip only app-defined financial/count budgets, and keep the shared cash/fee/reservation, authentication, quote, order-journal and protection pipeline. Policy is included in the immutable mandate hash and every preview binds that hash. Strategy-linked mandates retain independent reviewed forward allocation/risk checks. The frontend defaults new drafts to broker funding, preserves stored custom policies, and invalidates review on policy changes.
+
+
+## Strategy studio · 0.15
+
+`app/workbench/studio.py` handles analysis-only adjustments, cached position selection, read-only margins and immutable strategy quote marks in the workspace SQLite store. New optional leg/manual-P&L fields preserve legacy draft hashes. Backend and paper handoffs exclude disabled legs. The broker allowlist distinguishes the JSON POST basket-margin calculation from write-enabled order routes. Mark histories and recorded chain-series reads verify hashes; restore checks cover marks. No new derivative execution authority or background broker request is introduced; quote auto-refresh is an explicit visible-browser choice.
+
+
+## Single-view builder presentation · 0.16
+
+`builder-layout-v016.js` arranges the existing controls into a shared leg/analysis workspace without duplicating analysis state. `workspace-v016.js` supplies compact editors and a chain that retains payoff context; `strategy-studio-v016.js` retains the existing analysis and read-only broker operations. Calculations and execution authority are unchanged. Browser acceptance measures the full four-leg overview at 1366×768, including calculated fixture margin, and validates mobile overflow, saved drafts and moved controls.
+
+
+## Template library · 0.18
+
+`templates.catalog()` adds pure structure metadata and normalized payoff profiles from each signed recipe. The browser renders those points as SVG and applies visible market-view buttons and search without altering the active analysis basket. Single-expiry miniatures use intrinsic payoff; multi-expiry miniatures use the shared option model at the first expiry. No market request, account mutation or new execution path is introduced by catalog filtering or preview generation.

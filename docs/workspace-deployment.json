@@ -1,9 +1,9 @@
 {
-  "deployed_at": "2026-11-05T08:25:15.817942+00:00",
-  "version": "0.10.1",
+  "deployed_at": "2026-11-05T15:47:54.659186+00:00",
+  "version": "0.18.0",
   "build": {
     "version": "research/2.0.0",
-    "code_hash": "326ee91aa3dbeccf70dad685c9ffe7d75f0b2ae75c70fd0a6cd06203ce4c1d17",
+    "code_hash": "51baa17a8636c8e6e5567b85dca044831f02d23428b03d0900825b2170781262",
     "python": "3.13.13",
     "packages": {
       "pyarrow": "26.0.1",
@@ -12,31 +12,27 @@
       "httpx": "0.28.1"
     }
   },
-  "asset_identity": "55478beca520fe9f9e8432286efe973bc5bdef58598644ca413a4191947a5ba6",
-  "source_archive": "/root/amanas/temp/auto-platform/data/releases/326ee91aa3dbeccf70dad685c9ffe7d75f0b2ae75c70fd0a6cd06203ce4c1d17",
-  "pre_backup": "/root/amanas/temp/auto-platform/data/backups/pre-workspace-20261105T082421Z",
+  "asset_identity": "a36a95e5998ef3a6d77d60d016bc111186411321430e4568d0395fba0172cfb4",
+  "source_archive": "/root/amanas/temp/auto-platform/data/releases/51baa17a8636c8e6e5567b85dca044831f02d23428b03d0900825b2170781262",
+  "pre_backup": "/root/amanas/temp/auto-platform/data/backups/pre-workspace-20261105T154657Z",
   "pre_databases": 20,
   "pre_restore_ok": true,
-  "post_backup": "/root/amanas/temp/auto-platform/data/backups/post-workspace-20261105T082421Z",
+  "post_backup": "/root/amanas/temp/auto-platform/data/backups/post-workspace-20261105T154657Z",
   "post_databases": 20,
   "post_restore_ok": true,
   "paper_financial_state_preserved": true,
   "watchlist_preserved": true,
   "cached_broker_portfolio_preserved": true,
-  "display_recovery": {
-    "restored": true,
-    "execution_snapshot_restored": false,
-    "arming_changed": false
-  },
+  "display_recovery": null,
   "candidate_registry_preserved": true,
   "health": {
     "pilot": {
-      "transport_enabled": false,
+      "transport_enabled": true,
       "armed": false,
       "audit": {
         "ok": true,
-        "checked": 12,
-        "head": "4b575cdc11ae6871fbc641ee5b62aa46dc83f80dd868b525b514f833240613a9"
+        "checked": 39,
+        "head": "d56580ea63f21589e63c0e68dd82da735919c966c2bce8b9853c88785ef8d559"
       }
     },
     "status": "ok",
@@ -57,7 +53,7 @@
     "forward": {
       "worker": {
         "healthy": true,
-        "last_tick": "2026-11-05T08:24:58.369028+00:00",
+        "last_tick": "2026-11-05T15:47:29.987880+00:00",
         "error": null
       },
       "audit": {
@@ -70,7 +66,8 @@
       "live_orders_enabled": false
     }
   },
-  "pilot_transport_enabled": false,
+  "pilot_transport_enabled": true,
+  "live_connection_preserved": true,
   "pilot_armed": false,
   "pilot_order_count": 0,
   "chart_cache_available": true,

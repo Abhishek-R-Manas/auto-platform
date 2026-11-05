@@ -3,7 +3,7 @@ import json,multiprocessing,os,sys,tempfile,time,urllib.request
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 
-def serve(database):
+def serve(database,manual_trading=False):
     import uvicorn
     from datetime import datetime
     from app.engine import IST
@@ -18,6 +18,7 @@ def serve(database):
     app=create_app(database,background=False)
     from test_portfolio_view import snapshot as portfolio_fixture
     app.state.pilot.broker.snapshot=portfolio_fixture
+    app.state.pilot.broker.basket_margin=lambda orders,consider_positions:dict(initial={'total':50000},final={'total':12000},orders=[dict(charges={'total':20}) for o in orders])
     @app.post('/fixture/portfolio')
     def portfolio_snapshot():return app.state.pilot.reconcile()
     app.state.kite.key='controlled-key';app.state.kite.secret='controlled-secret';app.state.kite.master_hash=fixture.master_hash
@@ -39,10 +40,42 @@ def serve(database):
         hub=app.state.market_hub
         with hub.lock:hub.quotes[257]=q
         hub.display_bars.observe(q)
-        return {'ok':True}
+        return {'ok':True,'ordinary_session':at.weekday()<5 and (9,15)<=(at.hour,at.minute)<(15,30)}
+    if manual_trading:
+        from test_pilot_charts import AT,Broker
+        from datetime import timedelta
+        broker=Broker();app.state.pilot.broker=broker;app.state.pilot.clock=lambda:AT
+        app.state.kite._quotes=lambda keys:{'NSE:RELIANCE':dict(instrument_token=257,timestamp=AT.isoformat(),depth=dict(buy=[dict(price=99.95,quantity=1000)],sell=[dict(price=100.05,quantity=1000)]))}
+        @app.post('/fixture/manual-age')
+        def manual_age():app.state.pilot.clock=lambda:AT+timedelta(seconds=20);return {'ok':True}
+        @app.post('/fixture/manual-loss')
+        def manual_loss(body:dict):
+            broker.data['positions']['net']=[dict(exchange='NSE',tradingsymbol='RELIANCE',product='CNC',quantity=0,pnl=-101)] if body.get('breach') else []
+            return {'ok':True}
+        @app.post('/fixture/fill-manual')
+        def fill_manual():
+            o=broker.data['orders'][0];o.update(filled_quantity=o['quantity'],average_price=o['price'],status='COMPLETE')
+            broker.data['trades']=[dict(order_id=o['order_id'],quantity=o['quantity'],average_price=o['price'],trade_id='controlled-trade')]
+            broker.data['positions']['net']=[dict(exchange='NSE',tradingsymbol='RELIANCE',product='CNC',quantity=o['quantity'],pnl=0)]
+            return {'ok':True}
+        @app.post('/fixture/resolve-cancellation')
+        def resolve_cancellation():
+            for o in broker.data['orders']:
+                if o['order_id'] in broker.cancelled:o['status']='CANCELLED'
+            return {'ok':True}
+        @app.post('/fixture/uncertain')
+        def uncertain():broker.uncertain=True;return {'ok':True}
     @app.post('/fixture/logout')
     def logout():app.state.kite.token='';return {'ok':True}
     uvicorn.run(app,host='127.0.0.1',port=8796,access_log=False,log_level='error',timeout_graceful_shutdown=2)
+
+def choose_template(page,identifier):
+    target=page.locator('[data-template="'+identifier+'"]')
+    if not target.is_visible():
+        if page.locator('#builder-strategy-library').count():
+            page.locator('[data-template-category="All"]').click();page.locator('#template-search').fill('')
+        else:page.locator('#builder-catalog>summary').click()
+    target.click()
 
 def main():
     from playwright.sync_api import sync_playwright,expect
@@ -68,15 +101,18 @@ def main():
                 headers={'Content-Type':'application/json','X-Artha-Client':'paper-workspace'};page.request.post('http://127.0.0.1:8796/fixture/login',data='{}',headers=headers)
                 page.get_by_role('button',name='Trade',exact=True).click();page.locator('#watch-live').click();page.locator('#watch-refresh').click();page.locator('#price-refresh').click();expect(page.locator('#price-source')).to_contain_text('KITE');expect(page.locator('#price-chart canvas').first).to_be_visible();checks.append('genuine-contract fixture candles with separate market-data source')
                 expect(page.locator('#watch-stream-status')).to_contain_text('Browser stream connected',timeout=15000)
-                tick_started=time.monotonic();page.request.post('http://127.0.0.1:8796/fixture/tick',data='{}',headers=headers);expect(page.locator('#price-close')).to_contain_text('1,512.25',timeout=3000);push_to_dom_ms=round((time.monotonic()-tick_started)*1000);expect(page.locator('#chart-live-status')).to_contain_text('STREAMING');expect(page.locator('#desk-ohlc')).to_contain_text('DEVELOPING');checks.append('pushed quote updates headline LTP and developing candle without a manual refresh')
+                tick_started=time.monotonic();tick=page.request.post('http://127.0.0.1:8796/fixture/tick',data='{}',headers=headers).json();expect(page.locator('#price-close')).to_contain_text('1,512.25',timeout=3000);push_to_dom_ms=round((time.monotonic()-tick_started)*1000);expect(page.locator('#chart-live-status')).to_contain_text('STREAMING')
+                if tick['ordinary_session']:expect(page.locator('#desk-ohlc')).to_contain_text('DEVELOPING')
+                else:expect(page.locator('#desk-ohlc')).not_to_contain_text('DEVELOPING')
+                checks.append('pushed quote updates headline LTP and observes the ordinary-session developing-bar guard')
                 page.request.post('http://127.0.0.1:8796/fixture/stale',data='{}',headers=headers);expect(page.locator('#chart-live-status')).to_have_text('SAVED / STALE');page.request.post('http://127.0.0.1:8796/fixture/fresh',data='{}',headers=headers);expect(page.locator('#chart-live-status')).to_contain_text('STREAMING');checks.append('stale quote loses live label and fresh observations restore it')
                 page.locator('#watchlist-new').click();page.locator('#new-watchlist-form [name="name"]').fill('Controlled intraday');page.locator('#new-watchlist-form button[type="submit"]').click();expect(page.locator('#watch-items')).to_contain_text('Build your watchlist');page.locator('#watch-search').fill('TCS');page.locator('[data-add-watchlist="NSE:TCS"]').click();expect(page.locator('#watch-items')).to_contain_text('TCS');page.locator('#watch-search').fill('RELIANCE');page.locator('[data-add-watchlist="NSE:RELIANCE"]').click();expect(page.locator('#watch-items')).to_contain_text('RELIANCE');checks.append('create named watchlist and add current instruments through search')
                 page.locator('#watchlist-menu').click();page.locator('#rename-watchlist-form [name="name"]').fill('Controlled watchlist');page.locator('#rename-watchlist-form button[type="submit"]').click();expect(page.locator('#watchlist-select')).to_contain_text('Controlled watchlist');page.locator('#watchlist-menu').click();page.locator('[data-watch-move="1"][data-watch-direction="-1"]').click();expect(page.locator('.watchlist-reorder>div').first).to_contain_text('RELIANCE');page.locator('#workspace-dialog-close').click();page.locator('#watch-sort').select_option('name');expect(page.locator('#watch-items>.watch-item').first).to_contain_text('RELIANCE');page.locator('#watch-change-mode').click();expect(page.locator('#watch-change-mode')).to_have_text('Change ₹');page.locator('#watchlist-select').select_option('main');expect(page.locator('#watch-items>.watch-item')).to_have_count(5);checks.append('rename reorder sort change display and switch watchlists')
                 page.locator('#desk-sma').check();page.locator('#price-chart').hover();checks.append('candlestick chart crosshair and moving averages')
                 page.screenshot(path=str(ROOT/'docs/screenshots/workbench-trade-controlled.png'),full_page=True)
-                page.get_by_role('button',name='Strategy Builder',exact=True).click();expect(page.locator('#template-count')).to_contain_text('51');page.locator('#builder-refresh').click();page.locator('[data-builder-tab="chain"]').click();expect(page.locator('#option-chain')).to_contain_text('CALLS');expect(page.locator('#option-chain')).to_contain_text('PUTS');checks.append('option chain exposes current strikes premiums OI IV and buy/sell actions')
+                page.get_by_role('button',name='Strategy Builder',exact=True).click();expect(page.locator('#template-count')).to_contain_text('51');page.locator('#builder-refresh').click();page.locator('[data-builder-tab="chain"]').click();expect(page.locator('#option-chain')).to_contain_text('Call premium / IV / OI');expect(page.locator('#option-chain')).to_contain_text('Put premium / IV / OI');checks.append('option chain exposes current strikes premiums OI IV and buy/sell actions')
                 page.screenshot(path=str(ROOT/'docs/screenshots/workbench-chain-controlled.png'),full_page=True)
-                page.locator('[data-template="bull_call"]').click();expect(page.locator('#leg-count')).to_have_text('2');expect(page.locator('#builder-payoff svg')).to_be_visible();expect(page.locator('#builder-metrics')).to_contain_text('Maximum profit');checks.append('bull-call template produces exact-contract basket and payoff')
+                choose_template(page,'bull_call');expect(page.locator('#leg-count')).to_have_text('2');expect(page.locator('#builder-payoff svg')).to_be_visible();expect(page.locator('#builder-metrics')).to_contain_text('Maximum profit');checks.append('bull-call template produces exact-contract basket and payoff')
                 page.locator('#scenario-move').fill('2');page.locator('#scenario-iv').fill('3');expect(page.locator('#scenario-move-value')).to_have_text('2%');expect(page.locator('#builder-greeks')).to_contain_text('Vega');checks.append('price/date/IV scenarios and position Greeks')
                 page.locator('#scenario-table-toggle').click();expect(page.locator('#scenario-table')).to_be_visible();checks.append('target-date and expiry P&L table')
                 page.locator('#builder-name').fill('Controlled bull-call research');page.locator('#builder-save').click();expect(page.locator('#builder-draft-state')).to_have_text('SAVED REVISION');checks.append('immutable strategy draft saved from visual controls')
@@ -84,8 +120,10 @@ def main():
                 page.get_by_role('button',name='My Strategies',exact=True).click();expect(page.locator('#saved-drafts')).to_contain_text('Controlled bull-call research');assert page.evaluate('scrollY===0');page.locator('[data-open-draft]').first.click();expect(page.locator('#builder-name')).to_have_value('Controlled bull-call research');assert page.locator('#scenario-move').input_value()=='2' and page.locator('#scenario-iv').input_value()=='3';checks.append('saved strategy resumes with its saved scenario')
                 page.locator('.leg-table [data-leg-field="premium"]').first.fill('200');page.locator('#builder-save').click();expect(page.locator('#builder-draft-state')).to_have_text('SAVED REVISION');drafts=page.request.get('http://127.0.0.1:8796/api/workspace/drafts').json();assert any(d['parent_id'] for d in drafts);checks.append('edited premium creates a linked immutable draft revision')
                 page.get_by_role('button',name='My Strategies',exact=True).click();page.locator('[data-compare-draft]').nth(0).check();page.locator('[data-compare-draft]').nth(1).check();page.locator('#compare-drafts').click();expect(page.locator('#workspace-dialog')).to_contain_text('Compare saved strategies');expect(page.locator('#workspace-dialog')).to_contain_text('Different input bases');page.locator('#workspace-dialog-close').click();checks.append('comparison keeps immutable draft bases explicit')
-                page.locator('[data-open-draft]').first.click();page.locator('#builder-wizard').click();page.locator('#workspace-screener [name="category"]').select_option('Bullish');page.locator('#workspace-screener [name="loss"]').fill('50000');page.locator('#workspace-screener button[type="submit"]').click();expect(page.locator('#screener-results [data-load-screened]').first).to_be_visible();page.locator('#screener-results [data-load-screened]').first.click();expect(page.locator('#workspace-dialog')).not_to_be_visible();expect(page.locator('#builder-payoff svg')).to_be_visible();checks.append('scenario screener filters defined loss and opens a buildable strategy')
-                page.locator('[data-template="call_calendar"]').click();expect(page.locator('#leg-count')).to_have_text('2');expect(page.locator('#builder-metrics')).to_contain_text('Path dependent');checks.append('calendar spread retains later-expiry time value and does not invent loss bounds')
+                page.locator('[data-open-draft]').first.click();page.locator('#builder-wizard').click();page.locator('#workspace-screener [name="category"]').select_option('Bullish');page.locator('#workspace-screener [name="loss"]').fill('50000');page.locator('#workspace-screener button[type="submit"]').click();expect(page.locator('#screener-results [data-load-screened]').first).to_be_visible();page.locator('#screener-results [data-load-screened]').first.click();expect(page.locator('#workspace-dialog')).not_to_be_visible();
+                if not page.locator('#builder-payoff').is_visible():page.locator('#scenario-table-toggle').click()
+                expect(page.locator('#builder-payoff svg')).to_be_visible();checks.append('scenario screener filters defined loss and opens a buildable strategy')
+                choose_template(page,'call_calendar');expect(page.locator('#leg-count')).to_have_text('2');expect(page.locator('#builder-metrics')).to_contain_text('Path dependent');checks.append('calendar spread retains later-expiry time value and does not invent loss bounds')
                 page.locator('[data-builder-tab="insights"]').click();expect(page.locator('#oi-chart svg')).to_be_visible();expect(page.locator('#iv-chart svg')).to_be_visible();checks.append('observed OI and estimated-IV analysis')
                 page.locator('[data-builder-tab="build"]').click();page.locator('[data-builder-kind="RULES"]').click();expect(page.locator('#rule-builder')).to_be_visible();page.locator('#rule-reference').fill('1500');page.locator('#builder-name').fill('Controlled trend rules');page.locator('#builder-save').click();expect(page.locator('#builder-draft-state')).to_have_text('SAVED REVISION');checks.append('stock-rule builder works without authoring JSON')
                 page.locator('#builder-forward').click();page.locator('#flow-reviewer').fill('Controlled owner');page.locator('#flow-review-note').fill('Controlled calendar contract and execution assumptions reviewed for software acceptance');page.locator('#flow-rights').check();page.locator('#flow-assumptions').check();page.locator('#workspace-forward button[type="submit"]').click();expect(page.locator('#saved-forward')).to_contain_text('PAUSED',timeout=15000);expect(page.locator('#saved-forward')).to_contain_text('Controlled trend rules');checks.append('reviewed rules become an isolated paused forward portfolio')
@@ -94,9 +132,9 @@ def main():
                 page.get_by_role('button',name='Trade',exact=True).click();page.locator('#ws-account').select_option('LIVE');page.locator('#desk-buy').click();expect(page.locator('#live-ticket-panel')).to_be_visible();expect(page.locator('#pilot-preview-button')).to_be_disabled();expect(page.locator('#live-ticket-status')).to_contain_text('disabled');page.locator('#close-ticket').click();page.locator('#ws-account').select_option('PAPER');checks.append('live order ticket remains gated and separate from paper')
                 page.set_viewport_size({'width':390,'height':844});page.get_by_role('button',name='Home',exact=True).click();assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+2');checks.append('guided home mobile layout');page.screenshot(path=str(ROOT/'docs/screenshots/workbench-home-mobile.png'),full_page=True)
                 page.get_by_role('button',name='Trade',exact=True).click();assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+2');checks.append('trading desk mobile layout');expect(page.locator('#price-interval')).to_be_visible();interval_bounds=page.locator('#price-interval').bounding_box();assert interval_bounds['x']+interval_bounds['width']<=390;checks.append('mobile chart interval remains inside the visible desk');page.locator('#toast').evaluate("e=>e.classList.add('hidden')");page.screenshot(path=str(ROOT/'docs/screenshots/workbench-trade-mobile.png'),full_page=True)
-                page.get_by_role('button',name='Strategy Builder',exact=True).click();page.locator('[data-builder-kind="OPTIONS"]').click();page.locator('[data-template="iron_condor"]').click();expect(page.locator('#leg-count')).to_have_text('4');expect(page.locator('#payoff-subtitle')).to_contain_text('Expiry contract payoff');assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+2');checks.append('four-leg options builder mobile layout');expect(page.locator('.mobile-leg-cards')).to_be_visible();mobile_price=page.locator('.mobile-leg-cards [data-leg-field="premium"]').first;original_price=mobile_price.input_value();mobile_price.fill('10');expect(page.locator('#payoff-subtitle')).to_contain_text('Expiry contract payoff');checks.append('mobile leg cards support direct premium editing');mobile_price.fill(original_price);expect(page.locator('#payoff-subtitle')).to_contain_text('Expiry contract payoff');page.locator('#scenario-table-toggle').click();page.evaluate('window.scrollTo(0,0)');page.screenshot(path=str(ROOT/'docs/screenshots/workbench-builder-mobile.png'),full_page=True)
+                page.get_by_role('button',name='Strategy Builder',exact=True).click();page.locator('[data-builder-kind="OPTIONS"]').click();choose_template(page,'iron_condor');expect(page.locator('#leg-count')).to_have_text('4');expect(page.locator('#payoff-subtitle')).to_contain_text('Expiry contract payoff');assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+2');checks.append('four-leg options builder mobile layout');expect(page.locator('.mobile-leg-cards')).to_be_visible();mobile_price=page.locator('.mobile-leg-cards [data-leg-field="premium"]').first;original_price=mobile_price.input_value();mobile_price.fill('10');expect(page.locator('#payoff-subtitle')).to_contain_text('Expiry contract payoff');checks.append('mobile leg cards support direct premium editing');mobile_price.fill(original_price);expect(page.locator('#payoff-subtitle')).to_contain_text('Expiry contract payoff');page.locator('#scenario-table-toggle').click();page.evaluate('window.scrollTo(0,0)');page.screenshot(path=str(ROOT/'docs/screenshots/workbench-builder-mobile.png'),full_page=True)
                 health=page.request.get('http://127.0.0.1:8796/api/health').json();assert health['reconciliation']['ok'] and not health['pilot']['transport_enabled'];checks.append('account reconciliation preserved and real transport remains off')
-                page.request.post('http://127.0.0.1:8796/fixture/offline',data='{}',headers=headers);page.goto('http://127.0.0.1:8796/#builder',wait_until='networkidle');page.reload(wait_until='networkidle');assert page.request.get('http://127.0.0.1:8796/api/workspace/meta').json()['master_available'] is False;expect(page.locator('#template-count')).to_contain_text('51');expect(page.locator('#builder-payoff')).to_contain_text('See the shape of your strategy');page.locator('#builder-source').select_option('HYPOTHETICAL');expect(page.locator('#hypothetical-inputs')).to_be_visible();page.locator('#hypo-spot').fill('25000');page.locator('#hypo-lot-size').fill('65');page.locator('[data-template="call_calendar"]').click();expect(page.locator('#leg-count')).to_have_text('2');expect(page.locator('#builder-metrics')).to_contain_text('Path dependent');checks.append('broker-independent hypothetical templates with explicit dates spot lot size and strike spacing')
+                page.request.post('http://127.0.0.1:8796/fixture/offline',data='{}',headers=headers);page.goto('http://127.0.0.1:8796/#builder',wait_until='networkidle');page.reload(wait_until='networkidle');assert page.request.get('http://127.0.0.1:8796/api/workspace/meta').json()['master_available'] is False;expect(page.locator('#template-count')).to_contain_text('51');expect(page.locator('#builder-payoff')).to_contain_text('See the shape of your strategy');page.locator('#builder-source').select_option('HYPOTHETICAL');expect(page.locator('#hypothetical-inputs')).to_be_visible();page.locator('#hypo-spot').fill('25000');page.locator('#hypo-lot-size').fill('65');choose_template(page,'call_calendar');expect(page.locator('#leg-count')).to_have_text('2');expect(page.locator('#builder-metrics')).to_contain_text('Path dependent');checks.append('broker-independent hypothetical templates with explicit dates spot lot size and strike spacing')
                 page.get_by_role('button',name='Trade',exact=True).click();expect(page.locator('#watch-stream-status')).to_contain_text('Kite disconnected');process.terminate();process.join(10);assert not process.is_alive();checks.append('server shuts down within its bound with an active quote stream')
                 browser.close()
         finally:process.terminate();process.join(15)

@@ -53,5 +53,41 @@ RECIPES={
  'long_box':('Long box spread','Neutral',[('CE',-1,1,0),('CE',1,-1,0),('PE',1,1,0),('PE',-1,-1,0)]),
  'short_box':('Short box spread','Neutral',[('CE',-1,-1,0),('CE',1,1,0),('PE',1,-1,0),('PE',-1,1,0)])}
 
+
+def family(identifier):
+    """Structures are independent from the market-view category."""
+    if 'calendar' in identifier or 'diagonal' in identifier:return 'Calendars & diagonals'
+    if 'box' in identifier:return 'Box spreads'
+    if 'christmas' in identifier:return 'Christmas trees'
+    if 'butterfly' in identifier or 'fly' in identifier:return 'Butterflies'
+    if 'condor' in identifier:return 'Condors'
+    if 'straddle' in identifier or 'strangle' in identifier:return 'Straddles & strangles'
+    if 'ratio' in identifier or 'backspread' in identifier:return 'Ratios & backspreads'
+    if 'synthetic' in identifier:return 'Synthetics'
+    if 'reversal' in identifier:return 'Risk reversals'
+    if identifier in {'covered_call','protective_put','collar'}:return 'Stock hedges'
+    if identifier in {'bull_call','bear_call','bull_put','bear_put'}:return 'Vertical spreads'
+    if len(RECIPES[identifier][2])==1:return 'Single options'
+    return 'Multi-leg combinations'
+
+
+def preview(recipe):
+    """Normalized, illustrative P&L only. Calendars retain later-expiry model value."""
+    from ..finance import option_value
+    spot=100.;step=5.;vol=.25;rate=.065
+    entries=[spot if k=='E' else option_value(spot,spot+o*step,(30+30*e)/365,vol,k,rate) for k,o,r,e in recipe]
+    strikes=[spot+o*step for k,o,r,e in recipe if k!='E']
+    prices=sorted({70.+2*i for i in range(31)}|set(strikes)|{spot})
+    points=[]
+    for price in prices:
+        total=0.
+        for (kind,offset,ratio,expiry),entry in zip(recipe,entries):
+            strike=spot+offset*step
+            value=price if kind=='E' else option_value(price,strike,30*expiry/365,vol,kind,rate) if expiry else max(0,price-strike) if kind=='CE' else max(0,strike-price)
+            total+=ratio*(value-entry)
+        points.append(dict(spot=price,pnl=round(total,8)))
+    return dict(points=points,basis='MODEL_AT_FIRST_EXPIRY' if any(e for k,o,r,e in recipe) else 'ILLUSTRATIVE_EXPIRY',spot=spot,volatility_pct=25,rate=rate,first_expiry_days=30,later_expiry_days=60,market_data=False)
+
+
 def catalog():
-    return [dict(id=key,name=name,category=category,legs=[dict(kind=k,offset=o,ratio=r,expiry_rank=e) for k,o,r,e in recipe],multi_expiry=any(e for k,o,r,e in recipe)) for key,(name,category,recipe) in RECIPES.items()]
+    return [dict(id=key,name=name,category=category,family=family(key),preview=preview(recipe),legs=[dict(kind=k,offset=o,ratio=r,expiry_rank=e) for k,o,r,e in recipe],multi_expiry=any(e for k,o,r,e in recipe)) for key,(name,category,recipe) in RECIPES.items()]

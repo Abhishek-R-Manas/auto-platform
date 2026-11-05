@@ -79,7 +79,12 @@ def check_database(path):
                 if expected!=identifier or digest(item)!=identifier:raise ValueError('Workspace chain backup integrity failed')
             result['workspace_drafts_verified']=db.execute('SELECT count(*) FROM drafts').fetchone()[0]
             result['workspace_chains_verified']=db.execute('SELECT count(*) FROM chains').fetchone()[0]
-        result['integrity']='ok' 
+        if 'strategy_marks' in tables:
+            for identifier,basket_hash,value in db.execute('SELECT id,basket_hash,document FROM strategy_marks'):
+                item=json.loads(value);expected=item.pop('id')
+                if expected!=identifier or digest(item)!=identifier or item['basket_hash']!=basket_hash:raise ValueError('Strategy quote history backup integrity failed')
+            result['strategy_marks_verified']=db.execute('SELECT count(*) FROM strategy_marks').fetchone()[0]
+        result['integrity']='ok'
     return result
 
 

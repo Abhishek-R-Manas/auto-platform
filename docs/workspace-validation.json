@@ -1,9 +1,9 @@
 {
-  "version": "0.10.1",
-  "checked_at": "2026-11-05T08:23:13.838672+00:00",
+  "version": "0.18.0",
+  "checked_at": "2026-11-05T15:46:32.048144+00:00",
   "build": {
     "version": "research/2.0.0",
-    "code_hash": "326ee91aa3dbeccf70dad685c9ffe7d75f0b2ae75c70fd0a6cd06203ce4c1d17",
+    "code_hash": "51baa17a8636c8e6e5567b85dca044831f02d23428b03d0900825b2170781262",
     "python": "3.13.13",
     "packages": {
       "pyarrow": "26.0.1",
@@ -13,10 +13,10 @@
     }
   },
   "identity": {
-    "sha256": "55478beca520fe9f9e8432286efe973bc5bdef58598644ca413a4191947a5ba6",
+    "sha256": "a36a95e5998ef3a6d77d60d016bc111186411321430e4568d0395fba0172cfb4",
     "files": {
       "app/__init__.py": "f983e241603363438622788a269ef4613821a23889ebabd10715b528771a8713",
-      "app/api.py": "2a31e2e4410476511738eb85d5a46048e63a6549a7a882257bf46f5af704fa27",
+      "app/api.py": "d46b7eb9b788a0ba1d7edad4a1afeeb1d6f6ec16380b52ab3e38c6ba81098e64",
       "app/candidates/__init__.py": "85f0acb5d7992bcac93da44624d891ce4344ef82738cf5fdedfee84c8a87c7fa",
       "app/candidates/api.py": "f6301e3923c11d631d747f00949812f7f09fc79f1939638c789dd51ab657fb3c",
       "app/candidates/provider.py": "820277627d819579cb75dc7afe51d814ac345a8c93a67551a27b147c2017e47b",
@@ -51,9 +51,13 @@
       "app/onboarding.py": "6a2d56bd7098cfc14b2c74e43b06247a5ef260b4d916ad985743bd5fe80ba9c3",
       "app/operations.py": "f928adce619c3c821dc3e17c6452a10e8f938dfeafb39864759bcaebb9a3ec8d",
       "app/pilot/__init__.py": "94955a04774d6b5e9e5db66618be075aa33448f450cd6dce2f1aeb8e86e7240e",
-      "app/pilot/api.py": "6f435c4add3f3b34f9aa874b42a0a215f3a8a801679134dd62d40444b678bc31",
-      "app/pilot/broker.py": "57717f992a56bdff626876dc7c286864efffa1ca32ae61f4754ff5e8b01360a7",
-      "app/pilot/service.py": "182a4f0d0a7aef10e0ffa26f0c76717fb8cd6302abdacaf647a91d603a7ee34b",
+      "app/pilot/api.py": "738c59505300c4822f70826a3418dfbcfc60d54b34e4333606f6578284aff076",
+      "app/pilot/broker.py": "6b482e53e3659d602143548a3cf869885edf6aad754ed76194517e51a5f5094a",
+      "app/pilot/calendar.py": "95601283d70bcc617c3ab56425a1f93bc2df0f0778bcaa8ae8fdd331289865d4",
+      "app/pilot/limits.py": "7a8319da68a0c5452d17c07532355099305d1347690f08e7e2e31a9a04dac9bc",
+      "app/pilot/onboarding.py": "5dc248601b90e3add0d9e6d00f5281dba4098364e433691a264c8f04983f6a50",
+      "app/pilot/service.py": "2ef61035e9f994fc7b92ecd53e185edc9255eed53530f5041ff2745209ee8854",
+      "app/pilot/universe.py": "722678bd82f3e62f615c74fb319925bc89b865a7833f2835aacbd0ca59edbbb3",
       "app/portfolio.py": "17c2c97c1785c08eb9ce220bda8e3b22a9c5ba1edd1dd98f63ab59763dbeb444",
       "app/research/__init__.py": "b7c16bcaef19d8d9ebd82c3e4b1104705b0b77c97a22af1fd78fe5d089237fa3",
       "app/research/api.py": "15ed647d10b5de4fa7dc4a1bfe0cabd7e6040f5ce1d37e1d71a241540d2b10f3",
@@ -67,13 +71,15 @@
       "app/risk.py": "788dbb3e6e2b51ef07107216e788b05b71f410b8616a0b44595de22c306a9bc7",
       "app/strategies.py": "927eb6cd2317dc93582684976cee2a2f30f5529ae240ad2e56cc7c9a29b08a14",
       "app/workbench/__init__.py": "b81c50d7f76ddd159a7b1989422e20f9b0585786bc0c9208cacc2dca0dd2af71",
-      "app/workbench/analytics.py": "328997e38537cf68b388e1b69d5177425b80007bf8a68b953875c3ad1ac145fd",
-      "app/workbench/api.py": "53bfd24ef92e5f946beabcffda142a36cf8380005565f9a93fd6b151373cd55f",
-      "app/workbench/models.py": "b186978798d9514d29688f36c07c40b306848932a77446a204169c094d76bf64",
-      "app/workbench/service.py": "a639e978f57b26566665e693bddc267349c5996eae3190bfcef5215d0434c4e5",
-      "app/workbench/templates.py": "7ab5bd5d259b61e85f8938acfea1d6dbe56c8d738bb30c9f56c78da35231ebed",
+      "app/workbench/analytics.py": "48f72abe966af54c0b091b0ff05238375f8b89c153b87cd7181eeb94a548576b",
+      "app/workbench/api.py": "52b3e38f493a3409cf4ac1670f95243d89d7bb7872c3c8961dfee86c853ea77c",
+      "app/workbench/models.py": "0f37656cee1717dfbc862fa3bda8c0721744b00fd1039aebb411533f4977667b",
+      "app/workbench/service.py": "16bd34cad34f28efad7ed10248227f886a6e5b225b53cd8a79e6bb4a14188bff",
+      "app/workbench/studio.py": "aeb212a88ed001778283bd11d2a772708b1b25fb297c53ce66e930f9ab695f69",
+      "app/workbench/templates.py": "cfb03a41dafa70c4f2e026e9052796f2d819bb12e4b86f1cfd76c43ea579c778",
       "deploy/artha-backup.service": "ac72a40de13882ffe2b86c0b4f17b33a63985df42c737dc3189c80781e3a4639",
       "deploy/artha-backup.timer": "ebc2a686ab052a7f137fc33a363c3d098bab5b491722643169fd272de9478a71",
+      "deploy/artha-live-transport.conf": "377c63828b3a6f723bb4914ee61c9640875c6d86ffe9ef7e473c5e84dd6c9b66",
       "deploy/artha.service": "22d2e509822535d9ac07c9a257a0824eb09c575f89ee709a871ceecc841cd015",
       "pytest.ini": "67d2ccb180b0614871de0cf07f06d1f1b514651dde5498401b5e0854b27bc35f",
       "requirements-dev.lock": "c15da6a1a132773af0eeb6a6a3294cbd348035f9d2f365bf54db00ed2100e2c2",
@@ -82,21 +88,41 @@
       "requirements.txt": "dee6511bec5a234e86f5f00a2ce6ab299d5acfc07e0aedb7dea801180faac008",
       "run.py": "31578d5a5c6ae58b02d8d71b11e6424380a003453373a0693e16b6a8c4331336",
       "static/app.js": "9e977a60294a39579a7dd99fd3a82b806193c685867d2120d1d5a4ee8cf8ace6",
+      "static/builder-layout-v016.css": "69e81b83b836328d4990dec332ab4494d61f39820bfa9cfab3b59afd84c3cdad",
+      "static/builder-layout-v016.js": "02901a610cef504267525fe84e8976ba23d42b4b95fccd50159a981849429c48",
+      "static/builder-layout-v017.js": "eb5c4179b17f0332be96de21b4b25b379c68ba7ff741b1b7f88644bc7d3aea54",
       "static/candidates.js": "384522d95fafeb6e5b38f5116624dc0fa6a1611698611e9718eb81d60f4a3cb1",
       "static/charts.js": "313cdaa37771fd3d7989c9722995b253549ec2d3768de9f393643feb6fefcca5",
       "static/favicon.svg": "e58e80cd105daab55f4c439b294ee37c404bcb2f97f52e881ed089ee63ae174c",
       "static/forward.js": "88ea4a0c4641a75fd9223c1cc63ec6227de74a7a2c681b2384fca1e3a29844b2",
       "static/index.html": "d10015c9da5d798c74d42f603c98fd6190ba9a6fddc288a4596e14d70ae0ae2e",
       "static/inputs.js": "d08450d1bc9d49e781710caec88c083caa400a451bb2dc6e880e9f32d16252a1",
+      "static/live-v011.css": "a04f4b5a5f0ad2ad19717f1f99e85a517f2a9bf94b917b05dd016c56de336213",
       "static/market-data.js": "736a9a44d942cb424e66ed7f433b680e922e52e4b4710f691a0bacbfa44005cc",
       "static/onboarding.js": "b2eb767fe57a3444dd7bfcd598d68e2e92a3daf29644b9222ba443b23d1b461b",
+      "static/pilot-workbench-v011.js": "077f142b9c52fc32b7a0f49a6337bdf1494bf3006c90f2df9a7fb2bda222d7ff",
+      "static/pilot-workbench-v012.js": "3482880200921bb77e448651d70b93d1e7eece61d8c607f2d2f07596f90173db",
+      "static/pilot-workbench-v013.js": "4daa913f03bb84b2a78acbbbe7f9d6dcd1c6d64c42f29fa7f40b1eba645523d4",
+      "static/pilot-workbench-v014.js": "7ffaab2f12cf1b1d8d71b97c30e93f4c7b042e18498c752d213f0c0a64c55e77",
       "static/pilot-workbench.js": "1e020fec3a7f7253d02db3110dbb2d59e955aa86bddc2237266cad08830be7a4",
       "static/pilot.js": "6227e99ce0ecd5fab1086fe298adab454643d4556a9b43ae46f680735eed5796",
+      "static/portfolio-v011.js": "399dd49ad40db6ce7eaf55f7d5c594b5518b7745a00d75c4647d16751eb4d5fe",
       "static/portfolio.css": "dd5dae15bf0819b00017939d6e5176c980b4c204cc47f107052b24a739388388",
       "static/portfolio.js": "63e6b1a3a969dc4baaa371a91e7b05cfa72647fa95c3255f10cc135ec0918553",
       "static/research.js": "39d759a4178c3afbd212c0a6c7687708805b6d4035a911fa44ef1e48e208ab8e",
+      "static/shell-v011.js": "835c3e69934d87f1c7a9783b58450c1067fa9bfc055aabbe02dfea87aec1fe05",
+      "static/shell-v015.js": "d9180cd901c2abd1a8606eb8241985076daea15bf60a83ce3517428baa778c0f",
       "static/shell.js": "fb939bfedf87fe5890ba3c0389150334efd3ab09cd0c60f6768099a41981a7d8",
+      "static/strategy-studio-v015.css": "72590eae24dd8234e96088a88342c2b98670cb505a04bf48d77bcfab0e2a6596",
+      "static/strategy-studio-v015.js": "0196c82099076ebf789d3c87fdfe026b9cf660e2bba7d8e423525d52bc1aab31",
+      "static/strategy-studio-v016.js": "394b096a0e2ec24ad5a787d43ce208be8384e644efe9757be149f8b0f670eb93",
       "static/style.css": "a6599080a72a62bcb9d98eedd907a83cc6fbdaf594f4bd418ffe09e36b5acc45",
+      "static/template-library-v017.css": "366ee4ca67e70916c26c2b12eb9e63c4b4a5e2e24d090a8fc7725bff94d652fa",
+      "static/template-library-v018.css": "8bf7f548f7a0097a9fd02576f4a9d8128a54cc6839e34152fc899f0253054821",
+      "static/trading-onboarding-v012.css": "ae4151a0a3a7a1d3304084ffda88f382f532ab933a848ae8540a02c4aeda301c",
+      "static/trading-onboarding-v012.js": "5769cd013077ad6c23912be21f459d18a926c894e8e7d80ff594c61fb6e77839",
+      "static/trading-onboarding-v013.js": "a275e2002e028864760a47ef4a459af2ca56b255572bbf8024600273c271a70a",
+      "static/trading-onboarding-v014.js": "bd562777f6a7e4511fb3fa015ffcb7b4e3461ab64a06f125193f1805d0bfab06",
       "static/vendor/lightweight-charts-5.2.1.js": "e21cc5caa0226ef30bd8549c50b9ef926615f2a4ee6b4e486353477a55f598cf",
       "static/vendor/lightweight-charts-LICENSE.txt": "70c9d5382506dd184465425c08a99ad9bd6d9ac1313c252968ba0b585e5ef823",
       "static/vendor/lightweight-charts-NOTICE.txt": "f76c6afab94884448f0426e30d6e9d555ca7247894cd3484e477d2f87513036e",
@@ -106,21 +132,40 @@
       "static/workbench.js": "6cfe233af775fabb46c98a0782afeab986eb488591003b5659c2b9f52db2d4a3",
       "static/workspace-v010.html": "ff02964c1fa4935c15348fb5e97edea37cb6332e9be4d6167a21d9cc0cc80c01",
       "static/workspace-v010.js": "ec36937e8dc72e112a2e63e692f9f93d1d38344f77ba6aed2dce31b18c9bbc6e",
+      "static/workspace-v011.html": "33a25d30a030d0a143cc064479873c3b503218d509c92069336ae8e960a4fb91",
+      "static/workspace-v011.js": "6a8d30efe66b6e3c53521f8d257935915d6050f07191b0b8f5c9f89714f785f2",
+      "static/workspace-v012.html": "549f7842975bf825c4f39e91ae3cc398b4dd7cfbf85963d63ad2e8cc09abaa67",
+      "static/workspace-v013.html": "bb9b08cfcb70937ab847563334c558ef1d89d446cb8799321904de3c71da2eef",
+      "static/workspace-v014.html": "747741fe6930852bd7b1eb5a5926b91283b48bf3be089755f7d3f3d2d144128a",
+      "static/workspace-v015.html": "f679c9ca29f169566faf94440f124546bc2409200e39bb70adf810c0c5ed0abf",
+      "static/workspace-v015.js": "a42080e5acf4d28a9578067c73f6c301c80fabcb11bb5bbd669430d7e907514b",
+      "static/workspace-v016.html": "839605be8464dc64607ac874f5b3461ecd9800ff6fc37b370c1c1f83959bdafc",
+      "static/workspace-v016.js": "1e5b08fef2b9033ef1ecfcbe6bc8074e1f853098995c19a2592afb3de414090e",
+      "static/workspace-v017.html": "af2a3fe48ea969b843ae6f983bb3fa5d694460af1f4bcb128e2db2a11eca8c38",
+      "static/workspace-v017.js": "2799aff1addc0301d34cbcc8a519eebc04148749e7027602c095a65fa27f5f08",
+      "static/workspace-v018.html": "96fc5d32e2f8ebf22a4c8086a17394c8231450fbab24ad62b40e2576bb04fdda",
+      "static/workspace-v018.js": "94aaa7727fd2324012460be83f7871ac98be243f575c3f6eda98f16664f91f5d",
       "static/workspace-v09.css": "600148451dae13505c4f0efae0bd7f0273d1f60b60177f5e594a1c43f72a1947",
       "static/workspace-v09.html": "88e2231085426422efcdc524cee8e30e08207d23e7d289399352fe11aa94c3ad",
       "static/workspace-v09.js": "42b7f0692141fc697c8c521e33920466d073a8effe2ff1e573562fda06d40f49",
+      "tests/test_all_stocks.py": "7b623d881d595b49bd912513a2ca87912b4528f2b1ed5d72a34cb70eb474e281",
       "tests/test_api.py": "d0fa45247a0428587b0c0f9a12ab537b7af7261f00f3ffcc39dfb51755aee07f",
+      "tests/test_broker_funded.py": "2bdd11234d3c3b413b64ce3574c2dc18960a193e141a57de682aa3b5fd239fab",
       "tests/test_candidates.py": "c959ca5cebfcb694d67e1d51b10d219ead20cc08453b2dc65f2bdd90beb19242",
       "tests/test_forward.py": "1f67c53c6ad59876a561660f9ebe67524975d478f5696798772bea557be53d1e",
       "tests/test_intelligence.py": "039744139dd3434a715627c92ffc67d555dc0919a37ca35e42738bbabde13845",
       "tests/test_live_data.py": "223586fb0a039a7deb8a571211c7c660603d68ccc7d25347943bf3e95fee3f0f",
+      "tests/test_manual_trading.py": "d799b675f6d9c6220bb303b677ef41a9e8b8dbd1d021a64fb4670ca64f7ad180",
       "tests/test_onboarding.py": "b94a4837d348666c7166f55f47f41416395965cdd45e5a1625603c4bd185ea4b",
       "tests/test_phase1.py": "4021cfe23aed907f770872e872c30156d7820cb15fe7721c0c683d167288ecc9",
       "tests/test_pilot_charts.py": "48cd2e2c76d90565f158de371af996580d593643720d8ce8dc3145658b84bcb3",
       "tests/test_portfolio_cache.py": "61c550de8e66786d79fc0e0e03999ddb47fda40dd50e3457b6d96a40365ebdda",
       "tests/test_portfolio_view.py": "104058b4bb80d7875fa66214f46684e57e356972e7e7c6e95046a8763dbdc6a2",
       "tests/test_research.py": "2ce34170a79dc2b5e6b307d7ac3f7643fb9cedb36d2f152c7414fb02dca0b448",
+      "tests/test_strategy_studio.py": "c8fbb8c4049a1e291c48549bc623c89ad0bd289cf0c91cdea341701690bff6fe",
+      "tests/test_template_previews.py": "1a43b0bd3476954521a45f6808fe1624b05d68ac00e84b2cac9da31a208bc829",
       "tests/test_trading.py": "07635789f58e7fbf419ceae76580e21f4bc1786da2addc15737b0659a146224c",
+      "tests/test_trading_onboarding.py": "5e56848bcd4a151fe1a12413699a75e1172d68d1a8e9bf590c52336997869d37",
       "tests/test_watchlists_stream.py": "fa4ed3d6f480ae6a746b42755315a83316677d42cb9eb68253c74b37359d45f7",
       "tests/test_workbench.py": "a7a030eb668ee1b1011a522ab863c68c24f73350870dca066b9bcd13d2daee5d",
       "tools/archive_release.py": "b7e24de6549e66ae5816b40df88b47f3bdabc82f6c95156aeb9a86009a871ad5",
@@ -129,21 +174,25 @@
       "tools/candidates_browser.py": "4326fbfec5e3f40587895b2b780c25ba972f83ae3b53e7a207af5a1815027cb1",
       "tools/deploy_phase4.py": "a6144f421ee079f8a0cd44c60f2a3411fcc61f1bb3323e5cc1c2947866166ede",
       "tools/deploy_pilot.py": "02880ab2f517c7498cbbde80f13e67eb919000654d7a6acd40ea1f1f9670e652",
-      "tools/deploy_workbench.py": "b138ba7d951dfb2d29b39f836381f077cb2af7f9bc8898afe565089112deee11",
+      "tools/deploy_workbench.py": "87561757f04bf4df62fc8c13846751363908654f1d1b7c1b7eabd09881533006",
+      "tools/enable_manual_transport.py": "735284391dc717c7d7061d8388e662e4a062c30d5495adefa87d42a42926a437",
       "tools/forward_browser.py": "e932d6ede48505a846afa1628847d096b3f532845335a911718bdc673328910a",
-      "tools/forward_ops.py": "611aa2b8a003f363a9cf7bb6e7e6d985d71e7104b4fa4cbf2649d5e88b2b20eb",
+      "tools/forward_ops.py": "50574c7776f8f50a6c125acce30b12762b685b6ff88f5d9ccf9c0c5fc4911987",
       "tools/inputs_browser.py": "515db9e74b32047a8e788f97e554020a4fa58e794b60b6a16ec023be8f356a1e",
+      "tools/manual_trading_browser.py": "50455b4545689b081a9611455a5b8838239e35f4a495a7e28e2f88b600e4cd3e",
       "tools/market_browser.py": "a41522557784693efddcbfe2f403fe13a722b36f91cbf5d2414e8cf4f0128cb8",
       "tools/onboarding_browser.py": "2bf52d6643216fa3e2acb9993726a1419c56955ef4e968883f88c5182b6d116d",
       "tools/pilot_charts_browser.py": "f221d3834658d1ce4b5d7836dafce5eb70d68533100b2a629f74b459316f57af",
       "tools/pilot_deployed_browser.py": "7e95e27c6f0bd5c91afa3b971f5eb4e2443fba0d483a0e60a742c4d41b13338c",
-      "tools/portfolio_browser.py": "160e071545e7f9cfe4cdec17d2800e2f71930db5619d19053098611674055dce",
+      "tools/portfolio_browser.py": "67563aeca3dbe931a5e2b247277fe6a2648fc3f71b6ea84f3b0281eaa93b1dbe",
       "tools/recover_portfolio_display.py": "be1542966890ffe0ed2c70522ce431d2a86378d3e1424d3f96ae30b2b3221d59",
       "tools/research_browser.py": "336be5f136cb271e26d85e3cb114123eb7d96a69c0ae244bd98fe8e21ed411c0",
+      "tools/strategy_studio_browser.py": "8459a3604dec36d07bd3400066a1811efd4e009ece00dcb7e166470f5987b160",
+      "tools/trading_onboarding_browser.py": "c4c70d2d96a7e485893f6cee7afe46129a79fbc473b6e576b5bddc058c98a86b",
       "tools/validate_pilot.py": "c4d9c2568f0a90b824d73a40981d28fe00ed67a32e3668a084224d95c9059f0f",
-      "tools/validate_workbench.py": "b816ca8a2a5616f3a6e3eb6a8b080275c7d36a729345229426a5e4fa4e1cd959",
-      "tools/workbench_browser.py": "0235038ec9b6ebf158d0599cca115e4a54ab4485b583e35594ddc7f685cd5d40",
-      "tools/workbench_deployed_browser.py": "3681b6ad41017e0a9538748ab12787c229836c09a9e37a6b3152617abd1be202",
+      "tools/validate_workbench.py": "192996cf595d03f6c0689acbd40fa4eaa11b2e2eb58f2841c0ec21d90e066e97",
+      "tools/workbench_browser.py": "5675727e4f92f0975707b316a4ac74564d81d31c27b3ea3f641ad0b5b8c2125f",
+      "tools/workbench_deployed_browser.py": "8e2815eca258a246b41b50e3a7335f6d4a5a12eb67e17683f88f193362a3a3f9",
       "tools/workspace_fingerprint.py": "30e7334d3febc7662be41aa0dbba1ca17ba92f6478cfa0bd5f53dce8b7f06013"
     }
   },
@@ -157,8 +206,8 @@
         "-q"
       ],
       "passed": true,
-      "seconds": 73.57,
-      "output": "........................................................................ [ 18%]\n........................................................................ [ 36%]\n........................................................................ [ 54%]\n........................................................................ [ 72%]\n........................................................................ [ 90%]\n........................................                                 [100%]\n=============================== warnings summary ===============================\n.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1\n  /root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n400 passed, 1 warning in 72.58s (0:01:12)\n"
+      "seconds": 80.36,
+      "output": "........................................................................ [ 13%]\n........................................................................ [ 27%]\n........................................................................ [ 41%]\n........................................................................ [ 55%]\n........................................................................ [ 69%]\n........................................................................ [ 83%]\n........................................................................ [ 97%]\n...........                                                              [100%]\n=============================== warnings summary ===============================\n.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1\n  /root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n515 passed, 1 warning in 79.04s (0:01:19)\n"
     },
     {
       "command": [
@@ -167,8 +216,8 @@
         "tools/workbench_browser.py"
       ],
       "passed": true,
-      "seconds": 33.36,
-      "output": "{\"passed_stage\": \"guided home has a clear connection next step\"}\n{\"passed_stage\": \"explicit practice path from home into trading desk\"}\n{\"passed_stage\": \"watchlist-chart context opens a risk-checked paper order\"}\n{\"passed_stage\": \"submitted paper order visible in Orders\"}\n{\"passed_stage\": \"genuine-contract fixture candles with separate market-data source\"}\n{\"passed_stage\": \"pushed quote updates headline LTP and developing candle without a manual refresh\"}\n{\"passed_stage\": \"stale quote loses live label and fresh observations restore it\"}\n{\"passed_stage\": \"create named watchlist and add current instruments through search\"}\n{\"passed_stage\": \"rename reorder sort change display and switch watchlists\"}\n{\"passed_stage\": \"candlestick chart crosshair and moving averages\"}\n{\"passed_stage\": \"option chain exposes current strikes premiums OI IV and buy/sell actions\"}\n{\"passed_stage\": \"bull-call template produces exact-contract basket and payoff\"}\n{\"passed_stage\": \"price/date/IV scenarios and position Greeks\"}\n{\"passed_stage\": \"target-date and expiry P&L table\"}\n{\"passed_stage\": \"immutable strategy draft saved from visual controls\"}\n{\"passed_stage\": \"saved strategy resumes with its saved scenario\"}\n{\"passed_stage\": \"edited premium creates a linked immutable draft revision\"}\n{\"passed_stage\": \"comparison keeps immutable draft bases explicit\"}\n{\"passed_stage\": \"scenario screener filters defined loss and opens a buildable strategy\"}\n{\"passed_stage\": \"calendar spread retains later-expiry time value and does not invent loss bounds\"}\n{\"passed_stage\": \"observed OI and estimated-IV analysis\"}\n{\"passed_stage\": \"stock-rule builder works without authoring JSON\"}\n{\"passed_stage\": \"reviewed rules become an isolated paused forward portfolio\"}\n{\"passed_stage\": \"explicit historical instrument mapping produces a completed backtest\"}\n{\"passed_stage\": \"live order ticket remains gated and separate from paper\"}\n{\"passed_stage\": \"guided home mobile layout\"}\n{\"passed_stage\": \"trading desk mobile layout\"}\n{\"passed_stage\": \"mobile chart interval remains inside the visible desk\"}\n{\"passed_stage\": \"four-leg options builder mobile layout\"}\n{\"passed_stage\": \"mobile leg cards support direct premium editing\"}\n{\"passed_stage\": \"account reconciliation preserved and real transport remains off\"}\n{\"passed_stage\": \"broker-independent hypothetical templates with explicit dates spot lot size and strike spacing\"}\n{\"passed_stage\": \"server shuts down within its bound with an active quote stream\"}\n{\"passed\": 33, \"checks\": [\"guided home has a clear connection next step\", \"explicit practice path from home into trading desk\", \"watchlist-chart context opens a risk-checked paper order\", \"submitted paper order visible in Orders\", \"genuine-contract fixture candles with separate market-data source\", \"pushed quote updates headline LTP and developing candle without a manual refresh\", \"stale quote loses live label and fresh observations restore it\", \"create named watchlist and add current instruments through search\", \"rename reorder sort change display and switch watchlists\", \"candlestick chart crosshair and moving averages\", \"option chain exposes current strikes premiums OI IV and buy/sell actions\", \"bull-call template produces exact-contract basket and payoff\", \"price/date/IV scenarios and position Greeks\", \"target-date and expiry P&L table\", \"immutable strategy draft saved from visual controls\", \"saved strategy resumes with its saved scenario\", \"edited premium creates a linked immutable draft revision\", \"comparison keeps immutable draft bases explicit\", \"scenario screener filters defined loss and opens a buildable strategy\", \"calendar spread retains later-expiry time value and does not invent loss bounds\", \"observed OI and estimated-IV analysis\", \"stock-rule builder works without authoring JSON\", \"reviewed rules become an isolated paused forward portfolio\", \"explicit historical instrument mapping produces a completed backtest\", \"live order ticket remains gated and separate from paper\", \"guided home mobile layout\", \"trading desk mobile layout\", \"mobile chart interval remains inside the visible desk\", \"four-leg options builder mobile layout\", \"mobile leg cards support direct premium editing\", \"account reconciliation preserved and real transport remains off\", \"broker-independent hypothetical templates with explicit dates spot lot size and strike spacing\", \"server shuts down within its bound with an active quote stream\"], \"controlled_push_to_dom_ms\": 35, \"javascript_errors\": [], \"controlled_data\": true, \"real_broker_orders_sent\": false, \"real_provider_calls\": false}\n/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\nERROR:    Cancel 1 running task(s), timeout graceful shutdown exceeded\nERROR:    Exception in ASGI application\nTraceback (most recent call last):\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/anyio/streams/memory.py\", line 119, in receive\n    return self.receive_nowait()\n           ~~~~~~~~~~~~~~~~~~~^^\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/anyio/streams/memory.py\", line 114, in receive_nowait\n    raise WouldBlock\nanyio._core._exceptions.WouldBlock\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py\", line 411, in run_asgi\n    result = await app(  # type: ignore[func-returns-value]\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        self.scope, self.receive, self.send\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/uvicorn/middleware/proxy_headers.py\", line 63, in __call__\n    return await self.app(scope, receive, send)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/applications.py\", line 1194, in __call__\n    await super().__call__(scope, receive, send)\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/starlette/applications.py\", line 96, in __call__\n    await self.middleware_stack(scope, receive, send)\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/starlette/middleware/errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/telemetry/_asgi.py\", line 151, in __call__\n    await self.app(scope, receive, send)\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/starlette/middleware/base.py\", line 204, in __call__\n    await response(scope, wrapped_receive, send)\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/starlette/middleware/base.py\", line 242, in __call__\n    async for chunk in self.body_iterator:\n    ...<5 lines>...\n        await send({\"type\": \"http.response.body\", \"body\": chunk, \"more_body\": True})\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/starlette/middleware/base.py\", line 185, in body_stream\n    async for message in recv_stream:\n    ...<8 lines>...\n            break\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/anyio/abc/_streams.py\", line 37, in __anext__\n    return await self.receive()\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/anyio/streams/memory.py\", line 131, in receive\n    await receive_event.wait()\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/anyio/_backends/_asyncio.py\", line 2009, in wait\n    await self._event.wait()\n  File \"/usr/lib64/python3.13/asyncio/locks.py\", line 213, in wait\n    await fut\nasyncio.exceptions.CancelledError: Task cancelled, timeout graceful shutdown exceeded\n"
+      "seconds": 34.47,
+      "output": "{\"passed_stage\": \"guided home has a clear connection next step\"}\n{\"passed_stage\": \"explicit practice path from home into trading desk\"}\n{\"passed_stage\": \"watchlist-chart context opens a risk-checked paper order\"}\n{\"passed_stage\": \"submitted paper order visible in Orders\"}\n{\"passed_stage\": \"genuine-contract fixture candles with separate market-data source\"}\n{\"passed_stage\": \"pushed quote updates headline LTP and observes the ordinary-session developing-bar guard\"}\n{\"passed_stage\": \"stale quote loses live label and fresh observations restore it\"}\n{\"passed_stage\": \"create named watchlist and add current instruments through search\"}\n{\"passed_stage\": \"rename reorder sort change display and switch watchlists\"}\n{\"passed_stage\": \"candlestick chart crosshair and moving averages\"}\n{\"passed_stage\": \"option chain exposes current strikes premiums OI IV and buy/sell actions\"}\n{\"passed_stage\": \"bull-call template produces exact-contract basket and payoff\"}\n{\"passed_stage\": \"price/date/IV scenarios and position Greeks\"}\n{\"passed_stage\": \"target-date and expiry P&L table\"}\n{\"passed_stage\": \"immutable strategy draft saved from visual controls\"}\n{\"passed_stage\": \"saved strategy resumes with its saved scenario\"}\n{\"passed_stage\": \"edited premium creates a linked immutable draft revision\"}\n{\"passed_stage\": \"comparison keeps immutable draft bases explicit\"}\n{\"passed_stage\": \"scenario screener filters defined loss and opens a buildable strategy\"}\n{\"passed_stage\": \"calendar spread retains later-expiry time value and does not invent loss bounds\"}\n{\"passed_stage\": \"observed OI and estimated-IV analysis\"}\n{\"passed_stage\": \"stock-rule builder works without authoring JSON\"}\n{\"passed_stage\": \"reviewed rules become an isolated paused forward portfolio\"}\n{\"passed_stage\": \"explicit historical instrument mapping produces a completed backtest\"}\n{\"passed_stage\": \"live order ticket remains gated and separate from paper\"}\n{\"passed_stage\": \"guided home mobile layout\"}\n{\"passed_stage\": \"trading desk mobile layout\"}\n{\"passed_stage\": \"mobile chart interval remains inside the visible desk\"}\n{\"passed_stage\": \"four-leg options builder mobile layout\"}\n{\"passed_stage\": \"mobile leg cards support direct premium editing\"}\n{\"passed_stage\": \"account reconciliation preserved and real transport remains off\"}\n{\"passed_stage\": \"broker-independent hypothetical templates with explicit dates spot lot size and strike spacing\"}\n{\"passed_stage\": \"server shuts down within its bound with an active quote stream\"}\n{\"passed\": 33, \"checks\": [\"guided home has a clear connection next step\", \"explicit practice path from home into trading desk\", \"watchlist-chart context opens a risk-checked paper order\", \"submitted paper order visible in Orders\", \"genuine-contract fixture candles with separate market-data source\", \"pushed quote updates headline LTP and observes the ordinary-session developing-bar guard\", \"stale quote loses live label and fresh observations restore it\", \"create named watchlist and add current instruments through search\", \"rename reorder sort change display and switch watchlists\", \"candlestick chart crosshair and moving averages\", \"option chain exposes current strikes premiums OI IV and buy/sell actions\", \"bull-call template produces exact-contract basket and payoff\", \"price/date/IV scenarios and position Greeks\", \"target-date and expiry P&L table\", \"immutable strategy draft saved from visual controls\", \"saved strategy resumes with its saved scenario\", \"edited premium creates a linked immutable draft revision\", \"comparison keeps immutable draft bases explicit\", \"scenario screener filters defined loss and opens a buildable strategy\", \"calendar spread retains later-expiry time value and does not invent loss bounds\", \"observed OI and estimated-IV analysis\", \"stock-rule builder works without authoring JSON\", \"reviewed rules become an isolated paused forward portfolio\", \"explicit historical instrument mapping produces a completed backtest\", \"live order ticket remains gated and separate from paper\", \"guided home mobile layout\", \"trading desk mobile layout\", \"mobile chart interval remains inside the visible desk\", \"four-leg options builder mobile layout\", \"mobile leg cards support direct premium editing\", \"account reconciliation preserved and real transport remains off\", \"broker-independent hypothetical templates with explicit dates spot lot size and strike spacing\", \"server shuts down within its bound with an active quote stream\"], \"controlled_push_to_dom_ms\": 109, \"javascript_errors\": [], \"controlled_data\": true, \"real_broker_orders_sent\": false, \"real_provider_calls\": false}\n/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\nERROR:    Cancel 1 running task(s), timeout graceful shutdown exceeded\nERROR:    Exception in ASGI application\nTraceback (most recent call last):\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/anyio/streams/memory.py\", line 119, in receive\n    return self.receive_nowait()\n           ~~~~~~~~~~~~~~~~~~~^^\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/anyio/streams/memory.py\", line 114, in receive_nowait\n    raise WouldBlock\nanyio._core._exceptions.WouldBlock\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/uvicorn/protocols/http/h11_impl.py\", line 411, in run_asgi\n    result = await app(  # type: ignore[func-returns-value]\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        self.scope, self.receive, self.send\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/uvicorn/middleware/proxy_headers.py\", line 63, in __call__\n    return await self.app(scope, receive, send)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/applications.py\", line 1194, in __call__\n    await super().__call__(scope, receive, send)\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/starlette/applications.py\", line 96, in __call__\n    await self.middleware_stack(scope, receive, send)\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/starlette/middleware/errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/telemetry/_asgi.py\", line 151, in __call__\n    await self.app(scope, receive, send)\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/starlette/middleware/base.py\", line 204, in __call__\n    await response(scope, wrapped_receive, send)\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/starlette/middleware/base.py\", line 242, in __call__\n    async for chunk in self.body_iterator:\n    ...<5 lines>...\n        await send({\"type\": \"http.response.body\", \"body\": chunk, \"more_body\": True})\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/starlette/middleware/base.py\", line 185, in body_stream\n    async for message in recv_stream:\n    ...<8 lines>...\n            break\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/anyio/abc/_streams.py\", line 37, in __anext__\n    return await self.receive()\n           ^^^^^^^^^^^^^^^^^^^^\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/anyio/streams/memory.py\", line 131, in receive\n    await receive_event.wait()\n  File \"/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/anyio/_backends/_asyncio.py\", line 2009, in wait\n    await self._event.wait()\n  File \"/usr/lib64/python3.13/asyncio/locks.py\", line 213, in wait\n    await fut\nasyncio.exceptions.CancelledError: Task cancelled, timeout graceful shutdown exceeded\n"
     },
     {
       "command": [
@@ -177,8 +226,38 @@
         "tools/portfolio_browser.py"
       ],
       "passed": true,
-      "seconds": 6.12,
-      "output": "{\"passed\": 16, \"checks\": [\"portfolio opens at broker holdings with an honest disconnected state\", \"holdings summary and table use hand-checked snapshot totals\", \"search preserves T+1 and MTF visibility\", \"holding breakdown explains quantity and weighted cost\", \"numeric sorting works from column headings\", \"product filter includes the MTF component\", \"CSV export follows visible rows and decimal amounts\", \"positions separate signed exposure from broker P&L\", \"closed positions remain available without inflating open count\", \"paper view stays separate and viewing broker data preserves the execution account\", \"filtered empty state offers a working reset\", \"mobile uses compact holding cards without horizontal overflow\", \"mobile holding breakdown is keyboard-accessible\", \"explicit Sync Zerodha refreshes the same read-only snapshot\", \"paper-account shortcut opens the paper portfolio directly\", \"portfolio actions preserve paper account and submit no broker orders\"], \"javascript_errors\": [], \"controlled_data\": true, \"real_broker_reads\": false, \"real_orders_sent\": false, \"private_portfolio_artifacts_created\": false}\n/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n"
+      "seconds": 6.63,
+      "output": "{\"passed\": 16, \"checks\": [\"portfolio opens at broker holdings with an honest disconnected state\", \"holdings summary and sidebar use broker counts through paper refreshes\", \"search preserves T+1 and MTF visibility\", \"holding breakdown explains quantity and weighted cost\", \"numeric sorting works from column headings\", \"product filter includes the MTF component\", \"CSV export follows visible rows and decimal amounts\", \"positions and sidebar use the open broker position count\", \"closed positions remain available without inflating open count\", \"paper view and sidebar use the separate paper account\", \"filtered empty state offers a working reset\", \"mobile uses compact holding cards without horizontal overflow\", \"mobile holding breakdown is keyboard-accessible\", \"explicit Sync Zerodha refreshes the same read-only snapshot\", \"paper-account shortcut opens the paper portfolio directly\", \"portfolio actions preserve paper account and submit no broker orders\"], \"javascript_errors\": [], \"controlled_data\": true, \"real_broker_reads\": false, \"real_orders_sent\": false, \"private_portfolio_artifacts_created\": false}\n/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n"
+    },
+    {
+      "command": [
+        "/root/amanas/temp/auto-platform/.venv/bin/python",
+        "-B",
+        "tools/manual_trading_browser.py"
+      ],
+      "passed": true,
+      "seconds": 12.74,
+      "output": "{\"passed\": 13, \"checks\": [\"guided setup shows missing authentication and blocks saving\", \"explicit sync binds the actual fixture account without a forward strategy\", \"explicit limits saved with independent manual authority\", \"fresh reconciliation and exact confirmation activate the simulated session\", \"human-readable review shows exact order value, charges and planned risk\", \"confirmed order is recorded once and acknowledgement is shown separately from fills\", \"broker status refresh preserves the selected paper-orders tab\", \"broker-confirmed fills create reserved native protection\", \"explicit stop cancellation pauses entries and remains pending until broker confirmation\", \"paused entries still allow a verified reduction after stop cancellation\", \"changing any order field invalidates the previous review\", \"mobile trading setup fits the viewport\", \"simulated broker actions preserve the paper account and order audit\"], \"javascript_errors\": [], \"controlled_broker\": true, \"real_broker_reads\": false, \"real_orders_sent\": false, \"private_portfolio_artifacts_created\": false}\n/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n"
+    },
+    {
+      "command": [
+        "/root/amanas/temp/auto-platform/.venv/bin/python",
+        "-B",
+        "tools/trading_onboarding_browser.py"
+      ],
+      "passed": true,
+      "seconds": 17.03,
+      "output": "{\"passed\": 19, \"checks\": [\"four clearly named stages and an honest sign-in requirement\", \"account ID, permitted product and cash are verified by explicit sync\", \"completed account checks remain checked after execution freshness expires\", \"new drafts default to broker funds with no required app budgets\", \"blank financial fields receive inline validation without changing stages\", \"broker permission stage provides official links and distinguishes owner confirmation from API verification\", \"unconfirmed external permissions cannot silently pass\", \"daily-loss validation explains step 8 failure and blocks saving\", \"successful validation alone creates no authority and activates nothing\", \"changing allocation invalidates the old review and insufficient cash is explained\", \"explicit save persists limits and consents while keeping the session inactive\", \"saved limits and owner confirmations rehydrate after browser reload\", \"all-stocks permission removes the comma list while preserving budget values\", \"universe change requires a new review and explicit save without activating trading\", \"all-stocks permission survives reload without expanding older selected permissions\", \"selected mode still requires an explicit nonempty symbol list\", \"broker-funded mode saves null budgets explicitly and leaves account inactive\", \"no-cap funding policy and all-stock permission survive reload\", \"guided permissions and navigation remain usable on mobile\"], \"javascript_errors\": [], \"controlled_broker\": true, \"real_broker_reads\": false, \"real_orders_sent\": false, \"private_account_artifacts_created\": false}\n/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n"
+    },
+    {
+      "command": [
+        "/root/amanas/temp/auto-platform/.venv/bin/python",
+        "-B",
+        "tools/strategy_studio_browser.py"
+      ],
+      "passed": true,
+      "seconds": 22.82,
+      "output": "{\"passed\": 26, \"checks\": [\"choosing an options template switches from stock rules to the options editor\", \"hypothetical four-leg strategy includes per-leg values and Greeks\", \"call put straddle and condor thumbnails follow different payoff profiles\", \"visible market-view buttons and search filter strategies without dropdowns or changing the active basket\", \"calendar previews disclose their model basis and empty filters have a working reset\", \"four-leg editor payoff risk Greeks margin and scenario P&L are visible together at 1366x768\", \"chain selection retains the payoff metrics Greeks and margin context\", \"reverse remains available in the compact leg header\", \"shift reprices all option legs using the explicit model\", \"before-after comparison and undo preserve original inputs\", \"width and designated hedge controls preserve the main legs\", \"manual P&L, leg exclusions and notes are part of the saved basket\", \"configurable payoff table exports actual calculated rows\", \"price-time matrix contains dated modeled P&L cells without restarting navigation\", \"draft reload restores manual P&L and strategy notes\", \"chain strike filtering and full per-unit quote/Greek details\", \"four real-contract fixture legs and calculated margin remain visible with payoff and Greeks\", \"multi-strike premium OI and IV plots use recorded snapshots with disclosed window\", \"two real-contract quote observations draw strategy P&L without replacing entries\", \"combined-value and selected-leg OI history use actual captured snapshots\", \"read-only basket margin separates initial and final and invalidates on product changes\", \"bounded observed OI overlays the payoff with its data basis\", \"selected broker position import preserves direction units and broker average\", \"payoff chart supports keyboard price inspection\", \"mobile editor, controls and matrix stay within the viewport\", \"all analysis journeys preserve paper finances and broker inactivity\"], \"javascript_errors\": [], \"controlled_data\": true, \"real_broker_calls\": false, \"real_orders_sent\": false, \"private_portfolio_artifacts_created\": false}\n/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n"
     },
     {
       "command": [
@@ -187,7 +266,7 @@
         "tools/research_browser.py"
       ],
       "passed": true,
-      "seconds": 16.42,
+      "seconds": 16.35,
       "output": "{\n  \"status\": \"passed\",\n  \"checks\": [\n    \"research navigation\",\n    \"synthetic provenance\",\n    \"capability preflight\",\n    \"experiment builder\",\n    \"process worker completion\",\n    \"portfolio report\",\n    \"decision/fill inspection\",\n    \"report download\",\n    \"paper review packet\",\n    \"cost sensitivity suite\",\n    \"experiment comparison\",\n    \"CSV file import\",\n    \"mobile layout\"\n  ],\n  \"javascript_errors\": []\n}\n"
     },
     {
@@ -197,7 +276,7 @@
         "tools/onboarding_browser.py"
       ],
       "passed": true,
-      "seconds": 11.96,
+      "seconds": 12.24,
       "output": "{\"controlled_broker\": true, \"real_provider_login_validated\": false, \"passed\": 12, \"checks\": [\"guided paid Connect setup page\", \"exact callback URL guidance\", \"honest unconfigured step gates\", \"private credential save and cleared fields without restart\", \"no credential values in status responses\", \"broker sign-in callback returns safely to setup\", \"independent quote and candle access checks\", \"observed stream freshness rather than login-only readiness\", \"explicit stock-quote connection to simulated paper desk\", \"paper-only account and reconciliation\", \"mobile onboarding layout\", \"progress survives browser refresh\"], \"javascript_errors\": []}\n"
     },
     {
@@ -207,7 +286,7 @@
         "tools/forward_browser.py"
       ],
       "passed": true,
-      "seconds": 25.89,
+      "seconds": 22.93,
       "output": "{\"passed_stage\": \"honest unconfigured AI and paper-only workspace\"}\n{\"passed_stage\": \"Centaur positioning exposes missing research feeds and commercial targets honestly\"}\n{\"passed_stage\": \"immutable reference portfolio created paused through reviewed form\"}\n{\"passed_stage\": \"configurable virtual capital visible in portfolio account\"}\n{\"passed_stage\": \"completed-candle warm-up queued and applied without fills\"}\n{\"passed_stage\": \"explicit reviewed forward activation\"}\n{\"passed_stage\": \"completed-bar decision produced a subsequent-quote simulated fill\"}\n{\"passed_stage\": \"traceable fill evidence and bounded event filtering\"}\n{\"passed_stage\": \"reference and insufficient prospective evidence cannot qualify for Phase 5\"}\n{\"passed_stage\": \"review evidence export preserves simulation and qualification limits\"}\n{\"passed_stage\": \"pause and actual reduce-only liquidation lifecycle\"}\n{\"passed_stage\": \"human guardian review is recorded from the displayed evidence without execution authority\"}\n{\"passed_stage\": \"isolated fault and restore drills through the operator dashboard\"}\n{\"passed_stage\": \"private dedicated AI configuration without restart or secret echo\"}\n{\"passed_stage\": \"bounded advisory-only model job and visible output provenance\"}\n{\"passed_stage\": \"explicitly authorized controlled notification delivery with cleared private fields\"}\n{\"passed_stage\": \"durable incident acknowledgement without risk bypass\"}\n{\"passed_stage\": \"usable narrow-screen forward workspace\"}\n{\"passed_stage\": \"main paper account isolated and live execution unavailable\"}\n{\"passed\": 19, \"checks\": [\"honest unconfigured AI and paper-only workspace\", \"Centaur positioning exposes missing research feeds and commercial targets honestly\", \"immutable reference portfolio created paused through reviewed form\", \"configurable virtual capital visible in portfolio account\", \"completed-candle warm-up queued and applied without fills\", \"explicit reviewed forward activation\", \"completed-bar decision produced a subsequent-quote simulated fill\", \"traceable fill evidence and bounded event filtering\", \"reference and insufficient prospective evidence cannot qualify for Phase 5\", \"review evidence export preserves simulation and qualification limits\", \"pause and actual reduce-only liquidation lifecycle\", \"human guardian review is recorded from the displayed evidence without execution authority\", \"isolated fault and restore drills through the operator dashboard\", \"private dedicated AI configuration without restart or secret echo\", \"bounded advisory-only model job and visible output provenance\", \"explicitly authorized controlled notification delivery with cleared private fields\", \"durable incident acknowledgement without risk bypass\", \"usable narrow-screen forward workspace\", \"main paper account isolated and live execution unavailable\"], \"javascript_errors\": [], \"controlled_broker\": true, \"controlled_model\": true, \"controlled_notification\": true, \"accelerated_clock_for_software_tests_only\": true, \"real_provider_validation\": false}\n"
     },
     {
@@ -217,7 +296,7 @@
         "tools/candidates_browser.py"
       ],
       "passed": true,
-      "seconds": 26.35,
+      "seconds": 26.58,
       "output": "{\"controlled_model_and_data\": true, \"real_ai_provider_validated\": false, \"passed\": 15, \"checks\": [\"Strategy lab and honest controlled provider status\", \"immutable study and unopened holdout\", \"asynchronous generation journal and provenance\", \"immutable revision and manual/AI origin separation\", \"candidate comparison and protocol identities\", \"real worker screening, replay, walk-forward, cost and sensitivity evidence\", \"finalist freeze and single-use holdout\", \"independent data and model review record\", \"backend blocks synthetic-data paper approval\", \"recorded rejection retains candidate evidence\", \"complete lineage and evidence export\", \"audit verification\", \"main account and execution isolation\", \"mobile layout\", \"durable registry after browser reload\"], \"javascript_errors\": []}\n"
     },
     {
@@ -227,7 +306,7 @@
         "tools/inputs_browser.py"
       ],
       "passed": true,
-      "seconds": 21.7,
+      "seconds": 22.03,
       "output": "{\"passed_stage\": \"research inputs setup and honest empty source status\"}\n{\"passed_stage\": \"official CSV file import with review, scope and INR-crore units\"}\n{\"passed_stage\": \"duplicate report import is idempotent\"}\n{\"passed_stage\": \"inconsistent institutional net values rejected without partial ingestion\"}\n{\"passed_stage\": \"official-format CPI, IIP and constant-price GDP data jobs\"}\n{\"passed_stage\": \"dated RBI release notices with publication and receipt times\"}\n{\"passed_stage\": \"bounded quote universe and model settings persist\"}\n{\"passed_stage\": \"Kite-only IV, skew and per-leg sensitivity surface\"}\n{\"passed_stage\": \"selected dated inputs and frozen policy added to a new forward protocol\"}\n{\"passed_stage\": \"historical enrichment creates a child without backfilling later-received data\"}\n{\"passed_stage\": \"source artifact and observation evidence audit\"}\n{\"passed_stage\": \"usable narrow-screen inputs workspace without horizontal overflow\"}\n{\"passed_stage\": \"original paper account isolated and live execution unavailable\"}\n{\"passed\": 13, \"checks\": [\"research inputs setup and honest empty source status\", \"official CSV file import with review, scope and INR-crore units\", \"duplicate report import is idempotent\", \"inconsistent institutional net values rejected without partial ingestion\", \"official-format CPI, IIP and constant-price GDP data jobs\", \"dated RBI release notices with publication and receipt times\", \"bounded quote universe and model settings persist\", \"Kite-only IV, skew and per-leg sensitivity surface\", \"selected dated inputs and frozen policy added to a new forward protocol\", \"historical enrichment creates a child without backfilling later-received data\", \"source artifact and observation evidence audit\", \"usable narrow-screen inputs workspace without horizontal overflow\", \"original paper account isolated and live execution unavailable\"], \"javascript_errors\": [], \"controlled_broker\": true, \"controlled_official_data\": true, \"real_provider_validation\": false}\n/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n/root/amanas/temp/auto-platform/.venv/lib64/python3.13/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n  from starlette.testclient import TestClient as TestClient  # noqa\n"
     },
     {
@@ -239,7 +318,7 @@
         "check"
       ],
       "passed": true,
-      "seconds": 0.58,
+      "seconds": 0.59,
       "output": "No broken requirements found.\n"
     },
     {
@@ -247,6 +326,26 @@
         "node",
         "--check",
         "static/app.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/builder-layout-v016.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/builder-layout-v017.js"
       ],
       "passed": true,
       "seconds": 0.15,
@@ -269,7 +368,7 @@
         "static/charts.js"
       ],
       "passed": true,
-      "seconds": 0.15,
+      "seconds": 0.14,
       "output": ""
     },
     {
@@ -279,7 +378,7 @@
         "static/forward.js"
       ],
       "passed": true,
-      "seconds": 0.13,
+      "seconds": 0.14,
       "output": ""
     },
     {
@@ -289,7 +388,7 @@
         "static/inputs.js"
       ],
       "passed": true,
-      "seconds": 0.13,
+      "seconds": 0.14,
       "output": ""
     },
     {
@@ -299,7 +398,7 @@
         "static/market-data.js"
       ],
       "passed": true,
-      "seconds": 0.13,
+      "seconds": 0.14,
       "output": ""
     },
     {
@@ -316,10 +415,50 @@
       "command": [
         "node",
         "--check",
+        "static/pilot-workbench-v011.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/pilot-workbench-v012.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/pilot-workbench-v013.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/pilot-workbench-v014.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
         "static/pilot-workbench.js"
       ],
       "passed": true,
-      "seconds": 0.13,
+      "seconds": 0.14,
       "output": ""
     },
     {
@@ -329,7 +468,17 @@
         "static/pilot.js"
       ],
       "passed": true,
-      "seconds": 0.13,
+      "seconds": 0.15,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/portfolio-v011.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
       "output": ""
     },
     {
@@ -339,7 +488,7 @@
         "static/portfolio.js"
       ],
       "passed": true,
-      "seconds": 0.15,
+      "seconds": 0.14,
       "output": ""
     },
     {
@@ -356,7 +505,77 @@
       "command": [
         "node",
         "--check",
+        "static/shell-v011.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/shell-v015.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
         "static/shell.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/strategy-studio-v015.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/strategy-studio-v016.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/trading-onboarding-v012.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/trading-onboarding-v013.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/trading-onboarding-v014.js"
       ],
       "passed": true,
       "seconds": 0.14,
@@ -379,7 +598,7 @@
         "static/workbench.js"
       ],
       "passed": true,
-      "seconds": 0.14,
+      "seconds": 0.15,
       "output": ""
     },
     {
@@ -390,6 +609,56 @@
       ],
       "passed": true,
       "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/workspace-v011.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/workspace-v015.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/workspace-v016.js"
+      ],
+      "passed": true,
+      "seconds": 0.14,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/workspace-v017.js"
+      ],
+      "passed": true,
+      "seconds": 0.16,
+      "output": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "static/workspace-v018.js"
+      ],
+      "passed": true,
+      "seconds": 0.15,
       "output": ""
     },
     {

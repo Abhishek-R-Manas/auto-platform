@@ -1,0 +1,23 @@
+{
+  "passed": 13,
+  "checks": [
+    "guided setup shows missing authentication and blocks saving",
+    "explicit sync binds the actual fixture account without a forward strategy",
+    "explicit limits saved with independent manual authority",
+    "fresh reconciliation and exact confirmation activate the simulated session",
+    "human-readable review shows exact order value, charges and planned risk",
+    "confirmed order is recorded once and acknowledgement is shown separately from fills",
+    "broker status refresh preserves the selected paper-orders tab",
+    "broker-confirmed fills create reserved native protection",
+    "explicit stop cancellation pauses entries and remains pending until broker confirmation",
+    "paused entries still allow a verified reduction after stop cancellation",
+    "changing any order field invalidates the previous review",
+    "mobile trading setup fits the viewport",
+    "simulated broker actions preserve the paper account and order audit"
+  ],
+  "javascript_errors": [],
+  "controlled_broker": true,
+  "real_broker_reads": false,
+  "real_orders_sent": false,
+  "private_portfolio_artifacts_created": false
+}

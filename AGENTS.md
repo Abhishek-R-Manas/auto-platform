@@ -2,7 +2,7 @@
 
 ## Read first
 
-- [Workspace 0.10 guide](docs/workspace-guide.md): guided Home, trading desk and 51-template builder. The workspace revamp does not activate or qualify Phase 5. Main document is `static/workspace-v010.html`, with `shell.js`, `workspace-v010.js`, `workspace-v09.css`, `portfolio.js`, `portfolio.css`, `pilot-workbench.js` and locally licensed chart vendor assets. Legacy files remain for archived releases. Workspace data has independent SQLite storage and hash-verified draft/chain backups.
+- [Workspace 0.18 guide](docs/workspace-guide.md): guided Home, trading desk and 51-template builder. The workspace revamp does not activate or qualify Phase 5. Main document is `static/workspace-v018.html`, with `shell-v015.js`, `workspace-v018.js`, `strategy-studio-v016.js`, `builder-layout-v017.js`, `builder-layout-v016.css`, `template-library-v018.css`, `strategy-studio-v015.css`, `workspace-v09.css`, `portfolio-v011.js`, `portfolio.css`, `pilot-workbench-v014.js`, `live-v011.css`, `trading-onboarding-v014.js`, `trading-onboarding-v012.css` and locally licensed chart vendor assets. Legacy files remain for archived releases. Workspace data has independent SQLite storage and hash-verified draft/chain backups.
 
 - [Phase 5 preparation](docs/phase-5.md): cached broker charts and the isolated, disabled-by-default manually confirmed NSE/CNC pilot. Qualification, owner limits, genuine broker acceptance and broader automated protection remain pending. Do not represent this as a fully qualified or activated Phase 5 release.
 
@@ -39,6 +39,8 @@ is now recorded in docs/phase-2.md. Inspect current code and durable
 milestone evidence before choosing the next task. Update the plan with artifact and
 validation references as work progresses.
 
+- [Manual real trading](docs/manual-trading.md): manual NSE delivery authority is independent from strategy qualification. The owner requested real trading; the server connection can be enabled only by the validated activation tool. No allocation, account mandate, static-IP assertion, session arming or individual order is implied. Derivatives and automated strategy execution remain unavailable.
+
 ## Owner direction and boundaries
 
 - Development budget is flexible. Support a broad strategy universe across stocks,
@@ -67,6 +69,18 @@ validation references as work progresses.
 - Recheck changing exchange/broker rules against primary sources and preserve effective dates.
 
 ## Repository map
+
+- `app/workbench/templates.py`: structure classifications and normalized recipe-derived payoff previews. Single-expiry profiles use contractual intrinsic value; calendar/diagonal previews retain later-expiry model value. These are illustrative shapes, never live prices or market forecasts. The visible template library filters independently from the active basket.
+
+
+- `app/workbench/studio.py`: contract-verified analysis adjustments, audited cached-position imports, immutable quote tracking and explicit read-only basket margin calculations. No derivative order dispatch. New mark rows require backup/read integrity checks. Disabled legs must stay excluded from handoffs while retaining their original historical mapping indices. Manual P&L stays an analysis offset. [Builder comparison](docs/strategy-builder-parity.md) documents real capability boundaries.
+
+
+- `app/pilot/limits.py`: explicit BROKER_FUNDS mode has null app financial and daily-entry budgets; CUSTOM preserves positive owner-defined limits, without hard-coded amount/count ceilings. Legacy saved mandates remain CUSTOM. Never replace missing custom fields with inferred cash amounts or infinity. Current broker funds, pending reservations, quotes, confirmations and native protection remain independent execution checks.
+
+- `app/pilot/universe.py`: all-stock authority applies only to manual NSE one-unit delivery equities/ETFs, validated against the current master at execution. Indices and derivatives remain excluded. Legacy mandates default to their selected symbols; strategy-linked authority cannot request an all-stock universe. Preserve shared account-wide budgets, owned-stock exits and quote checks.
+
+- `app/pilot/onboarding.py`: side-effect-free manual setup preflight and field-level errors. Verified setup may persist for the authenticated session/day; execution snapshot freshness still expires after 15 seconds. Never infer a capital allocation or mark static IP / delivery authorization as broker-verified from a successful account read. The four-stage onboarding distinguishes owner confirmations from API verification.
 
 - `app/portfolio.py`: pure broker portfolio presentation, integer paise totals, explicit T+1/MTF/position scopes. Portfolio fixtures and screenshots must never contain private owner holdings. The audited `portfolio_snapshot` cache is display-only; the separate execution snapshot must still clear on restart. Recovery may restore only a matching display cache from a verified backup.
 - `app/displaybars.py`, `app/workbench/`: persistent named watchlists and same-origin streamed display snapshots. Developing bars are partial display observations; preserve independent execution quote consumption.
@@ -112,7 +126,7 @@ environments. Existing checks from the project directory:
 .venv/bin/python -B tools/workbench_deployed_browser.py
 ```
 
-The first command runs full pytest, seven isolated browser suites, dependency checks and all
+The first command runs full pytest, ten isolated browser suites, dependency checks and all
 JavaScript syntax checks, recording exact source/asset fingerprints. The second is a
 read-only deployed UI check. `--resume` is restricted to browser-harness changes with
 unchanged runtime, assets, unit tests and dependency locks; reused passed unit evidence

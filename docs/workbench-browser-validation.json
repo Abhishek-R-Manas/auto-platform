@@ -6,7 +6,7 @@
     "watchlist-chart context opens a risk-checked paper order",
     "submitted paper order visible in Orders",
     "genuine-contract fixture candles with separate market-data source",
-    "pushed quote updates headline LTP and developing candle without a manual refresh",
+    "pushed quote updates headline LTP and observes the ordinary-session developing-bar guard",
     "stale quote loses live label and fresh observations restore it",
     "create named watchlist and add current instruments through search",
     "rename reorder sort change display and switch watchlists",
@@ -35,7 +35,7 @@
     "broker-independent hypothetical templates with explicit dates spot lot size and strike spacing",
     "server shuts down within its bound with an active quote stream"
   ],
-  "controlled_push_to_dom_ms": 35,
+  "controlled_push_to_dom_ms": 109,
   "javascript_errors": [],
   "controlled_data": true,
   "real_broker_orders_sent": false,

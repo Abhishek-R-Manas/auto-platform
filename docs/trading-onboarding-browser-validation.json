@@ -1,0 +1,29 @@
+{
+  "passed": 19,
+  "checks": [
+    "four clearly named stages and an honest sign-in requirement",
+    "account ID, permitted product and cash are verified by explicit sync",
+    "completed account checks remain checked after execution freshness expires",
+    "new drafts default to broker funds with no required app budgets",
+    "blank financial fields receive inline validation without changing stages",
+    "broker permission stage provides official links and distinguishes owner confirmation from API verification",
+    "unconfirmed external permissions cannot silently pass",
+    "daily-loss validation explains step 8 failure and blocks saving",
+    "successful validation alone creates no authority and activates nothing",
+    "changing allocation invalidates the old review and insufficient cash is explained",
+    "explicit save persists limits and consents while keeping the session inactive",
+    "saved limits and owner confirmations rehydrate after browser reload",
+    "all-stocks permission removes the comma list while preserving budget values",
+    "universe change requires a new review and explicit save without activating trading",
+    "all-stocks permission survives reload without expanding older selected permissions",
+    "selected mode still requires an explicit nonempty symbol list",
+    "broker-funded mode saves null budgets explicitly and leaves account inactive",
+    "no-cap funding policy and all-stock permission survive reload",
+    "guided permissions and navigation remain usable on mobile"
+  ],
+  "javascript_errors": [],
+  "controlled_broker": true,
+  "real_broker_reads": false,
+  "real_orders_sent": false,
+  "private_account_artifacts_created": false
+}

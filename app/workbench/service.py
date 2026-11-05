@@ -203,16 +203,18 @@ class Workspace:
         with self.lock:ids=[r[0] for r in self.db.execute('SELECT id FROM drafts ORDER BY rowid DESC LIMIT 200')]
         return [self.draft(i) for i in ids]
     def backtest(self,body):
-        item=self.draft(body.draft_id);b=item['basket'];dataset=self.research.catalog.verify(body.dataset_id);instruments={i['id']:i for i in dataset['manifest']['instruments']};mapping=body.mapping
+        item=self.draft(body.draft_id);b=dict(item['basket']);dataset=self.research.catalog.verify(body.dataset_id);instruments={i['id']:i for i in dataset['manifest']['instruments']};mapping=body.mapping
         if 'underlying' not in mapping or mapping['underlying'] not in instruments:raise ValueError('Explicitly map the signal underlying to an instrument in the selected historical dataset')
+        if not any(l.get('enabled',True) for l in b['legs']):raise ValueError('Enable at least one leg before backtesting')
         legs=[]
         for index,l in enumerate(b['legs']):
+            if not l.get('enabled',True):continue
             identifier=mapping.get(str(index));target=instruments.get(identifier)
             expected='OPT' if l['kind'] in {'CE','PE'} else l['kind']
             if not target or target['kind']!=expected or (expected=='OPT' and target['option_type']!=l['kind']):raise ValueError('Map every leg to a compatible historical instrument; no current contract is silently substituted')
             legs.append(dict(instrument_id=identifier,ratio=l['lots']*(1 if l['side']=='BUY' else -1),product='DERIVATIVE' if expected in {'OPT','FUT'} else 'DELIVERY' if b['rules']['allow_overnight'] else 'INTRADAY'))
         rules=b['rules'];family=rules['family'] if b['kind']=='RULES' else 'RULES'
-        spec=dict(id='draft-'+item['id'][:20],name=b['name'],family=family,version=item['id'][:20],signal_instruments=[mapping['underlying']],legs=legs,parameters=rules['parameters'],stop_pct=rules['stop_pct'],target_multiple=rules['target_multiple'],allocation_pct=rules['allocation_pct'],allow_short=any(l['side']=='SELL' for l in b['legs']),allow_overnight=rules['allow_overnight'],size_mode='LOTS',lots=1)
+        spec=dict(id='draft-'+item['id'][:20],name=b['name'],family=family,version=item['id'][:20],signal_instruments=[mapping['underlying']],legs=legs,parameters=rules['parameters'],stop_pct=rules['stop_pct'],target_multiple=rules['target_multiple'],allocation_pct=rules['allocation_pct'],allow_short=any(l['side']=='SELL' for l in b['legs'] if l.get('enabled',True)),allow_overnight=rules['allow_overnight'],size_mode='LOTS',lots=1)
         if family=='RULES':spec['entry_rule']={'left':{'feature':'close','instrument_id':mapping['underlying']},'op':'gt','right':0}
         strategy=Strategy.model_validate(spec).model_dump(mode='json');config=Run.model_validate(dict(dataset_id=body.dataset_id,name=b['name']+' · historical test',capital=body.capital,strategies=[strategy],execution={'allow_uncovered_options':body.allow_uncovered_options})).model_dump(mode='json')
         return self.research.create(config)
@@ -268,7 +270,8 @@ class Workspace:
     def paper_basket(self,body,forward):
         from ..forward.defaults import defaults
         from ..forward.schemas import Portfolio
-        item=self.draft(body.draft_id);b=item['basket'];master=self._master();bindings={};legs=[]
+        item=self.draft(body.draft_id);b=dict(item['basket']);b['legs']=[l for l in b['legs'] if l.get('enabled',True)];master=self._master();bindings={};legs=[]
+        if not b['legs']:raise ValueError('Enable at least one leg before a paper handoff')
         if b['source']=='HYPOTHETICAL':raise ValueError('Hypothetical drafts can be analyzed; bind actual current contracts before forward testing')
         for index,l in enumerate(b['legs']):
             raw=master.get(l['key']);identifier='LEG_'+str(index)
@@ -278,7 +281,7 @@ class Workspace:
         underlying_key=next((self.kite.underlying_key(master[l['key']]) for l in b['legs'] if l['kind'] in {'CE','PE','FUT'}),b['legs'][0]['key'])
         reference=next((identifier for identifier,key in bindings.items() if key==underlying_key),'REFERENCE')
         if reference not in bindings:bindings[reference]=underlying_key
-        rules=b['rules'];spec=dict(id='basket_'+item['id'][:16],name=b['name'],family='SCHEDULED' if b['kind']=='OPTIONS' else rules['family'],signal_instruments=[reference],legs=legs,parameters=rules['parameters'],size_mode='LOTS',lots=1,allocation_pct=rules['allocation_pct'],stop_pct=rules['stop_pct'],target_multiple=rules['target_multiple'],allow_short=any(l['side']=='SELL' for l in b['legs']),allow_overnight=rules['allow_overnight'])
+        rules=b['rules'];spec=dict(id='basket_'+item['id'][:16],name=b['name'],family='SCHEDULED' if b['kind']=='OPTIONS' else rules['family'],signal_instruments=[reference],legs=legs,parameters=rules['parameters'],size_mode='LOTS',lots=1,allocation_pct=rules['allocation_pct'],stop_pct=rules['stop_pct'],target_multiple=rules['target_multiple'],allow_short=any(l['side']=='SELL' for l in b['legs'] if l.get('enabled',True)),allow_overnight=rules['allow_overnight'])
         if b['kind']=='OPTIONS':spec['schedule']=[dict(at=self.clock().isoformat(),action='ENTER')]
         elif spec['family']=='RULES':spec['entry_rule']={'left':{'feature':'close','instrument_id':reference},'op':'gt','right':0}
         protocol=defaults(self.clock().isoformat());protocol.pop('notes',None);protocol.update(request_id='workspace-'+uuid.uuid4().hex,name=b['name']+' · forward paper',capital=body.capital,strategies=[Strategy.model_validate(spec).model_dump(mode='json')],bindings=bindings,reviewer=body.reviewer,review_note=body.review_note,data_rights_confirmed=body.data_rights_confirmed,assumptions_reviewed=body.assumptions_reviewed)

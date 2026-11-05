@@ -11,28 +11,29 @@ def main():
         browser=pw.chromium.launch(headless=True,args=['--no-sandbox']);page=browser.new_page(viewport={'width':1600,'height':1100});page.on('pageerror',lambda e:errors.append(str(e)))
         page.goto(base,wait_until='networkidle');before=page.request.get(base+'/api/state').json()
         expect(page.locator('#view-home')).to_be_visible();expect(page.locator('#home-next-step')).to_be_visible();checks.append('guided home and next step')
-        for name,view in [('Trade','trade'),('Strategy Builder','builder'),('My Strategies','saved'),('Portfolio','positions'),('Connections','setup'),('Home','home')]:
+        for name,view in [('Trade','trade'),('Strategy Builder','builder'),('My Strategies','saved'),('Portfolio','positions'),('Connections','setup'),('Trading setup','pilot'),('Home','home')]:
             (page.locator('[data-view="positions"]').first if view=='positions' else page.get_by_role('button',name=name,exact=True)).click();expect(page.locator('#view-'+view)).to_be_visible();checks.append('primary navigation '+name)
             assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+2')
             if view=='trade':expect(page.locator('#watchlist-select')).to_be_visible();expect(page.locator('#watchlist-menu')).to_be_visible();expect(page.locator('#chart-live-status')).to_be_visible();checks.append('deployed named watchlist controls and chart freshness label')
-            if view=='builder':expect(page.locator('#builder-payoff')).to_contain_text('See the shape of your strategy')
+            if view=='builder':
+                expect(page.locator('#builder-payoff')).to_contain_text('See the shape of your strategy');expect(page.locator('#studio-import-positions')).to_be_visible();expect(page.locator('#studio-leg-values')).to_be_visible();expect(page.locator('#studio-panel-margin')).to_be_visible();expect(page.locator('#builder-overview')).to_be_visible();checks.append('single-view strategy summary and margin controls available without broker calls')
             if view=='positions':
                 assert page.locator('#portfolio-summary').is_visible();saved=page.request.get(base+'/api/pilot/status').json().get('portfolio_view');expected=len(saved['holdings']) if saved else 0
-                assert page.locator('#portfolio-table tbody tr').count()==expected;checks.append('cached broker holdings rendered without a new broker read or private screenshot')
-            else:page.screenshot(path=str(ROOT/'docs/screenshots'/('workspace-'+view+'-deployed.png')),full_page=True)
-        page.get_by_role('button',name='Strategy Builder',exact=True).click();expect(page.locator('#template-count')).to_contain_text('51');checks.append('full 51-template catalog visible')
+                assert page.locator('#portfolio-table tbody tr').count()==expected;expect(page.locator('#position-count')).to_have_text(str(expected));checks.append('cached broker holdings rendered without a new broker read or private screenshot')
+            elif view=='pilot':expect(page.locator('#live-onboarding-steps button')).to_have_count(4);expect(page.locator('[data-onboarding-panel="1"]')).to_be_visible();checks.append('four-stage onboarding opens at account verification without broker reads');page.locator('[data-onboarding-step="2"]').first.click();expect(page.locator('#pilot-universe option')).to_have_count(2);expect(page.locator('#pilot-universe')).to_contain_text('All supported NSE stocks and ETFs');expect(page.locator('#pilot-budget-mode')).to_contain_text('no app-defined caps');page.locator('[data-onboarding-step="1"]').first.click();checks.append('all-NSE-stock permission option is available without changing saved authority')
+        page.get_by_role('button',name='Strategy Builder',exact=True).click();expect(page.locator('#builder-strategy-library')).to_be_visible();expect(page.locator('#strategy-templates [data-template]')).to_have_count(51);expect(page.locator('#builder-strategy-library select')).to_have_count(0);page.locator('[data-template-category="Bullish"]').click();expect(page.locator('#strategy-templates [data-template]')).to_have_count(10);page.locator('[data-template-category="All"]').click();checks.append('visible 51-template strategy library filters with market-view buttons without dropdowns or broker calls')
         page.set_viewport_size({'width':390,'height':844})
-        for name,view in [('Home','home'),('Trade','trade'),('Strategy Builder','builder'),('Portfolio','positions'),('Connections','setup')]:
+        for name,view in [('Home','home'),('Trade','trade'),('Strategy Builder','builder'),('Portfolio','positions'),('Connections','setup'),('Trading setup','pilot')]:
             (page.locator('[data-view="positions"]').first if view=='positions' else page.get_by_role('button',name=name,exact=True)).click();assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+2');checks.append('mobile '+name)
             if view=='builder':
                 expect(page.locator('#builder-payoff')).to_contain_text('See the shape of your strategy');bounds=page.locator('#builder-payoff .desk-empty').bounding_box();container=page.locator('#builder-payoff').bounding_box();assert bounds['height']<=container['height']+2
             if view=='positions':assert page.locator('#portfolio-summary').is_visible()
-            else:page.screenshot(path=str(ROOT/'docs/screenshots'/('workspace-'+view+'-deployed-mobile.png')),full_page=True)
+            elif view=='pilot':expect(page.locator('#live-onboarding-steps')).to_be_visible()
         pilot=page.request.get(base+'/api/pilot/status').json();health=page.request.get(base+'/api/health').json();after=page.request.get(base+'/api/state').json()
-        assert not pilot['transport_enabled'] and not pilot['armed'] and not pilot['orders'] and pilot['audit']['ok'];checks.append('live transport disabled and zero real orders')
+        assert pilot['transport_enabled']==('--expect-live-transport' in sys.argv) and not pilot['armed'] and not pilot['orders'] and pilot['audit']['ok'];checks.append('expected transport capability, inactive account and zero real orders')
         assert health['status']=='ok' and health['reconciliation']['ok'];checks.append('healthy financial reconciliation')
         assert before['account']==after['account'] and before['positions']==after['positions'] and before['orders']==after['orders'];checks.append('read-only journey preserves financial state')
         browser.close()
-    record=dict(checked_at=datetime.now(timezone.utc).isoformat(),passed=len(checks),checks=checks,javascript_errors=errors,read_only=True,private_portfolio_artifacts_created=False,real_orders_sent=False,genuine_provider_access_tested=False)
+    record=dict(checked_at=datetime.now(timezone.utc).isoformat(),passed=len(checks),checks=checks,javascript_errors=errors,read_only=True,private_portfolio_artifacts_created=False,real_orders_sent=False,genuine_provider_access_tested=False,transport_enabled=pilot['transport_enabled'],account_armed=pilot['armed'],screenshots_created=False)
     (ROOT/'docs/workspace-deployed-browser.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(record));assert not errors
 if __name__=='__main__':main()

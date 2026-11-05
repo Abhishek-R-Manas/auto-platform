@@ -1,23 +1,28 @@
 {
-  "checked_at": "2026-11-05T08:25:21.829331+00:00",
-  "passed": 18,
+  "checked_at": "2026-11-05T15:48:01.265108+00:00",
+  "passed": 23,
   "checks": [
     "guided home and next step",
     "primary navigation Trade",
     "deployed named watchlist controls and chart freshness label",
     "primary navigation Strategy Builder",
+    "single-view strategy summary and margin controls available without broker calls",
     "primary navigation My Strategies",
     "primary navigation Portfolio",
     "cached broker holdings rendered without a new broker read or private screenshot",
     "primary navigation Connections",
+    "primary navigation Trading setup",
+    "four-stage onboarding opens at account verification without broker reads",
+    "all-NSE-stock permission option is available without changing saved authority",
     "primary navigation Home",
-    "full 51-template catalog visible",
+    "visible 51-template strategy library filters with market-view buttons without dropdowns or broker calls",
     "mobile Home",
     "mobile Trade",
     "mobile Strategy Builder",
     "mobile Portfolio",
     "mobile Connections",
-    "live transport disabled and zero real orders",
+    "mobile Trading setup",
+    "expected transport capability, inactive account and zero real orders",
     "healthy financial reconciliation",
     "read-only journey preserves financial state"
   ],
@@ -25,5 +30,8 @@
   "read_only": true,
   "private_portfolio_artifacts_created": false,
   "real_orders_sent": false,
-  "genuine_provider_access_tested": false
+  "genuine_provider_access_tested": false,
+  "transport_enabled": true,
+  "account_armed": false,
+  "screenshots_created": false
 }

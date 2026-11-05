@@ -227,3 +227,15 @@ setup, study budgets, controls, acceptance evidence and remaining external valid
 Saved `.env.local` entries are authoritative over matching environment variables. The guided
 setup preserves existing AI settings and clears any old saved Kite session token on key changes.
 Only app keys are remembered; the normal browser-login access token remains in server memory.
+
+
+## Manual real-money trading
+
+Open **Trading setup** for guided onboarding: Connect account → Set limits → Broker permissions → Review & activate. Choose specific stocks or all supported NSE stocks and ETFs. New manual setups use available broker funds with no app-defined financial or daily-entry caps. Optional custom limits have no hard-coded upper ceilings. The wizard validates permissions, cash and protection before saving, and every order rechecks broker funds and execution constraints. See the [manual trading guide](docs/manual-trading.md) for supported orders, owner setup, protection, recovery and measured deployment. The broker connection alone does not grant order authority. Options baskets and automated live strategy execution remain unavailable.
+
+
+Strategy builder 0.15 adds contract-aware adjustments, manual P&L, per-leg/scenario analysis, observed strategy tracking, position import and read-only broker margin calculations. See [the capability comparison](docs/strategy-builder-parity.md) for exact coverage and remaining differences.
+
+Builder 0.16 presents editable legs, payoff, risk/premium metrics, net Greeks and broker margin together on laptop/desktop. Templates use a searchable menu; precise settings remain expandable. See [the workspace guide](docs/workspace-guide.md#single-view-builder--016).
+
+Builder 0.18 has a visible strategy library with market-view buttons, search and recipe-derived payoff thumbnails. The structure filter and strategy-selection dropdowns are removed; selected cards use a light background without a left border. Calendar previews retain later-leg model value and are labeled accordingly.

@@ -9,10 +9,11 @@ class KiteBroker:
         self.kite=kite;self.last_write=0
         self.enabled=os.getenv('ARTHA_LIVE_TRANSPORT_ENABLED')=='1' if enabled is None else enabled
 
-    def request(self,method,path,data=None):
+    def request(self,method,path,data=None,*,calculation=None):
         read=method=='GET' and path in {'/user/profile','/user/margins/equity','/orders','/trades','/portfolio/holdings','/portfolio/positions'}
         write=(method=='POST' and path=='/orders/regular') or (method=='DELETE' and re.fullmatch(r'/orders/regular/[0-9]{1,30}',path))
-        if not read and not write:raise ValueError('Broker endpoint is outside the pilot allowlist')
+        margin=method=='POST' and path=='/margins/basket' and type(calculation) is bool
+        if not read and not write and not margin:raise ValueError('Broker endpoint is outside the pilot allowlist')
         if write and not self.enabled:raise ValueError('Real order transport is disabled by deployment policy')
         if not self.kite.status()['authenticated']:raise ValueError('Sign in with Zerodha before accessing your broker account')
         # Credential rotation and authentication share this lock. No secrets leave the server.
@@ -24,7 +25,7 @@ class KiteBroker:
             context=ssl.create_default_context();context.minimum_version=ssl.TLSVersion.TLSv1_3
             try:
                 with httpx.Client(base_url='https://api.kite.trade',verify=context,timeout=httpx.Timeout(12,connect=5),trust_env=False,follow_redirects=False) as client:
-                    with client.stream(method,path,headers={'X-Kite-Version':'3','Authorization':'token '+self.kite.key+':'+self.kite.token},data=data) as response:
+                    with client.stream(method,path,headers={'X-Kite-Version':'3','Authorization':'token '+self.kite.key+':'+self.kite.token},data=None if margin else data,json=data if margin else None,params={'consider_positions':str(calculation).lower()} if margin else None) as response:
                         if response.status_code in {401,403}:self.kite.token=''
                         if response.status_code!=200:raise BrokerFailure('Broker request was not confirmed; reconcile before taking further action')
                         content=bytearray()
@@ -37,6 +38,9 @@ class KiteBroker:
                 return result['data']
             except BrokerFailure:raise
             except Exception:raise BrokerFailure('Broker response is uncertain; no request was retried. Reconcile with Zerodha.') from None
+
+    def basket_margin(self,orders,consider_positions=False):
+        return self.request('POST','/margins/basket',orders,calculation=consider_positions)
 
     def snapshot(self):
         profile=self.request('GET','/user/profile')

@@ -21,6 +21,8 @@ class ChainRequest(Strict):
     expiry:Annotated[str,Field(pattern=r'^\d{4}-\d{2}-\d{2}$')]|None=None
     width:Annotated[StrictInt,Field(ge=3,le=30)]=15
 class BasketLeg(Strict):
+    enabled:bool=True
+    hedge:bool=False
     key:Key|None=None
     kind:Literal['CE','PE','EQ','FUT']='CE'
     side:Literal['BUY','SELL']='BUY'
@@ -59,6 +61,8 @@ class Basket(Strict):
     interest_rate:Annotated[float,Field(ge=-.1,le=1)]=.065
     dividend_yield:Annotated[float,Field(ge=0,le=1)]=0
     cost_estimate:Annotated[float,Field(ge=0,le=100000000)]=0
+    manual_pnl:Annotated[float,Field(ge=-1000000000,le=1000000000)]=0
+    manual_pnl_enabled:bool=True
     legs:Annotated[list[BasketLeg],Field(min_length=1,max_length=20)]
     rules:Rules=Rules()
     notes:Annotated[str,Field(max_length=4000)]=''
@@ -70,6 +74,8 @@ class Analysis(Strict):
     days_forward:Annotated[float,Field(ge=0,le=1000)]|None=None
     iv_shift_pp:Annotated[float,Field(ge=-100,le=200)]|None=None
     range_pct:Annotated[float,Field(ge=.5,le=100)]|None=None
+    table_step_pct:Annotated[float,Field(ge=.1,le=20)]=1
+    table_center_move_pct:Annotated[float,Field(ge=-90,le=200)]=0
     @model_validator(mode='after')
     def saved_scenario(self):
         for name in ('target_move_pct','days_forward','iv_shift_pp','range_pct'):
@@ -119,3 +125,22 @@ class Screener(Strict):
     iv_shift_pp:Annotated[float,Field(ge=-100,le=200)]=0
     max_loss:Annotated[float,Field(ge=0,le=100000000)]=0
     cost_estimate:Annotated[float,Field(ge=0,le=100000000)]=0
+
+class StudioBasket(Strict):
+    basket:Basket
+class StrikeAdjust(StudioBasket):
+    action:Literal['SHIFT','WIDTH','HEDGE','EXPIRY']
+    steps:Annotated[StrictInt,Field(ge=-20,le=20)]=1
+    strike_step:Positive=50
+    expiry:datetime|None=None
+class MarginQuote(StudioBasket):
+    product:Literal['NRML','MIS']='NRML'
+    consider_positions:bool=False
+class PositionImport(Strict):
+    snapshot_hash:Annotated[str,Field(pattern=r'^[a-f0-9]{64}$')]
+    selected:Annotated[list[Annotated[str,Field(pattern=r'^[a-f0-9]{64}$')]],Field(min_length=1,max_length=20)]
+    spot:Positive
+class ChainSeries(Strict):
+    underlying:Annotated[str,Field(pattern=r'^[A-Z0-9 &_.\-]{1,40}$')]
+    expiry:Annotated[str,Field(pattern=r'^\d{4}-\d{2}-\d{2}$')]
+    strikes:Annotated[list[Positive],Field(min_length=1,max_length=6)]

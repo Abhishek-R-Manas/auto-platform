@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter
 from pydantic import Field
-from .service import Mandate,Intention,Submit,Arm
+from .service import Mandate,ManualMandate,Intention,Submit,Arm
 
 def router(service):
     api=APIRouter(prefix='/api/pilot',tags=['Supervised real-money pilot'])
@@ -9,6 +9,10 @@ def router(service):
     def status():return service.status()
     @api.post('/mandate')
     def mandate(body:Mandate):return service.configure(body)
+    @api.post('/manual/review')
+    def manual_review(body:dict):return service.review_manual(body)
+    @api.post('/manual/mandate')
+    def manual_mandate(body:ManualMandate):return service.configure_manual(body)
     @api.post('/reconcile')
     def reconcile():return service.reconcile()
     @api.post('/arm')

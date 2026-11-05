@@ -12,20 +12,21 @@ from ..risk import budget_checks
 from ..research.schemas import Strict
 from ..research.catalog import canonical,digest,bounds
 from .broker import KiteBroker
+from .limits import broker_funded,BUDGET_FIELDS,label as budget_label
+from .universe import eligible,all_equities,label as universe_label
 
 TERMINAL={'COMPLETE','CANCELLED','REJECTED'}
 CONFIRM='I AUTHORIZE THIS REAL MONEY ORDER'
 
-class Mandate(Strict):
+class TradingLimits(Strict):
     account_id:Annotated[str,Field(pattern=r'^[A-Z0-9]{3,20}$')]
-    portfolio_id:Annotated[str,Field(pattern=r'^[a-f0-9]{32}$')]
     symbols:Annotated[list[Annotated[str,Field(pattern=r'^[A-Z0-9 &_.\-]{1,70}$')]],Field(min_length=1,max_length=10)]
-    capital:Annotated[float,Field(gt=0,le=100000)]
-    daily_loss:Annotated[float,Field(gt=0,le=10000)]
-    max_trade_loss:Annotated[float,Field(gt=0,le=10000)]
+    capital:Annotated[float,Field(gt=0)]
+    daily_loss:Annotated[float,Field(gt=0)]
+    max_trade_loss:Annotated[float,Field(gt=0)]
     protective_orders_authorized:StrictBool=False
-    max_order:Annotated[float,Field(gt=0,le=25000)]
-    max_orders_per_day:Annotated[StrictInt,Field(ge=1,le=10)]=3
+    max_order:Annotated[float,Field(gt=0)]
+    max_orders_per_day:Annotated[StrictInt,Field(ge=1)]
     expires_at:datetime
     static_ip_confirmed:StrictBool=False
     delivery_authorized:StrictBool=False
@@ -33,17 +34,41 @@ class Mandate(Strict):
     @model_validator(mode='after')
     def valid(self):
         if self.expires_at.tzinfo is None:raise ValueError('Pilot expiry requires a timezone')
-        if self.max_trade_loss>self.daily_loss or self.daily_loss>self.capital or self.max_order>self.capital:raise ValueError('Loss and order limits cannot exceed allocated capital')
+        values=[getattr(self,name) for name in BUDGET_FIELDS]
+        if getattr(self,'limit_mode','CUSTOM')=='BROKER_FUNDS':
+            if any(value is not None for value in values):raise ValueError('Broker-funded mode requires null app-budget fields')
+        else:
+            if any(value is None for value in values):raise ValueError('Set all custom limits, or choose broker-funded mode')
+            if self.max_trade_loss>self.daily_loss or self.daily_loss>self.capital or self.max_order>self.capital:raise ValueError('Loss and order limits cannot exceed allocated capital')
         if len(set(self.symbols))!=len(self.symbols):raise ValueError('Duplicate pilot symbols')
         return self
+
+class Mandate(TradingLimits):
+    portfolio_id:Annotated[str,Field(pattern=r'^[a-f0-9]{32}$')]
+
+class ManualMandate(TradingLimits):
+    limit_mode:Literal['CUSTOM','BROKER_FUNDS']='CUSTOM'
+    capital:Annotated[float,Field(gt=0)]|None=None
+    daily_loss:Annotated[float,Field(gt=0)]|None=None
+    max_trade_loss:Annotated[float,Field(gt=0)]|None=None
+    max_order:Annotated[float,Field(gt=0)]|None=None
+    max_orders_per_day:Annotated[StrictInt,Field(ge=1)]|None=None
+    instrument_scope:Literal['SELECTED','ALL_NSE_EQ']='SELECTED'
+    symbols:Annotated[list[Annotated[str,Field(pattern=r'^[A-Z0-9 &_.\-]{1,70}$')]],Field(max_length=10)]=Field(default_factory=list)
+    @model_validator(mode='after')
+    def universe(self):
+        if self.instrument_scope=='SELECTED' and not self.symbols:raise ValueError('Selected stocks require at least one symbol')
+        if self.instrument_scope=='ALL_NSE_EQ' and self.symbols:raise ValueError('All-stocks permission requires an empty symbol list')
+        return self
+    confirmation:Literal['ENABLE MANUAL NSE DELIVERY TRADING']
 
 class Intention(Strict):
     request_id:Annotated[str,Field(pattern=r'^[A-Za-z0-9_-]{8,80}$')]
     symbol:Annotated[str,Field(pattern=r'^[A-Z0-9 &_.\-]{1,70}$')]
     side:Literal['BUY','SELL']
-    quantity:Annotated[StrictInt,Field(ge=1,le=10000)]
-    limit_price:Annotated[float,Field(gt=0,le=1000000)]
-    stop_loss:Annotated[float,Field(gt=0,le=1000000)]|None=None
+    quantity:Annotated[StrictInt,Field(ge=1)]
+    limit_price:Annotated[float,Field(gt=0)]
+    stop_loss:Annotated[float,Field(gt=0)]|None=None
     rationale:Annotated[str,Field(min_length=5,max_length=1000)]
     @field_validator('limit_price','stop_loss')
     @classmethod
@@ -145,15 +170,47 @@ class Pilot:
             data['hash']=digest(data);self._set('mandate',data);self._set('armed',False);self._event('MANDATE',data)
             return self.status()
 
+    def review_manual(self,payload):
+        from .onboarding import review
+        with self.lock:return review(self,payload)
+
+    def configure_manual(self,body):
+        from .calendar import manual_policy
+        data=body.model_dump(mode='json');now=self.clock()
+        with self.transaction():
+            if not self.audit()['ok']:raise ValueError('Pilot audit failed')
+            if self.has_exposure() or self.orders():raise ValueError('Existing broker orders require reviewed reallocation before changing trading limits')
+            if not now<body.expires_at<=now+timedelta(days=7):raise ValueError('Trading authority must expire within seven days')
+            if not all((body.static_ip_confirmed,body.delivery_authorized,body.protective_orders_authorized)):raise ValueError('Confirm static IP, delivery authorization and native protection')
+            self._snapshot(data)
+            policy=manual_policy(now)
+            if body.expires_at.astimezone(IST).date().isoformat()>policy['config']['calendar_valid_until']:raise ValueError('Authority exceeds the reviewed exchange calendar')
+            for symbol in body.symbols:
+                if not any(r['tradingsymbol']==symbol and eligible(r) for r in self.kite.master()):raise ValueError('Manual trading supports current NSE delivery equities only')
+            report=self.review_manual(data)
+            if not report['can_save']:
+                failed=next(c for c in report['checks'] if c['status']!='PASS')
+                raise ValueError(failed['label']+': '+failed['detail'])
+            data.pop('confirmation')
+            data.update(id=uuid.uuid4().hex,created_at=now.isoformat(),mode='MANUAL_NSE_CNC',manual_policy_hash=digest(policy))
+            data['hash']=digest(data);self._set('mandate',data);self._set('armed',False);self._event('MANDATE',data)
+            return self.status()
+
     def _mandate(self,allow_expired=False):
         item=self._get('mandate')
-        if not item:raise ValueError('Configure a qualified pilot mandate first')
+        if not item:raise ValueError('Save manual trading permissions or a qualified strategy mandate first')
         core=dict(item);expected=core.pop('hash',None)
         if digest(core)!=expected:raise ValueError('Pilot mandate integrity failed')
         if not allow_expired and datetime.fromisoformat(item['expires_at'])<=self.clock():raise ValueError('Pilot authority expired')
         return item
 
     def _source(self,m):
+        if m.get('mode')=='MANUAL_NSE_CNC':
+            from .calendar import manual_policy
+            policy=manual_policy(self.clock())
+            if digest(policy)!=m['manual_policy_hash']:raise ValueError('Manual exchange calendar changed; review trading authority')
+            if not broker_funded(m):policy['config'].update(capital=m['capital'],risk=dict(trade_pct=100*m['max_trade_loss']/m['capital'],open_pct=100*m['daily_loss']/m['capital']))
+            return policy
         report=self.forward.report(m['portfolio_id'])
         if not report['ready_for_phase5_review'] or report['evidence_hash']!=m['forward_evidence_hash']:raise ValueError('Forward qualification or approved evidence changed; pause and obtain a new review')
         return self.forward.portfolio(m['portfolio_id'])['document']
@@ -199,10 +256,10 @@ class Pilot:
                         if item.get('origin')=='PROTECTIVE' and item['status']=='REJECTED':self._set('protection_error','Broker rejected a protective order; review in Kite and explicitly restore protection');self._set('armed',False)
                     self._set('snapshot',snap);self._set('portfolio_snapshot',snap);self._event('RECONCILIATION',{'hash':digest(snap),'account_id':snap['account_id']})
                     self._set('reconcile_error',None)
-                    if m and self._loss(snap)>=paise(m['daily_loss']):self._set('armed',False);self._set('loss_halt_day',str(self.clock().date()));self._event('LOSS_HALT',{'loss_paise':self._loss(snap)})
+                    if m and not broker_funded(m) and self._loss(snap)>=paise(m['daily_loss']):self._set('armed',False);self._set('loss_halt_day',str(self.clock().date()));self._event('LOSS_HALT',{'loss_paise':self._loss(snap)})
                 self.session=(self.kite.key,self.kite.token)
                 self._protect()
-                if m and self._get('loss_halt_day')==str(self.clock().date()):self._cancel_entries()
+                if m and not broker_funded(m) and self._get('loss_halt_day')==str(self.clock().date()):self._cancel_entries()
                 return self.status()
             except Exception:
                 with self.transaction():self._set('armed',False);self._set('reconcile_error','Broker reconciliation failed. Inspect broker orders, trades, positions and account identity.');self._event('RECONCILIATION_FAILED',{})
@@ -226,7 +283,7 @@ class Pilot:
 
     def _snapshot(self,m):
         snap=self._get('snapshot')
-        if not snap or (self.clock()-datetime.fromisoformat(snap['observed_at'])).total_seconds()>15 or self.session!=(self.kite.key,self.kite.token):raise ValueError('Reconcile the current broker session before continuing')
+        if not self.kite.status()['authenticated'] or not snap or not 0<=(self.clock()-datetime.fromisoformat(snap['observed_at'])).total_seconds()<=15 or self.session!=(self.kite.key,self.kite.token):raise ValueError('Reconcile the current broker session before continuing')
         if snap['account_id']!=m['account_id']:raise ValueError('Broker account differs from pilot mandate')
         event=self.db.execute("SELECT document FROM events WHERE json_extract(document,'$.kind')='RECONCILIATION' ORDER BY sequence DESC LIMIT 1").fetchone()
         if not event or json.loads(event[0])['details']['hash']!=digest(snap):raise ValueError('Broker snapshot integrity failed')
@@ -241,8 +298,13 @@ class Pilot:
             if self._get('protection_error') or self._get('protection_suspensions',[]) or self.protection()['unprotected_units']:raise ValueError('Resolve missing or suspended broker protection before arming')
             if not m['static_ip_confirmed'] or not m['delivery_authorized']:raise ValueError('Confirm broker static-IP setup and delivery-sale authorization')
             self._source(m);snap=self._snapshot(m)
-            if self._loss(snap)>=paise(m['daily_loss']) or self._get('loss_halt_day')==str(self.clock().date()):raise ValueError('Daily loss halt blocks new orders')
+            if not broker_funded(m) and (self._loss(snap)>=paise(m['daily_loss']) or self._get('loss_halt_day')==str(self.clock().date())):raise ValueError('Daily loss halt blocks new orders')
             if not self.audit()['ok']:raise ValueError('Pilot audit failed')
+            if m.get('mode')=='MANUAL_NSE_CNC':
+                readiness=self.readiness()
+                if not readiness['can_arm']:
+                    failed=next((g['label'] for g in readiness['gates'] if not g['ok']),'Refresh the current account')
+                    raise ValueError('Complete trading readiness before activation: '+failed)
             self._set('armed',True);self.watch_required=True;self._event('ARMED',{'mandate_hash':m['hash']});return self.status()
 
     def pause(self,cancel_entries=False):
@@ -256,24 +318,29 @@ class Pilot:
 
     def _evaluate_live(self,order):
         exiting=order['side']=='SELL'
-        m=self._mandate(allow_expired=exiting);snap=self._snapshot(m);doc=self.forward.portfolio(m['portfolio_id'])['document'] if exiting else self._source(m);now=self.clock()
+        m=self._mandate(allow_expired=exiting);snap=self._snapshot(m);doc=self._source(m) if m.get('mode')=='MANUAL_NSE_CNC' or not exiting else self.forward.portfolio(m['portfolio_id'])['document'];now=self.clock()
         if not self.broker.enabled or (not exiting and not self._get('armed')):raise ValueError('Real-money pilot is paused or deployment transport is disabled')
         if not self.audit()['ok']:raise ValueError('Pilot audit failed')
         span=bounds(doc['manifest']['calendar'],now.date())
         if not span or not span[0]<=now<span[1]-timedelta(minutes=10):raise ValueError('Outside the reviewed pilot session or within its closing buffer')
         if now.date().isoformat()>doc['config']['calendar_valid_until']:raise ValueError('Reviewed exchange calendar expired')
-        if order['symbol'] not in m['symbols']:raise ValueError('Instrument is outside the pilot mandate')
-        if not exiting and (self._get('loss_halt_day')==str(now.date()) or self._loss(snap)>=paise(m['daily_loss'])):raise ValueError('Daily loss limit reached')
+        if not all_equities(m) and order['symbol'] not in m['symbols']:raise ValueError('Instrument is outside the pilot mandate')
+        if not exiting and not broker_funded(m) and (self._get('loss_halt_day')==str(now.date()) or self._loss(snap)>=paise(m['daily_loss'])):raise ValueError('Daily loss limit reached')
         if not {'NSE'}<=set(snap['exchanges']) or 'CNC' not in snap['products'] or not {'LIMIT','SL'}<=set(snap['order_types']):raise ValueError('Broker account lacks required trading permissions')
         own=self.orders();ids={o.get('broker_order_id') for o in own}
-        if any(o.get('tradingsymbol') in m['symbols'] and o.get('status') not in TERMINAL and str(o.get('order_id')) not in ids for o in snap['orders']):raise ValueError('An external pending order overlaps pilot instruments')
+        overlap=set(m['symbols'])
+        if all_equities(m):
+            pending_symbols={o['order']['symbol'] for o in own if o['status'] not in TERMINAL}
+            owned_symbols={p['symbol'] for p in self.protection()['symbols'] if p['owned_units']>0}
+            overlap={order['symbol']}|pending_symbols|owned_symbols
+        if any(o.get('tradingsymbol') in overlap and o.get('status') not in TERMINAL and str(o.get('order_id')) not in ids for o in snap['orders']):raise ValueError('An external pending order overlaps pilot instruments')
         if any(o['status'] in {'UNCERTAIN','SENDING','CANCEL_SENDING','CANCEL_PENDING'} for o in own):raise ValueError('Uncertain broker action requires reconciliation; it cannot be retried')
         if not exiting and (self._get('protection_error') or self._get('protection_suspensions',[]) or self.protection()['unprotected_units']):raise ValueError('Resolve missing broker protection before new exposure')
-        if not exiting and sum(o['order']['side']=='BUY' and o['created_at'][:10]==now.isoformat()[:10] for o in own)>=m['max_orders_per_day']:raise ValueError('Daily pilot order count exhausted')
-        row=next((r for r in self.kite.master() if r['exchange']=='NSE' and r['tradingsymbol']==order['symbol'] and r['instrument_type']=='EQ'),None)
-        if not row or int(row['lot_size'])!=1:raise ValueError('Pilot supports current one-unit NSE delivery-equity contracts only')
+        if not exiting and not broker_funded(m) and sum(o['order']['side']=='BUY' and o['created_at'][:10]==now.isoformat()[:10] for o in own)>=m['max_orders_per_day']:raise ValueError('Daily pilot order count exhausted')
+        row=next((r for r in self.kite.master() if r['tradingsymbol']==order['symbol'] and eligible(r)),None)
+        if not row:raise ValueError('Pilot supports current one-unit NSE delivery-equity contracts only')
         value=paise(order['limit_price'])*order['quantity']
-        if value>paise(m['max_order']):raise ValueError('Per-order capital limit exceeded')
+        if not broker_funded(m) and value>paise(m['max_order']):raise ValueError('Per-order capital limit exceeded')
         if paise(order['limit_price'])%paise(float(row['tick_size'])):raise ValueError('Limit price must align with the current tick size')
         q=self.kite._quotes(['NSE:'+order['symbol']]).get('NSE:'+order['symbol'],{})
         stamp=datetime.fromisoformat(q['timestamp']);stamp=stamp if stamp.tzinfo else stamp.replace(tzinfo=IST)
@@ -282,25 +349,30 @@ class Pilot:
         if not -2<=age<=30 or int(q.get('instrument_token',0))!=int(row['instrument_token']):raise ValueError('Fresh current-token quote is required for real orders')
         depth=q.get('depth',{});bid=depth.get('buy',[{}])[0];ask=depth.get('sell',[{}])[0]
         b=float(bid.get('price',0));a=float(ask.get('price',0));price=order['limit_price']
-        if not all(math.isfinite(v) and v>0 for v in (b,a)) or b>a or min(int(bid.get('quantity',0)),int(ask.get('quantity',0)))<order['quantity']:raise ValueError('Insufficient valid executable depth')
-        if (a-b)/b>.01 or abs(price-(a if order['side']=='BUY' else b))/(a if order['side']=='BUY' else b)>.01:raise ValueError('Spread or limit-price deviation exceeds the 1% pilot ceiling')
+        visible=min(int(bid.get('quantity',0)),int(ask.get('quantity',0)))
+        if not all(math.isfinite(v) and v>0 for v in (b,a)) or b>a or visible<=0:raise ValueError('Insufficient valid executable depth')
+        if not broker_funded(m) and visible<order['quantity']:raise ValueError('Insufficient valid executable depth')
+        if not broker_funded(m) and ((a-b)/b>.01 or abs(price-(a if order['side']=='BUY' else b))/(a if order['side']=='BUY' else b)>.01):raise ValueError('Spread or limit-price deviation exceeds the 1% pilot ceiling')
         fee=paise(fees('EQ',order['side'],value/100,dp=order['side']=='SELL')['total'])
         if not exiting:
             stop=order['stop_loss']
             if stop>=b or paise(stop)%paise(float(row['tick_size'])):raise ValueError('Protective stop must be below the current bid and aligned with the tick size')
             planned=paise((price-stop)*order['quantity'])+fee+paise(fees('EQ','SELL',stop*order['quantity'],dp=True)['total'])
-            reviewed=doc['config'].get('risk',{})
-            trade_limit=min(m['max_trade_loss'],m['capital']*reviewed.get('trade_pct',.25)/100)
-            existing=sum(o.get('planned_risk_paise',0) for o in own if o['order']['side']=='BUY' and (o['status'] not in TERMINAL or o.get('filled_quantity',0)))
-            risk=dict(trade_pct=100*trade_limit/m['capital'],open_pct=min(100,reviewed.get('open_pct',100*m['daily_loss']/m['capital'])),margin_pct=100,overnight_stress_pct=100)
-            checks=budget_checks(equity=paise(m['capital']),trade_risk=planned,open_risk=existing+planned,funding_needed=value+fee,funding_available=self._funds(snap),margin=0,stress=value,risk=risk,futures=False)
-            if any(c['status']=='FAIL' for c in checks):raise ValueError('Pilot planned-loss or funding budget exceeded: '+next(c['reason'] for c in checks if c['status']=='FAIL'))
+            if broker_funded(m):
+                checks=[dict(name='App budgets',status='NOT_SET',reason='Broker-funded mode has no app allocation, order-value, loss-budget or daily-entry cap. Cash and execution checks still apply.')]
+            else:
+                reviewed=doc['config'].get('risk',{})
+                trade_limit=min(m['max_trade_loss'],m['capital']*reviewed.get('trade_pct',.25)/100)
+                existing=sum(o.get('planned_risk_paise',0) for o in own if o['order']['side']=='BUY' and (o['status'] not in TERMINAL or o.get('filled_quantity',0)))
+                risk=dict(trade_pct=100*trade_limit/m['capital'],open_pct=min(100,reviewed.get('open_pct',100*m['daily_loss']/m['capital'])),margin_pct=100,overnight_stress_pct=100)
+                checks=budget_checks(equity=paise(m['capital']),trade_risk=planned,open_risk=existing+planned,funding_needed=value+fee,funding_available=self._funds(snap),margin=0,stress=value,risk=risk,futures=False)
+                if any(c['status']=='FAIL' for c in checks):raise ValueError('Pilot planned-loss or funding budget exceeded: '+next(c['reason'] for c in checks if c['status']=='FAIL'))
         else:planned=0;checks=[]
         if order['side']=='BUY':
-            # Lifetime gross purchases plus pending commitments never recycle sale proceeds.
+            # Only custom allocations impose a lifetime gross-purchase ceiling.
             committed=sum(paise(o['order']['limit_price'])*(o['filled_quantity'] if o['status'] in TERMINAL else o['order']['quantity'])+o.get('fee_reserve_paise',0) for o in own if o['order']['side']=='BUY')
             pending=sum(paise(o['order']['limit_price'])*(o['order']['quantity']-o.get('filled_quantity',0))+o.get('fee_reserve_paise',0) for o in own if o['order']['side']=='BUY' and o['status'] not in TERMINAL)
-            if committed+value+fee>paise(m['capital']):raise ValueError('Pilot capital reservation exhausted')
+            if not broker_funded(m) and committed+value+fee>paise(m['capital']):raise ValueError('Pilot capital reservation exhausted')
             if value+fee+pending>self._funds(snap):raise ValueError('Insufficient actual broker funds after pilot reservations')
         else:
             bought=sum(o.get('filled_quantity',0) for o in own if o['order']['symbol']==order['symbol'] and o['order']['side']=='BUY')
@@ -437,7 +509,7 @@ class Pilot:
             if quantity<=0:continue
             try:
                 self._snapshot(m)
-                row=next(r for r in self.kite.master() if r['exchange']=='NSE' and r['tradingsymbol']==symbol and r['instrument_type']=='EQ')
+                row=next(r for r in self.kite.master() if r['tradingsymbol']==symbol and eligible(r))
                 quote=self.kite._quotes(['NSE:'+symbol])['NSE:'+symbol];at=datetime.fromisoformat(quote['timestamp']);at=at if at.tzinfo else at.replace(tzinfo=IST)
                 bid=float(quote['depth']['buy'][0]['price']);tick=paise(float(row['tick_size']));trigger=parent['order']['stop_loss']
                 if not -2<=(self.clock()-at).total_seconds()<=30 or int(quote['instrument_token'])!=int(row['instrument_token']) or not math.isfinite(bid) or bid<=0:raise ValueError('Fresh quote required for broker protection')
@@ -459,14 +531,42 @@ class Pilot:
                 with self.transaction():self._set('armed',False);self._set('protection_error','Native protection is missing, failed or uncertain. Inspect broker orders immediately; no request was retried.');self._event('PROTECTION_FAILED',{'symbol':symbol})
                 return
 
+    def readiness(self):
+        from .calendar import policy_status
+        now=self.clock();m=self._get('mandate');snap=self._get('snapshot');audit=self.audit()
+        age=(now-datetime.fromisoformat(snap['observed_at'])).total_seconds() if snap else None
+        verified=bool(snap and age is not None and age>=0 and self.kite.status()['authenticated'] and self.session==(self.kite.key,self.kite.token) and datetime.fromisoformat(snap['observed_at']).astimezone(IST).date()==now.date() and (not m or snap['account_id']==m['account_id']) and not self._get('reconcile_error') and audit['ok'])
+        fresh=verified and age<=15
+        authority_error=None
+        if m:
+            try:self._mandate();self._source(m)
+            except ValueError as e:authority_error=str(e)
+        protection=self.protection()
+        try:available=self._funds(snap) if verified else None
+        except (ValueError,KeyError,TypeError):available=None
+        broker_permissions=bool(verified and 'NSE' in snap['exchanges'] and 'CNC' in snap['products'] and {'LIMIT','SL'}<=set(snap['order_types']))
+        loss_ok=bool(m and snap and (broker_funded(m) or (self._loss(snap)<paise(m['daily_loss']) and self._get('loss_halt_day')!=str(now.date())))) if verified else False
+        gates=[
+            dict(id='session',label='Sign in with Zerodha',ok=bool(self.kite.status()['authenticated'])),
+            dict(id='reconciliation',label='Sync and verify this broker account',ok=verified),
+            dict(id='broker_permissions',label='Broker permits NSE delivery and stop-limit orders',ok=broker_permissions),
+            dict(id='funds',label='Cash-only broker funds verified',ok=available is not None and available>0),
+            dict(id='limits',label='Save account, stocks and trading permissions',ok=bool(m and not authority_error)),
+            dict(id='permissions',label='Confirm static IP, delivery sales and protective stops',ok=bool(m and m['static_ip_confirmed'] and m['delivery_authorized'] and m['protective_orders_authorized'])),
+            dict(id='transport',label='Broker order connection enabled on server',ok=bool(self.broker.enabled)),
+            dict(id='risk',label='Broker funds and native protection healthy' if m and broker_funded(m) else 'Loss limits and native protection healthy',ok=bool(loss_ok and not protection['unprotected_units'] and not protection['error'] and not protection['suspended'])),
+            dict(id='integrity',label='Order journal integrity verified',ok=audit['ok'])]
+        ready=all(g['ok'] for g in gates) and fresh
+        return dict(limit_mode=m.get('limit_mode','CUSTOM') if m else None,budget_mode_label=budget_label(m) if m else 'Not configured',instrument_scope_label=universe_label(m) if m else 'Not configured',setup_verified=verified,execution_fresh=fresh,needs_sync=not fresh,sync_age_seconds=age,setup_observed_at=snap['observed_at'] if snap else None,available_cash_paise=available,gates=gates,can_arm=ready,can_preview=ready and bool(self._get('armed')),state='ACTIVE' if ready and self._get('armed') else 'PAUSED' if m else 'SETUP_REQUIRED',authority_error=authority_error,calendar=policy_status(now),scope='Manual NSE delivery equities · CNC · DAY · LIMIT',strategy_execution_enabled=False)
+
     def status(self):
         with self.lock:
             snap=self._get('snapshot');m=self._get('mandate');audit=self.audit()
             display=(self._get('portfolio_snapshot') or snap) if audit['ok'] else None
-            return dict(portfolio_view=portfolio_view(display),broker_portfolio=broker_rows(display),worker={'last_tick':self.last_tick,'watch_required':self.watch_required},mode='SUPERVISED_REAL_MONEY_PILOT',transport_enabled=self.broker.enabled,armed=bool(self._get('armed')),authenticated=self.kite.status()['authenticated'],mandate=m,
+            return dict(readiness=self.readiness(),portfolio_view=portfolio_view(display),broker_portfolio=broker_rows(display),worker={'last_tick':self.last_tick,'watch_required':self.watch_required},mode='SUPERVISED_REAL_MONEY_PILOT',transport_enabled=self.broker.enabled,armed=bool(self._get('armed')),authenticated=self.kite.status()['authenticated'],mandate=m,
                 protection=self.protection(),reconciliation=dict(observed_at=snap['observed_at'] if snap else None,account_id=snap['account_id'] if snap else None,error=self._get('reconcile_error'),net_funds=self._funds(snap)/100 if snap else None,gross_daily_loss=self._loss(snap)/100 if snap else None),orders=self.orders(),audit=audit,
-                prerequisites=['Qualified forward portfolio and current guardian approval','Exact broker account and explicit capital/loss/order mandate','Whitelisted static IP and delivery-sale authorization','Reviewed deployment transport capability, fresh reconciliation and explicit arming'],
-                limitations=['Manual confirmation for every NSE/CNC LIMIT order; no AI or strategy order dispatch','Loss halt pauses entries and requests cancellation of known entry remainders; it cannot guarantee cancellation or liquidation','Verified buy fills receive authorized native stop-limit exits; gaps can remain unfilled; supervise in Kite','Pilot capital limits lifetime gross purchases, not reinvestment','Broker trade fills are authoritative; contract-note fees and settlement still need owner review','Orders absent from the daily broker book require manual investigation; never resubmit an uncertain order'])
+                prerequisites=['Manual trading limits, or a qualified forward portfolio for strategy-linked authority','Exact broker account and explicit capital/loss/order mandate','Whitelisted static IP and delivery-sale authorization','Reviewed deployment transport capability, fresh reconciliation and explicit arming'],
+                limitations=['Manual confirmation for every NSE/CNC LIMIT order; no AI or strategy order dispatch','Broker-funded mode has no app loss-budget halt; native protection and broker cash checks still apply' if m and broker_funded(m) else 'Owner loss halt pauses entries and requests cancellation of known entry remainders; it cannot guarantee cancellation or liquidation','Verified buy fills receive authorized native stop-limit exits; gaps can remain unfilled; supervise in Kite','Owner-defined limits apply when selected; broker-funded mode has no app financial or daily-entry caps and always rechecks cash and reservations','Broker trade fills are authoritative; contract-note fees and settlement still need owner review','Orders absent from the daily broker book require manual investigation; never resubmit an uncertain order'])
 
     def close(self):
         self.pause()

@@ -7,7 +7,10 @@ from pydantic import Field
 from .models import Watchlist,ChainRequest,Analysis,SaveDraft,Backtest,PaperBasket,TemplateApply,Screener,NewWatchlist,QuoteConnection,Key
 from .analytics import analyze
 
-def router(service,forward):
+def router(service,forward,pilot=None):
+    from .studio import Studio
+    from .models import StudioBasket,StrikeAdjust,MarginQuote,PositionImport,ChainSeries
+    studio=Studio(service,pilot)
     api=APIRouter(prefix='/api/workspace',tags=['Trading desk and strategy builder'])
     @api.get('/meta')
     def meta():return service.meta()
@@ -62,4 +65,20 @@ def router(service,forward):
     def paper(body:PaperBasket):return service.paper_basket(body,forward)
     @api.post('/backtest')
     def backtest(body:Backtest):return service.backtest(body)
+    @api.post('/studio/validate')
+    def validate_studio(body:StudioBasket):return dict(basket=body.basket.model_dump(mode='json'),execution_authority=False)
+    @api.post('/studio/adjust')
+    def adjust(body:StrikeAdjust):return studio.adjust(body)
+    @api.post('/studio/mark')
+    def mark(body:StudioBasket):return studio.mark(body)
+    @api.post('/studio/history')
+    def marks(body:StudioBasket):return studio.history(body)
+    @api.post('/studio/chain-series')
+    def chain_series(body:ChainSeries):return studio.chain_series(body)
+    @api.get('/studio/positions')
+    def positions():return studio.candidates()
+    @api.post('/studio/positions/import')
+    def import_positions(body:PositionImport):return studio.import_positions(body)
+    @api.post('/studio/margins')
+    def margins(body:MarginQuote):return studio.margins(body)
     return api

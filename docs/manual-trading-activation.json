@@ -1,0 +1,20 @@
+{
+  "checked_at": "2026-11-05T09:00:04.863948+00:00",
+  "version": "0.11.0",
+  "identity": "c22eb035ce37d052707df89ce7e617b6d5e17a999a6323e0fbbe1bc3b46456f0",
+  "transport_enabled": true,
+  "account_armed": false,
+  "mandate_configured": false,
+  "authenticated": false,
+  "owner_limits_required": true,
+  "broker_static_ip_and_delivery_confirmation_required": true,
+  "paper_state_preserved": true,
+  "watchlist_preserved": true,
+  "cached_portfolio_preserved": true,
+  "audit_ok": true,
+  "pre_backup_restore_ok": true,
+  "post_backup_restore_ok": true,
+  "real_orders_sent": false,
+  "genuine_order_acceptance_tested": false,
+  "phase5_strategy_qualified": false
+}

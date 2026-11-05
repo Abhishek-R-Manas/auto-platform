@@ -17,7 +17,7 @@ Open `/#pilot`. This first transport supports **manually confirmed NSE delivery-
 Activation requires all of the following:
 
 1. A qualified Phase 4 portfolio, genuine elapsed prospective evidence, current guardian approval and exact bound equity symbols. Synthetic/reference experiments cannot qualify. The current installation had zero forward portfolios at implementation time.
-2. An exact broker account, reviewer, explicit total capital, daily loss threshold, planned trade-loss limit, per-order limit, daily entry count, symbols and expiry (maximum seven days). No user allocation is assumed. Software ceilings are INR 100,000 total, INR 25,000/order, INR 10,000 daily loss threshold and ten entries/day; these ceilings are not a recommended allocation.
+2. An exact broker account, reviewer, explicit total capital, daily loss threshold, planned trade-loss limit, per-order limit, daily entry count, symbols and expiry (maximum seven days). No user allocation is assumed. The initial 0.7 pilot imposed software ceilings of INR 100,000 total, INR 25,000/order, INR 10,000 daily loss and ten entries/day. These are historical: workspace 0.14 removes them and adds explicit broker-funded manual authority with no app-defined financial/count caps; see the current manual trading guide.
 3. Owner confirmation of the broker's static-IP setup and delivery-sale authorization, plus explicit consent to native protective stops and risk/pause cancellation of entry remainders. These remain owner assertions and require actual broker acceptance.
 4. An independently reviewed deployment enabling `ARTHA_LIVE_TRANSPORT_ENABLED=1` in the service environment. The shipped deployment does not set it. The UI cannot enable this capability. This flag is not accepted in the browser credential file.
 5. A fresh read-only broker reconciliation for the same login/account, followed by typing `ARM REAL MONEY ACCOUNT_ID`. Restart pauses the pilot and clears session reconciliation.
@@ -64,3 +64,8 @@ At deployment, Kite authentication was absent, application AI was unconfigured, 
 - [Read-only deployed browser evidence](phase-5-deployed-browser.json)
 - [Deployed market chart workspace](screenshots/charts-deployed-desktop.png)
 - [Deployed gated broker pilot](screenshots/pilot-deployed-desktop.png)
+
+
+## Manual authority in workspace 0.11
+
+The owner requested manual real trading separately from AI/strategy qualification. The [manual trading workflow](manual-trading.md) now supports explicitly bounded manual NSE/CNC LIMIT orders through the same durable execution and protection machinery. Manual authority does not qualify a forward strategy or enable automated entries, derivatives, external-holding sales or broader Phase 5 automation. Current connection deployment and account activation are recorded separately in the manual activation artifact. The earlier qualification requirements continue to apply to the original strategy-linked mandate route.
