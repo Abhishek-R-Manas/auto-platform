@@ -18,7 +18,7 @@ import pyarrow.parquet as pq
 from .schemas import Manifest, aware, iso
 
 MAX_ROWS=250000
-COLUMNS={"instrument_id":pa.string(),"timestamp":pa.string(),"open_at":pa.string(),
+COLUMNS={"instrument_id":pa.string(),"timestamp":pa.string(),"open_at":pa.string(),"received_at":pa.string(),"available_at":pa.string(),"exchange_time":pa.string(),
     **{k:pa.float64() for k in ("open","high","low","close","bid","ask","underlying_price","iv","settlement","margin_per_lot","borrow_rate")},
     **{k:pa.int64() for k in ("volume","oi","bid_quantity","ask_quantity","borrow_quantity")},
     "halted":pa.bool_(),"features_json":pa.string()}
@@ -101,6 +101,19 @@ def normalize(row, manifest, instruments):
     expired_zero=item["kind"]=="OPT" and item["expiry"] and at>=aware(item["expiry"])
     if close is None or close<0 or (close==0 and not expired_zero): raise ValueError("Positive close/last required; zero is allowed for expired option settlement observations")
     result=dict(instrument_id=identifier,timestamp=iso(at),open_at=iso(open_at),close=close)
+    received=row.get("received_at")
+    available=row.get("available_at")
+    if received and not available and row.get("exchange_time") and manifest.get("observation_clock","UNSPECIFIED")=="UNSPECIFIED":
+        # Existing Captures CSV declares timestamp as availability, with a separate
+        # exchange_time and epoch receipt. Preserve that clock instead of reinterpreting it.
+        receipt=datetime.fromtimestamp(float(received),timezone.utc)
+        exchange=aware(row["exchange_time"])
+        if not exchange<=receipt<=at:raise ValueError("Legacy capture clocks must be causal")
+        result.update(received_at=iso(receipt),available_at=iso(at),exchange_time=iso(exchange))
+    elif received or available or manifest.get("observation_clock")=="EXCHANGE_AND_RECEIPT":
+        if not received or not available:raise ValueError("Receipt-clock datasets require received_at and available_at")
+        if not at<=aware(received)<=aware(available):raise ValueError("Exchange, receipt and availability clocks must be causal")
+        result.update(received_at=iso(received),available_at=iso(available))
     for key in ("open","high","low"):
         result[key]=_number(row,key,close if manifest["frequency"]=="QUOTE" else None)
         if result[key] is None or result[key]<0 or (result[key]==0 and not expired_zero): raise ValueError(f"Positive {key} price required")

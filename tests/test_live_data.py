@@ -152,6 +152,10 @@ def test_capture_preserves_real_source_and_times_without_altering_main_account(h
     assert dataset['status']=='READY' and dataset['manifest']['source_kind']=='BROKER'
     assert not dataset['manifest']['rights_confirmed'] and dataset['manifest']['instruments'][0]['symbol']=='M&M'
     assert '1 connection gaps' in dataset['manifest']['notes']
+    recorded=catalog.rows(dataset["id"])[0]
+    assert datetime.fromisoformat(recorded["received_at"]).timestamp()==quote()["received_at"]
+    assert recorded["available_at"]==recorded["timestamp"]
+    assert datetime.fromisoformat(recorded["exchange_time"])==datetime.fromisoformat(quote()["exchange_time"])
     assert hub.store.import_into(capture['id'],catalog)['id']==dataset['id']
     assert hub.engine.state['cash']==cash and not hub.engine.state['orders']
     catalog.db.close()

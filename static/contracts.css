@@ -1,0 +1,56 @@
+
+body[data-view="contracts"] .page-heading {display:none}
+#view-contracts{padding-bottom:40px}
+#view-contracts .workspace-title{margin-bottom:20px}
+.ct-toolbar{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:14px}
+.ct-toolbar label{min-width:200px}
+.ct-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);gap:20px;align-items:start}
+.ct-form,.ct-review{display:grid;gap:18px;min-width:0}
+.ct-card{padding:22px;min-width:0}
+.ct-card h2{font-size:17px;margin:0 0 18px}
+#view-contracts label{display:grid;gap:7px;color:#506077;font-size:12px;font-weight:500;min-width:0}
+#view-contracts input,#view-contracts select,#view-contracts textarea{width:100%;min-width:0;max-width:100%;border:1px solid #dce3ed;border-radius:7px;background:white;padding:10px 11px;color:#253752;font:inherit;font-size:13px}
+#view-contracts input:focus,#view-contracts select:focus,#view-contracts textarea:focus{outline:2px solid #9db7ff;outline-offset:1px}
+.ct-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-bottom:15px}
+.ct-form article>label{margin-bottom:15px}
+.ct-note{font-size:12px;color:#738199;line-height:1.6;overflow-wrap:anywhere;margin:12px 0 0}
+.ct-notice{padding:12px 16px;border:1px solid #e2e8f1;background:#f6f8fd;border-radius:8px;color:#65758f;font-size:12px;line-height:1.6;margin-bottom:20px}
+.ct-status{display:inline-block;padding:7px 10px;border-radius:7px;background:#edf1f9;color:#5b6e8d;font-size:12px;max-width:100%;overflow-wrap:anywhere}
+.ct-pass{background:#eaf6f0;color:#28795b}
+.ct-blocked{color:#a43e43}
+.ct-rule-summary{font-size:12px;line-height:1.6;color:#50678d;background:#f4f7fd;padding:10px;border-radius:6px}
+.ct-table-scroll{overflow:auto;max-width:100%}
+.ct-legs{min-width:740px;width:100%;border-collapse:collapse}
+.ct-legs th{font-size:11px;color:#748198;text-align:left;white-space:normal;font-weight:500}
+.ct-legs th,.ct-legs td{padding:7px 4px}
+.ct-legs td:first-child{min-width:130px}
+.ct-legs td:last-child{min-width:185px}
+.ct-checks{display:grid;gap:12px}
+#view-contracts .ct-checks label{display:flex;align-items:center;gap:8px}
+#view-contracts .ct-checks input{width:auto}
+.ct-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+#ct-save-state{font-size:12px;color:#718099}
+.ct-payoff{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.ct-payoff>div{background:#f5f8fd;border-radius:8px;padding:13px}
+.ct-payoff small{display:block;font-size:11px;color:#738199}
+.ct-payoff strong{display:block;font-size:21px;margin-top:8px;color:#314765}
+.ct-dimensions{display:grid;gap:8px;padding:17px 0;border-bottom:1px solid #edf0f5;margin-bottom:16px;font-size:12px;color:#738199}
+.ct-dimensions span{display:flex;justify-content:space-between;gap:10px}
+.ct-dimensions b{font-weight:500;color:#455e80}
+.ct-review details{margin:14px 0}
+.ct-review summary{font-size:13px;font-weight:500;color:#3c5375;cursor:pointer}
+.ct-findings{list-style:none;padding:0;margin:14px 0;display:grid;gap:12px}
+.ct-findings li{border-left:2px solid #dce4f0;padding:2px 0 2px 12px}
+.ct-findings strong{font-size:11px;font-weight:600}
+.ct-findings small{display:block;font-size:10px;color:#8b96a9;margin-top:3px}
+.ct-findings p{font-size:12px;line-height:1.6;margin:6px 0;color:#687991}
+.ct-review pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:350px;overflow:auto;font-size:11px;background:#f7f9fc;padding:12px;border-radius:6px}
+.ct-saved-item{display:block;width:100%;text-align:left;padding:13px 0;background:none;border:0;border-bottom:1px solid #edf0f5;cursor:pointer}
+.ct-saved-item strong{display:block;color:#344a68;font-size:13px;overflow-wrap:anywhere}
+.ct-saved-item small{display:block;color:#8b96a9;font-size:11px;margin-top:6px}
+@media(max-width:1100px){.ct-layout{grid-template-columns:minmax(0,1fr)}.ct-review{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.ct-grid,.ct-review{grid-template-columns:minmax(0,1fr)}.ct-card{padding:16px}.ct-toolbar{align-items:stretch}.ct-toolbar label{width:100%}.ct-toolbar button{font-size:12px}.ct-payoff strong{font-size:18px}}
+
+body[data-view="contracts"] .account-select-label,body[data-view="contracts"] #workspace-mode,body[data-view="contracts"] #export-top{display:none}
+
+#view-contracts #ct-file[hidden]{display:none!important}

@@ -11,7 +11,7 @@ def main():
     for name in ('KITE_API_KEY','KITE_API_SECRET','KITE_ACCESS_TOKEN','ARTHA_AI_API_KEY','ARTHA_AI_MODEL','OPENAI_API_KEY','ARTHA_TELEGRAM_BOT_TOKEN','ARTHA_TELEGRAM_CHAT_ID','ARTHA_LIVE_TRANSPORT_ENABLED'):env.pop(name,None)
     env['PYTHONDONTWRITEBYTECODE']='1';checks=[];identity=fingerprints()
     commands=[[sys.executable,'-B','-m','pytest','-q']]
-    commands.extend([[sys.executable,'-B','tools/'+name] for name in ('workbench_browser.py','portfolio_browser.py','manual_trading_browser.py','trading_onboarding_browser.py','strategy_studio_browser.py','research_browser.py','onboarding_browser.py','forward_browser.py','candidates_browser.py','inputs_browser.py')])
+    commands.extend([[sys.executable,'-B','tools/'+name] for name in ('workbench_browser.py','portfolio_browser.py','manual_trading_browser.py','trading_onboarding_browser.py','strategy_studio_browser.py','research_browser.py','onboarding_browser.py','forward_browser.py','candidates_browser.py','inputs_browser.py','contracts_browser.py','contract_research_browser.py')])
     commands.append([sys.executable,'-B','-m','pip','check'])
     commands.extend([['node','--check',str(p.relative_to(ROOT))] for p in sorted((ROOT/'static').rglob('*.js'))])
     reuse=None

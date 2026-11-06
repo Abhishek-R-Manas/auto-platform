@@ -1,6 +1,6 @@
 {
-  "checked_at": "2026-11-05T17:03:56.519683+00:00",
-  "passed": 24,
+  "checked_at": "2026-11-06T10:11:26.122734+00:00",
+  "passed": 26,
   "checks": [
     "guided home and next step",
     "hovering anywhere on the sidebar rail expands navigation and More tools without changing workspace width",
@@ -9,6 +9,8 @@
     "primary navigation Strategy Builder",
     "single-view strategy summary and margin controls available without broker calls",
     "primary navigation My Strategies",
+    "primary navigation Strategy Contracts",
+    "contract research protocol and packet verification UI loads without creating data or trials",
     "primary navigation Portfolio",
     "cached broker holdings rendered without a new broker read or private screenshot",
     "primary navigation Connections",

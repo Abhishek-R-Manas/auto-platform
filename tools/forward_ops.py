@@ -79,6 +79,19 @@ def check_database(path):
                 if expected!=identifier or digest(item)!=identifier:raise ValueError('Workspace chain backup integrity failed')
             result['workspace_drafts_verified']=db.execute('SELECT count(*) FROM drafts').fetchone()[0]
             result['workspace_chains_verified']=db.execute('SELECT count(*) FROM chains').fetchone()[0]
+        if 'mvp_contracts' in tables:
+            from app.contracts import verify_record, request_matches
+            for identifier,value in db.execute('SELECT id,document FROM mvp_contracts'):
+                item=verify_record(json.loads(value))
+                if identifier!=item['id']:raise ValueError('Strategy contract backup identity failed')
+            for expected,identifier in db.execute('SELECT input_hash,contract_id FROM mvp_contract_requests'):
+                row=db.execute('SELECT document FROM mvp_contracts WHERE id=?',(identifier,)).fetchone()
+                if not row:raise ValueError('Strategy contract request backup reference failed')
+                request_matches(verify_record(json.loads(row[0])),expected)
+            result['strategy_contracts_verified']=db.execute('SELECT count(*) FROM mvp_contracts').fetchone()[0]
+        if 'mvp_protocols' in tables:
+            from app.contract_research import check_research_database
+            result['contract_research']=check_research_database(db)
         if 'strategy_marks' in tables:
             for identifier,basket_hash,value in db.execute('SELECT id,basket_hash,document FROM strategy_marks'):
                 item=json.loads(value);expected=item.pop('id')

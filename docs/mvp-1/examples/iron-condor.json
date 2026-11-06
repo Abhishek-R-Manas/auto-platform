@@ -1,0 +1,90 @@
+{
+  "definition": {
+    "schema_version": "mvp1/1.0",
+    "name": "Illustrative iron condor",
+    "customer": {
+      "team_role": "OPTIONS_RESEARCH",
+      "research_question": "Does this explicitly specified spread remain useful after realistic costs?",
+      "budget_owner": "",
+      "validation_state": "PROVISIONAL",
+      "evidence_reference": "",
+      "baseline_review_minutes": null
+    },
+    "strategy": {
+      "underlying": "NIFTY",
+      "reference_id": "NIFTY",
+      "structure": "IRON_CONDOR",
+      "lots": 1,
+      "lot_size": 65,
+      "tick_size_paise": 5,
+      "terms_effective_at": "2026-10-31T18:30:00Z",
+      "legs": [
+        {
+          "instrument_id": "P24800",
+          "kind": "PE",
+          "side": "BUY",
+          "strike_paise": 2480000,
+          "premium_paise": 2000,
+          "expiry": "2026-11-12T10:00:00Z"
+        },
+        {
+          "instrument_id": "P24900",
+          "kind": "PE",
+          "side": "SELL",
+          "strike_paise": 2490000,
+          "premium_paise": 4000,
+          "expiry": "2026-11-12T10:00:00Z"
+        },
+        {
+          "instrument_id": "C25100",
+          "kind": "CE",
+          "side": "SELL",
+          "strike_paise": 2510000,
+          "premium_paise": 4000,
+          "expiry": "2026-11-12T10:00:00Z"
+        },
+        {
+          "instrument_id": "C25200",
+          "kind": "CE",
+          "side": "BUY",
+          "strike_paise": 2520000,
+          "premium_paise": 2000,
+          "expiry": "2026-11-12T10:00:00Z"
+        }
+      ]
+    },
+    "rules": {
+      "entry_at": "2026-11-06T04:00:00Z",
+      "exit_at": "2026-11-06T09:30:00Z",
+      "selection": "FIXED_CONTRACTS",
+      "reentry": "NONE",
+      "adjustments": "NONE",
+      "allow_overnight": false,
+      "partial_fill_policy": "HEDGES_FIRST_UNWIND_ON_FAILURE",
+      "session_open": "09:15:00",
+      "session_close": "15:30:00"
+    },
+    "risk": {
+      "max_expiry_loss_paise": 500000,
+      "estimated_costs_paise": 4000
+    },
+    "data": {
+      "required_fidelity": "QUOTE",
+      "max_quote_age_seconds": 30,
+      "min_depth_lots": 1,
+      "max_spread_bps": 500,
+      "provider": "UNSELECTED",
+      "intended_use": "LOCAL_RESEARCH",
+      "source_note": "",
+      "rights_reference": "",
+      "rights_status": "UNKNOWN",
+      "calendar_reviewed": false,
+      "calendar_reference": "",
+      "fees_reviewed": false,
+      "fees_reference": "",
+      "receipt_time_status": "NOT_VERIFIED",
+      "receipt_time_reference": ""
+    }
+  },
+  "dataset_id": null
+}

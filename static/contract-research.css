@@ -1,0 +1,28 @@
+
+.ct-workflow-tabs{display:flex;gap:8px;margin:0 0 24px;border-bottom:1px solid #dfe6f0;padding-bottom:12px}
+.ct-workflow-tabs button{border:1px solid transparent;background:transparent;border-radius:7px;padding:10px 15px;color:#6c7c96;cursor:pointer}
+.ct-workflow-tabs button.active{background:#eaf0ff;color:#365fe0;border-color:#dbe5ff}
+.cr-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr);gap:20px;align-items:start}
+.cr-layout>div,.cr-layout>aside{min-width:0}
+.cr-spaced{margin-top:18px}
+.cr-check{display:flex!important;align-items:flex-start;gap:9px!important;margin:17px 0;line-height:1.6}
+#view-contracts .cr-check input{width:auto;margin-top:3px}
+.cr-policy{margin:16px 0}
+.cr-policy>summary{cursor:pointer;color:#536b91;font-size:13px;margin-bottom:15px}
+.cr-binding{display:grid;gap:8px;margin:18px 0;font-size:12px}
+.cr-binding span{display:flex;justify-content:space-between;gap:12px;color:#7b89a1}
+.cr-binding b{font-weight:500;color:#405a80;overflow-wrap:anywhere;text-align:right}
+#cr-binding summary{font-size:12px;color:#6680a6;cursor:pointer}
+#cr-binding pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:270px;overflow:auto;font-size:11px;background:#f6f8fc;padding:12px}
+.cr-trials{min-width:620px;width:100%;border-collapse:collapse;margin-top:18px}
+.cr-trials td,.cr-trials th{padding:12px 8px;text-align:left;border-bottom:1px solid #edf1f7;font-size:12px;vertical-align:top}
+.cr-trials th{font-weight:500;color:#8090a7}
+.cr-trials small{display:block;color:#8996aa;font-size:10px;max-width:220px;overflow-wrap:anywhere;margin-top:6px}
+.cr-packet{margin-top:18px;padding-top:15px;border-top:1px solid #edf1f7}
+.cr-packet>small{display:block;color:#8996aa;font-size:11px;margin:6px 0 12px}
+.cr-packet strong{font-size:13px;color:#405a80}
+.cr-finding{padding:12px 0;border-bottom:1px solid #edf1f7}
+.cr-finding>strong{font-size:12px;text-transform:capitalize;margin-right:8px;color:#405a80}
+#cr-findings h3{font-size:14px;margin-top:22px}
+#cr-verification{font-size:12px;line-height:1.7;margin-top:15px;color:#506a91;overflow-wrap:anywhere}
+@media(max-width:1100px){.cr-layout{grid-template-columns:minmax(0,1fr)}}

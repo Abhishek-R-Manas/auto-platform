@@ -1,0 +1,39 @@
+{
+  "recorded_at": "2026-11-06T07:29:54.820811+00:00",
+  "stage": "MVP-1",
+  "status": "ENGINEERING_IMPLEMENTED_EXTERNAL_ACCEPTANCE_PENDING",
+  "source_identity": "3918af5c3b5334dc7a2747dc8b20e8323087b3ad390d732aa90c3da8dcb64881",
+  "build": {
+    "version": "research/2.0.0",
+    "code_hash": "589367efb45f9877941522b2ef2bf15f0d4929ead8c442b2d48ce6b00fe943ec",
+    "python": "3.13.13",
+    "packages": {
+      "pyarrow": "26.0.1",
+      "fastapi": "0.162.0",
+      "pydantic": "2.14.2",
+      "httpx": "0.28.1"
+    }
+  },
+  "automated_tests": 549,
+  "focused_contract_tests": 31,
+  "controlled_browser_checks": 10,
+  "browser_suite_count": 11,
+  "deployed_read_only_checks": 25,
+  "deployed_stateless_contract_check_passed": true,
+  "pre_backup_restore_passed": true,
+  "post_backup_restore_passed": true,
+  "paper_state_preserved": true,
+  "watchlists_preserved": true,
+  "cached_broker_portfolio_preserved": true,
+  "candidate_registry_preserved": true,
+  "real_orders_sent": false,
+  "customer_interviews_validated": false,
+  "commercial_data_acceptance": false,
+  "receipt_time_evidence_independently_verified": false,
+  "execution_adapter_implemented": false,
+  "next_stage": "MVP-2",
+  "implementation_uncommitted": true,
+  "validation_artifact": "../workspace-validation.json",
+  "browser_artifact": "../contracts-browser-validation.json",
+  "deployment_artifact": "../workspace-deployment.json"
+}

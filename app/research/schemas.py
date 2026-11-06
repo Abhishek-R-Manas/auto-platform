@@ -142,6 +142,7 @@ class Manifest(Strict):
     source_kind: Literal["SYNTHETIC","BROKER","VENDOR"]="VENDOR"
     license_note: Annotated[str,Field(max_length=2000)]="Not independently verified"
     rights_confirmed: bool=False
+    observation_clock: Literal["UNSPECIFIED","EXCHANGE_AND_RECEIPT"]="UNSPECIFIED"
     frequency: Literal["DAY","MINUTE","QUOTE"]="DAY"
     interval_minutes: Annotated[int,Field(ge=1,le=1440)]=1
     timestamp_semantics: Literal["START","END"]="END"
@@ -297,7 +298,33 @@ class Window(Strict):
         return self
 
 
+
+class BasketProtocol(Strict):
+    version: Literal["mvp2/1.0"]="mvp2/1.0"
+    contract_id: Annotated[str,Field(pattern=r"^[a-f0-9]{64}$")]
+    definition_hash: Annotated[str,Field(pattern=r"^[a-f0-9]{64}$")]
+    entry_at: datetime
+    exit_at: datetime
+    entry_deadline: datetime
+    reference_id: ID
+    units: Annotated[int,Field(ge=1,le=1000000)]
+    lot_size: Annotated[int,Field(ge=1,le=100000)]
+    tick_size_paise: Annotated[int,Field(ge=1,le=100000)]
+    min_depth_units: Annotated[int,Field(ge=1,le=100000000)]
+    max_spread_bps: Annotated[int,Field(ge=1,le=10000)]
+    max_expiry_loss_paise: Annotated[int,Field(gt=0,le=1000000000000)]
+    estimated_costs_paise: Annotated[int,Field(ge=0,le=1000000000)]
+    fee_multiplier: Annotated[FiniteFloat,Field(ge=1,le=4)]=1
+    clock_mode: Literal["RECORDED_RECEIPT","ASSUMED_EXCHANGE"]
+    _dates=field_validator("entry_at","exit_at","entry_deadline")(aware)
+    @model_validator(mode="after")
+    def bounds(self):
+        if not self.entry_at<self.entry_deadline<=self.exit_at:raise ValueError("Entry deadline must follow entry and not exceed exit")
+        if self.units%self.lot_size:raise ValueError("Protocol units must use whole lots")
+        return self
+
 class Run(Strict):
+    contract_protocol: BasketProtocol|None=None
     dataset_id: Annotated[str,Field(pattern=r"^[a-f0-9]{64}$")]
     name: Annotated[str,Field(min_length=1,max_length=120)]="Research experiment"
     capital: Annotated[FiniteFloat,Field(ge=100,le=1000000000)]=1000000
@@ -327,6 +354,17 @@ class Run(Strict):
         if any(ranks[a.label]>ranks[b.label] for a,b in zip(ordered,ordered[1:])): raise ValueError("Training, validation and holdout roles must be chronological")
         for label in ("TRAIN","VALIDATION","HOLDOUT"):
             if sum(w.label==label for w in ordered)>1: raise ValueError("Use one window per role or separate walk-forward runs")
+        if self.contract_protocol:
+            p=self.contract_protocol
+            if len(self.strategies)!=1:raise ValueError("A basket protocol requires exactly one strategy")
+            strategy=self.strategies[0]
+            expected=[(p.entry_at,"ENTER"),(p.exit_at,"EXIT")]
+            if strategy.family!="SCHEDULED" or [(x.at,x.action) for x in strategy.schedule]!=expected:raise ValueError("Schedule differs from the frozen basket protocol")
+            if strategy.allow_overnight or strategy.roll_on_expiry or strategy.target_multiple is not None or strategy.stop_pct!=100:raise ValueError("Implicit strategy exits are unavailable for fixed basket protocols")
+            if len(strategy.legs) not in {2,4} or any(not l.instrument_id or abs(l.ratio)!=1 for l in strategy.legs):raise ValueError("Fixed equal-unit option legs required")
+            if strategy.size_mode!="LOTS" or strategy.lots*p.lot_size!=p.units:raise ValueError("Sizing differs from the basket protocol")
+            if self.execution.cancel_latency_seconds!=0:raise ValueError("Basket protocol requires synchronous simulated entry cancellation")
+            if self.start!=p.entry_at or not self.end or self.end<p.exit_at:raise ValueError("Evaluation window differs from basket decision bounds")
         self.windows=ordered
         if self.training_end and any(w.label in {"VALIDATION","HOLDOUT","WALK_FORWARD"} and w.start<=self.training_end for w in ordered): raise ValueError("Training cutoff overlaps evaluation")
         return self

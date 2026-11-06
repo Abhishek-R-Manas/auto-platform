@@ -1,0 +1,14 @@
+{
+  "checked_at": "2026-11-06T10:11:21.006332+00:00",
+  "catalog_and_routes_passed": true,
+  "stateless_verifier_passed": true,
+  "mvp1_api_preserved": true,
+  "paper_state_preserved": true,
+  "healthy": true,
+  "read_only_except_stateless_verification": true,
+  "production_examples_or_trials_created": false,
+  "existing_protocol_count": 0,
+  "live_connection_preserved": true,
+  "account_armed": false,
+  "real_orders_sent": false
+}

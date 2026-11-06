@@ -384,6 +384,12 @@ class Replay:
             delay_seconds=max(0,(aware(self.state['clock'])-aware(order['created_at'])).total_seconds()),
             quote=copy.deepcopy(self.quote(identifier)),account=self.account_view(),order=copy.deepcopy(order))
 
+    def order_eligible(self,order,rows):
+        return True
+
+    def strategy_exits_enabled(self,spec):
+        return True
+
     def match(self,rows):
         for order in list(self.state['orders'].values()):
             if order['status'] not in {'PENDING_ACK','OPEN','PARTIAL','CANCEL_PENDING'}: continue
@@ -391,6 +397,7 @@ class Replay:
                 order['status']='CANCELLED';self.changed_orders[order['id']]=copy.deepcopy(order)
                 self.event('CANCELLED',order['reason'],strategy=order['strategy_id'],order=copy.deepcopy(order));continue
             identifier=order['instrument_id']
+            if not self.order_eligible(order,rows):continue
             if identifier not in rows or aware(order['active_at'])>aware(self.state['clock']): continue
             if order['status']=='PENDING_ACK':
                 order['status']='OPEN';self.event('ACK','Simulator acknowledged the order',strategy=order['strategy_id'],order=copy.deepcopy(order))
@@ -552,10 +559,15 @@ class Replay:
                         self.state['violations'].append('Delivery shortfall/funding deficit: '+underlying)
                         self.state['halt']='Physical delivery shortfall requires review'
 
-    def step(self,rows,cursor):
+    def step(self,rows,cursor,timer_at=None):
         self.state['cursor']=cursor;self.used={};self.records=[];self.changed_orders={}
-        end=rows[0]['timestamp'];opening=min(r['open_at'] for r in rows)
+        if rows:
+            end=rows[0]['timestamp'];opening=min(r['open_at'] for r in rows)
+        else:
+            if not self.config.get('contract_protocol') or timer_at is None:raise ValueError('Empty replay batch requires a frozen protocol clock event')
+            end=opening=iso(timer_at)
         self.state['clock']=opening;self.phase='OPEN'
+        if not rows:self.event('CLOCK','Declared protocol clock; no market observation fabricated')
         zone=ZoneInfo(self.manifest['calendar']['timezone']);day=aware(opening).astimezone(zone).date().isoformat()
         week=str(aware(opening).astimezone(zone).isocalendar()[:2])
         if day!=self.state['day']:
@@ -615,6 +627,7 @@ class Replay:
         for owner,spec in self.specs.items():
             owned=list(self.lots(book=owner))
             for _,identifier,lot in owned:
+                if not self.strategy_exits_enabled(spec):break
                 item=self.terms(identifier)
                 cutoff=(self.config['execution']['expiry_policy']=='EXIT_BEFORE' or spec['roll_on_expiry']) and item['expiry'] and aware(end)>=aware(item['expiry'])-timedelta(days=spec['exit_dte_days'])
                 close=bounds(self.manifest['calendar'],aware(end).astimezone(zone).date())

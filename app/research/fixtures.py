@@ -90,3 +90,24 @@ def templates(dataset):
 
 
 from .catalog import aware
+
+def contract_fixture():
+    """Fictional quote/receipt tape, only loaded through an explicit example action."""
+    from ..contracts import example
+    definition=example("CALL_VERTICAL")
+    instruments=[dict(id="NIFTY",symbol="NIFTY 50",kind="INDEX",underlying="NIFTY")]
+    instruments.extend(dict(id=l["instrument_id"],symbol=l["instrument_id"],kind="OPT",underlying="NIFTY",exchange="NFO",
+        option_type=l["kind"],strike=l["strike_paise"]/100,expiry=l["expiry"],lot_size=65,tick_size=.05)
+        for l in definition["strategy"]["legs"])
+    rows=[]
+    for time in ["09:29:59","09:30:00","09:30:01","09:30:02","09:30:10","14:59:59","15:00:00","15:00:01","15:00:02","15:00:10"]:
+        at="2026-11-06T"+time+"+05:30";late=time>="14:59:59"
+        for instrument in instruments:
+            price=25000 if instrument["kind"]=="INDEX" else (110 if late else 100) if instrument["id"]=="C25000" else (65 if late else 60)
+            rows.append(dict(instrument_id=instrument["id"],timestamp=at,received_at=at,available_at=at,close=price,
+                bid=price-.05,ask=price+.05,bid_quantity=650,ask_quantity=650,volume=1000,iv=.2))
+    stream=io.StringIO();writer=csv.DictWriter(stream,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
+    body=ImportData.model_validate(dict(manifest=dict(name="Fictional NIFTY basket research tape",source="MVP2_CONTROLLED_EXAMPLE",
+        source_kind="SYNTHETIC",observation_clock="EXCHANGE_AND_RECEIPT",frequency="QUOTE",instruments=instruments,
+        fee_rules=[dict(source="ILLUSTRATIVE_RESEARCH_COSTS")],notes="Sparse fictional tape, prices, lots and receipt clocks; no historical or commercial-source claim"),content=stream.getvalue()))
+    return definition,body

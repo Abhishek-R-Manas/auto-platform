@@ -259,6 +259,10 @@ def create_app(db_path=None,background=True,config_path=None):
     app.state.intelligence=intelligence
     app.state.workspace=workspace
     app.include_router(workspace_router(workspace,forward,pilot))
+    from .contracts import router as contracts_router
+    app.include_router(contracts_router(workspace))
+    from .contract_research import router as contract_research_router
+    app.include_router(contract_research_router(workspace))
     app.state.charts=charts
     app.state.pilot=pilot
     app.include_router(charts_router(charts))
@@ -276,7 +280,8 @@ def create_app(db_path=None,background=True,config_path=None):
             length=int(request.headers.get("content-length","0") or 0)
         except ValueError:
             return JSONResponse({"detail":"Invalid content length"},400)
-        maximum=34000000 if request.url.path in {"/api/research/datasets/import","/api/research/datasets/kite"} else 1000000 if request.url.path.startswith(("/api/research/","/api/candidates/","/api/forward/","/api/intelligence/")) else 16384
+        maximum=34000000 if request.url.path in {"/api/research/datasets/import","/api/research/datasets/kite"} else 1000000 if request.url.path.startswith(("/api/research/","/api/candidates/","/api/forward/","/api/intelligence/","/api/contract-research/verify")) else 16384
+        if request.url.path=='/api/contract-research/verify':maximum=16*1024*1024
         if length>maximum:
             return JSONResponse({"detail":"Request exceeds the size limit"},413)
         if request.method not in {"GET","HEAD","OPTIONS"}:
@@ -304,6 +309,9 @@ def create_app(db_path=None,background=True,config_path=None):
             return JSONResponse({'detail':'Check the private provider configuration fields; credential values are never returned'},422)
         if request.url.path.startswith('/api/intelligence/'):
             return JSONResponse({'detail':'Check the report type, official public source URL, timestamps and input limits; submitted content is not echoed'},422)
+        if request.url.path.startswith(('/api/contracts','/api/contract-research')):
+            fields=[dict(loc=list(e['loc']),msg=e['msg'],type=e['type']) for e in exc.errors()]
+            return JSONResponse({'detail':fields},422)
         if request.url.path.startswith("/api/onboarding/"):
             return JSONResponse({"detail":"Check the connection fields. Enter the API key and secret exactly as provided by Kite."},422)
         return await request_validation_exception_handler(request,exc)

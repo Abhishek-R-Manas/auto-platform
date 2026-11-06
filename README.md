@@ -7,6 +7,10 @@ AI-assisted options research with a human guardian, independent risk controls an
 prospective evidence. The commercial ambition is compliance-first generative wealth
 infrastructure for mass-affluent investors; this release remains a local paper sandbox.
 
+## MVP planning and model handoff
+
+Open **Strategy Contracts** in the sidebar (`/#contracts`). **Define strategy** preserves the MVP-1 definitions, compatibility checks and immutable revisions; **Research & evidence** adds MVP-2 frozen protocols, baseline/reproduction/cost-stress runs and verifiable evidence exports. See [MVP-1](docs/mvp-1/README.md), [MVP-2](docs/mvp-2/README.md) and [the five-stage handoff](docs/mvp-validation-roadmap.md). Existing workflows remain available. Customer/source acceptance is pending; these stages are separate from existing engineering release phases.
+
 ## Guided Home, trading desk and strategy builder
 
 Start at **Home** for the connection/practice next step. **Trade** brings named watchlists, a streamed quote feed, saved historical/developing charts, quote/depth and the Buy/Sell ticket together. **Strategy Builder** provides 51 options templates, custom baskets, expiry payoff, price/date/IV scenarios, Greeks, model POP and expected P&L, OI/IV views and a stock/futures rule editor. **My Strategies** keeps immutable drafts, comparisons, backtests and paused forward-paper tests in one place.

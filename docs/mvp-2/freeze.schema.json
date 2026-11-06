@@ -1,0 +1,186 @@
+{
+  "$defs": {
+    "Risk": {
+      "additionalProperties": false,
+      "properties": {
+        "trade_pct": {
+          "default": 0.25,
+          "exclusiveMinimum": 0,
+          "maximum": 50,
+          "title": "Trade Pct",
+          "type": "number"
+        },
+        "open_pct": {
+          "default": 0.75,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Open Pct",
+          "type": "number"
+        },
+        "daily_pct": {
+          "default": 1,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Daily Pct",
+          "type": "number"
+        },
+        "weekly_pct": {
+          "default": 2,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Weekly Pct",
+          "type": "number"
+        },
+        "drawdown_pct": {
+          "default": 5,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Drawdown Pct",
+          "type": "number"
+        },
+        "margin_pct": {
+          "default": 40,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Margin Pct",
+          "type": "number"
+        },
+        "slippage_bps": {
+          "default": 2,
+          "maximum": 1000,
+          "minimum": 0,
+          "title": "Slippage Bps",
+          "type": "number"
+        },
+        "overnight_stress_pct": {
+          "default": 5,
+          "exclusiveMinimum": 0,
+          "maximum": 100,
+          "title": "Overnight Stress Pct",
+          "type": "number"
+        },
+        "gross_exposure_pct": {
+          "default": 300,
+          "exclusiveMinimum": 0,
+          "maximum": 5000,
+          "title": "Gross Exposure Pct",
+          "type": "number"
+        },
+        "underlying_exposure_pct": {
+          "default": 150,
+          "exclusiveMinimum": 0,
+          "maximum": 5000,
+          "title": "Underlying Exposure Pct",
+          "type": "number"
+        },
+        "cash_buffer_pct": {
+          "default": 0,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Cash Buffer Pct",
+          "type": "number"
+        }
+      },
+      "title": "Risk",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "request_id": {
+      "maxLength": 100,
+      "minLength": 8,
+      "title": "Request Id",
+      "type": "string"
+    },
+    "contract_id": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Contract Id",
+      "type": "string"
+    },
+    "dataset_id": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Dataset Id",
+      "type": "string"
+    },
+    "organization_ref": {
+      "default": "LOCAL_WORKSPACE",
+      "pattern": "^[A-Za-z0-9_.-]{1,80}$",
+      "title": "Organization Ref",
+      "type": "string"
+    },
+    "capital_paise": {
+      "default": 1000000000,
+      "maximum": 100000000000,
+      "minimum": 10000,
+      "title": "Capital Paise",
+      "type": "integer"
+    },
+    "risk_policy": {
+      "$ref": "#/$defs/Risk",
+      "default": {
+        "trade_pct": 0.25,
+        "open_pct": 0.75,
+        "daily_pct": 1.0,
+        "weekly_pct": 2.0,
+        "drawdown_pct": 5.0,
+        "margin_pct": 40.0,
+        "slippage_bps": 2.0,
+        "overnight_stress_pct": 5.0,
+        "gross_exposure_pct": 300.0,
+        "underlying_exposure_pct": 150.0,
+        "cash_buffer_pct": 0.0
+      }
+    },
+    "observation_cutoff": {
+      "format": "date-time",
+      "title": "Observation Cutoff",
+      "type": "string"
+    },
+    "entry_window_seconds": {
+      "default": 10,
+      "maximum": 300,
+      "minimum": 1,
+      "title": "Entry Window Seconds",
+      "type": "integer"
+    },
+    "latency_seconds": {
+      "default": 0,
+      "maximum": 60,
+      "minimum": 0,
+      "title": "Latency Seconds",
+      "type": "integer"
+    },
+    "max_trials": {
+      "default": 6,
+      "maximum": 20,
+      "minimum": 2,
+      "title": "Max Trials",
+      "type": "integer"
+    },
+    "allow_unverified_data": {
+      "default": false,
+      "title": "Allow Unverified Data",
+      "type": "boolean"
+    },
+    "external_references": {
+      "default": [],
+      "items": {
+        "maxLength": 500,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 10,
+      "title": "External References",
+      "type": "array"
+    }
+  },
+  "required": [
+    "request_id",
+    "contract_id",
+    "dataset_id",
+    "observation_cutoff"
+  ],
+  "title": "Freeze",
+  "type": "object"
+}

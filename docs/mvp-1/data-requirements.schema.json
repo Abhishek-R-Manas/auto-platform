@@ -1,0 +1,117 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "required_fidelity": {
+      "enum": [
+        "QUOTE",
+        "MINUTE"
+      ],
+      "title": "Required Fidelity",
+      "type": "string"
+    },
+    "max_quote_age_seconds": {
+      "maximum": 900,
+      "minimum": 1,
+      "title": "Max Quote Age Seconds",
+      "type": "integer"
+    },
+    "min_depth_lots": {
+      "maximum": 1000,
+      "minimum": 1,
+      "title": "Min Depth Lots",
+      "type": "integer"
+    },
+    "max_spread_bps": {
+      "maximum": 10000,
+      "minimum": 1,
+      "title": "Max Spread Bps",
+      "type": "integer"
+    },
+    "provider": {
+      "enum": [
+        "UNSELECTED",
+        "KITE_PERSONAL",
+        "LICENSED_VENDOR"
+      ],
+      "title": "Provider",
+      "type": "string"
+    },
+    "intended_use": {
+      "enum": [
+        "LOCAL_RESEARCH",
+        "CLIENT_RESEARCH",
+        "REDISTRIBUTION"
+      ],
+      "title": "Intended Use",
+      "type": "string"
+    },
+    "source_note": {
+      "default": "",
+      "maxLength": 1000,
+      "title": "Source Note",
+      "type": "string"
+    },
+    "rights_reference": {
+      "default": "",
+      "maxLength": 1000,
+      "title": "Rights Reference",
+      "type": "string"
+    },
+    "rights_status": {
+      "default": "UNKNOWN",
+      "enum": [
+        "UNKNOWN",
+        "OWNER_ASSERTED"
+      ],
+      "title": "Rights Status",
+      "type": "string"
+    },
+    "calendar_reviewed": {
+      "default": false,
+      "title": "Calendar Reviewed",
+      "type": "boolean"
+    },
+    "calendar_reference": {
+      "default": "",
+      "maxLength": 1000,
+      "title": "Calendar Reference",
+      "type": "string"
+    },
+    "fees_reviewed": {
+      "default": false,
+      "title": "Fees Reviewed",
+      "type": "boolean"
+    },
+    "fees_reference": {
+      "default": "",
+      "maxLength": 1000,
+      "title": "Fees Reference",
+      "type": "string"
+    },
+    "receipt_time_status": {
+      "default": "NOT_VERIFIED",
+      "enum": [
+        "NOT_VERIFIED",
+        "DOCUMENTED"
+      ],
+      "title": "Receipt Time Status",
+      "type": "string"
+    },
+    "receipt_time_reference": {
+      "default": "",
+      "maxLength": 1000,
+      "title": "Receipt Time Reference",
+      "type": "string"
+    }
+  },
+  "required": [
+    "required_fidelity",
+    "max_quote_age_seconds",
+    "min_depth_lots",
+    "max_spread_bps",
+    "provider",
+    "intended_use"
+  ],
+  "title": "DataRequirements",
+  "type": "object"
+}

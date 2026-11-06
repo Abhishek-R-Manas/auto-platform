@@ -1,0 +1,20 @@
+{
+  "passed": 10,
+  "checks": [
+    "separate sidebar option and direct hash route open the contract form",
+    "illustrative definition computes bounded payoff while missing data stays visible",
+    "editing invalidates the displayed assessment and invalid ticks are blocked",
+    "immutable definition saved and untrusted names rendered as text",
+    "failed research revision retains its parent and original evidence",
+    "saved export imports as an unsaved definition without trusting its old assessment",
+    "invalid JSON and unsupported adjustments do not create records",
+    "actual dataset compatibility is inspected without promoting synthetic or receipt-time evidence",
+    "iron-condor example and mobile layout retain editable legs without page overflow",
+    "existing builder, saved strategies and trading views remain available; account and broker authority are unchanged"
+  ],
+  "javascript_errors": [],
+  "controlled_data": true,
+  "real_provider_calls": false,
+  "real_orders_sent": false,
+  "identity": "d899fb63b504a6fcae4e6d6a33233c7a848ff4d0bc3ded896064f4d241c78b63"
+}

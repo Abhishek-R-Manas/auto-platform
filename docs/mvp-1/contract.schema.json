@@ -1,0 +1,433 @@
+{
+  "$defs": {
+    "ContractLeg": {
+      "additionalProperties": false,
+      "properties": {
+        "instrument_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:|+\\-]+$",
+          "title": "Instrument Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "CE",
+            "PE"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "side": {
+          "enum": [
+            "BUY",
+            "SELL"
+          ],
+          "title": "Side",
+          "type": "string"
+        },
+        "strike_paise": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000,
+          "title": "Strike Paise",
+          "type": "integer"
+        },
+        "premium_paise": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000,
+          "title": "Premium Paise",
+          "type": "integer"
+        },
+        "expiry": {
+          "format": "date-time",
+          "title": "Expiry",
+          "type": "string"
+        }
+      },
+      "required": [
+        "instrument_id",
+        "kind",
+        "side",
+        "strike_paise",
+        "premium_paise",
+        "expiry"
+      ],
+      "title": "ContractLeg",
+      "type": "object"
+    },
+    "Customer": {
+      "additionalProperties": false,
+      "properties": {
+        "team_role": {
+          "enum": [
+            "OPTIONS_RESEARCH",
+            "RA_ALGO_PROVIDER",
+            "OPTIONS_DESK"
+          ],
+          "title": "Team Role",
+          "type": "string"
+        },
+        "research_question": {
+          "maxLength": 2000,
+          "minLength": 10,
+          "title": "Research Question",
+          "type": "string"
+        },
+        "budget_owner": {
+          "default": "",
+          "maxLength": 200,
+          "title": "Budget Owner",
+          "type": "string"
+        },
+        "validation_state": {
+          "default": "PROVISIONAL",
+          "enum": [
+            "PROVISIONAL",
+            "REVIEWED"
+          ],
+          "title": "Validation State",
+          "type": "string"
+        },
+        "evidence_reference": {
+          "default": "",
+          "maxLength": 1000,
+          "title": "Evidence Reference",
+          "type": "string"
+        },
+        "baseline_review_minutes": {
+          "anyOf": [
+            {
+              "maximum": 100000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Baseline Review Minutes"
+        }
+      },
+      "required": [
+        "team_role",
+        "research_question"
+      ],
+      "title": "Customer",
+      "type": "object"
+    },
+    "DataRequirements": {
+      "additionalProperties": false,
+      "properties": {
+        "required_fidelity": {
+          "enum": [
+            "QUOTE",
+            "MINUTE"
+          ],
+          "title": "Required Fidelity",
+          "type": "string"
+        },
+        "max_quote_age_seconds": {
+          "maximum": 900,
+          "minimum": 1,
+          "title": "Max Quote Age Seconds",
+          "type": "integer"
+        },
+        "min_depth_lots": {
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Min Depth Lots",
+          "type": "integer"
+        },
+        "max_spread_bps": {
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Max Spread Bps",
+          "type": "integer"
+        },
+        "provider": {
+          "enum": [
+            "UNSELECTED",
+            "KITE_PERSONAL",
+            "LICENSED_VENDOR"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "intended_use": {
+          "enum": [
+            "LOCAL_RESEARCH",
+            "CLIENT_RESEARCH",
+            "REDISTRIBUTION"
+          ],
+          "title": "Intended Use",
+          "type": "string"
+        },
+        "source_note": {
+          "default": "",
+          "maxLength": 1000,
+          "title": "Source Note",
+          "type": "string"
+        },
+        "rights_reference": {
+          "default": "",
+          "maxLength": 1000,
+          "title": "Rights Reference",
+          "type": "string"
+        },
+        "rights_status": {
+          "default": "UNKNOWN",
+          "enum": [
+            "UNKNOWN",
+            "OWNER_ASSERTED"
+          ],
+          "title": "Rights Status",
+          "type": "string"
+        },
+        "calendar_reviewed": {
+          "default": false,
+          "title": "Calendar Reviewed",
+          "type": "boolean"
+        },
+        "calendar_reference": {
+          "default": "",
+          "maxLength": 1000,
+          "title": "Calendar Reference",
+          "type": "string"
+        },
+        "fees_reviewed": {
+          "default": false,
+          "title": "Fees Reviewed",
+          "type": "boolean"
+        },
+        "fees_reference": {
+          "default": "",
+          "maxLength": 1000,
+          "title": "Fees Reference",
+          "type": "string"
+        },
+        "receipt_time_status": {
+          "default": "NOT_VERIFIED",
+          "enum": [
+            "NOT_VERIFIED",
+            "DOCUMENTED"
+          ],
+          "title": "Receipt Time Status",
+          "type": "string"
+        },
+        "receipt_time_reference": {
+          "default": "",
+          "maxLength": 1000,
+          "title": "Receipt Time Reference",
+          "type": "string"
+        }
+      },
+      "required": [
+        "required_fidelity",
+        "max_quote_age_seconds",
+        "min_depth_lots",
+        "max_spread_bps",
+        "provider",
+        "intended_use"
+      ],
+      "title": "DataRequirements",
+      "type": "object"
+    },
+    "Risk": {
+      "additionalProperties": false,
+      "properties": {
+        "max_expiry_loss_paise": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000,
+          "title": "Max Expiry Loss Paise",
+          "type": "integer"
+        },
+        "estimated_costs_paise": {
+          "maximum": 1000000000,
+          "minimum": 0,
+          "title": "Estimated Costs Paise",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_expiry_loss_paise",
+        "estimated_costs_paise"
+      ],
+      "title": "Risk",
+      "type": "object"
+    },
+    "Rules": {
+      "additionalProperties": false,
+      "properties": {
+        "entry_at": {
+          "format": "date-time",
+          "title": "Entry At",
+          "type": "string"
+        },
+        "exit_at": {
+          "format": "date-time",
+          "title": "Exit At",
+          "type": "string"
+        },
+        "selection": {
+          "const": "FIXED_CONTRACTS",
+          "title": "Selection",
+          "type": "string"
+        },
+        "reentry": {
+          "const": "NONE",
+          "title": "Reentry",
+          "type": "string"
+        },
+        "adjustments": {
+          "const": "NONE",
+          "title": "Adjustments",
+          "type": "string"
+        },
+        "allow_overnight": {
+          "const": false,
+          "title": "Allow Overnight",
+          "type": "boolean"
+        },
+        "partial_fill_policy": {
+          "const": "HEDGES_FIRST_UNWIND_ON_FAILURE",
+          "title": "Partial Fill Policy",
+          "type": "string"
+        },
+        "session_open": {
+          "default": "09:15:00",
+          "format": "time",
+          "title": "Session Open",
+          "type": "string"
+        },
+        "session_close": {
+          "default": "15:30:00",
+          "format": "time",
+          "title": "Session Close",
+          "type": "string"
+        }
+      },
+      "required": [
+        "entry_at",
+        "exit_at",
+        "selection",
+        "reentry",
+        "adjustments",
+        "allow_overnight",
+        "partial_fill_policy"
+      ],
+      "title": "Rules",
+      "type": "object"
+    },
+    "Terms": {
+      "additionalProperties": false,
+      "properties": {
+        "underlying": {
+          "const": "NIFTY",
+          "title": "Underlying",
+          "type": "string"
+        },
+        "reference_id": {
+          "maxLength": 100,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.:|+\\-]+$",
+          "title": "Reference Id",
+          "type": "string"
+        },
+        "structure": {
+          "enum": [
+            "CALL_VERTICAL",
+            "PUT_VERTICAL",
+            "IRON_CONDOR"
+          ],
+          "title": "Structure",
+          "type": "string"
+        },
+        "lots": {
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Lots",
+          "type": "integer"
+        },
+        "lot_size": {
+          "maximum": 100000,
+          "minimum": 1,
+          "title": "Lot Size",
+          "type": "integer"
+        },
+        "tick_size_paise": {
+          "maximum": 100000,
+          "minimum": 1,
+          "title": "Tick Size Paise",
+          "type": "integer"
+        },
+        "terms_effective_at": {
+          "format": "date-time",
+          "title": "Terms Effective At",
+          "type": "string"
+        },
+        "legs": {
+          "items": {
+            "$ref": "#/$defs/ContractLeg"
+          },
+          "maxItems": 4,
+          "minItems": 2,
+          "title": "Legs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "underlying",
+        "reference_id",
+        "structure",
+        "lots",
+        "lot_size",
+        "tick_size_paise",
+        "terms_effective_at",
+        "legs"
+      ],
+      "title": "Terms",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "mvp1/1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "customer": {
+      "$ref": "#/$defs/Customer"
+    },
+    "strategy": {
+      "$ref": "#/$defs/Terms"
+    },
+    "rules": {
+      "$ref": "#/$defs/Rules"
+    },
+    "risk": {
+      "$ref": "#/$defs/Risk"
+    },
+    "data": {
+      "$ref": "#/$defs/DataRequirements"
+    }
+  },
+  "required": [
+    "schema_version",
+    "name",
+    "customer",
+    "strategy",
+    "rules",
+    "risk",
+    "data"
+  ],
+  "title": "Definition",
+  "type": "object"
+}

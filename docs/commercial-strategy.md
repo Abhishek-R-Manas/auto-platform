@@ -123,3 +123,9 @@ These constraints must be addressed before the relevant community services, rath
 waiting for the fundraising stage. Entity authorization, verified licensing, customer
 identity/tenant isolation, commercial data feeds/rights and broker execution are outstanding
 commercial release dependencies, not implemented capabilities of this Phase 4 sandbox.
+
+## B2B MVP feasibility follow-up — 2026-11-06
+
+The owner requested that the product/feasibility discussion and five delivery stages be preserved for future models. See [the B2B strategy-validation MVP roadmap and handoff](mvp-validation-roadmap.md). It records a professional research-team workflow as an initial commercial hypothesis, the 12-16 week planning estimate and MVP-1 through MVP-5 with explicit exit criteria. MVP-1 engineering is now implemented as the separate Strategy Contracts sidebar workspace; see [the delivered guide and validation](mvp-1/README.md). Customer validation and commercial source acceptance remain pending. This follow-up preserves the broader Centaur direction and existing engineering roadmap; it does not establish a pivot, commercial readiness, trading edge, funding or new broker authority.
+
+MVP-2 engineering adds frozen shared-engine research and private verifiable evidence in the same Strategy Contracts sidebar option; see [the operating guide and actual evidence](mvp-2/README.md). The organization label remains local context. Commercial team identity is MVP-3; source/customer acceptance and independent financial acceptance remain pending.

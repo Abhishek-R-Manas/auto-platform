@@ -2,6 +2,8 @@
 
 ## Read first
 
+- [B2B MVP roadmap and current handoff](docs/mvp-validation-roadmap.md): MVP-1 and MVP-2 engineering are implemented in the separate **Strategy Contracts** sidebar option: **Define strategy** and **Research & evidence**. See [MVP-1](docs/mvp-1/README.md) and [MVP-2 operating guide and evidence](docs/mvp-2/README.md). Check generated validation/deployment records before relying on current status. Customer/source acceptance remains pending. Next engineering stage is MVP-3, when requested. These MVP stages are separate from engineering Phases 1-6 and do not expand live-trading authority.
+
 - [Workspace 0.20 guide](docs/workspace-guide.md): guided Home, trading desk and 51-template builder. The workspace revamp does not activate or qualify Phase 5. Main document is `static/workspace-v020.html`, with `shell-v019.js`, `navigation-v020.js`, `navigation-v019.css`, `contract-steps-v020.css`, `workspace-v020.js`, `strategy-studio-v016.js`, `builder-layout-v017.js`, `builder-layout-v016.css`, `template-library-v018.css`, `strategy-studio-v015.css`, `workspace-v09.css`, `portfolio-v011.js`, `portfolio.css`, `pilot-workbench-v014.js`, `live-v011.css`, `trading-onboarding-v014.js`, `trading-onboarding-v012.css` and locally licensed chart vendor assets. Legacy files remain for archived releases. Workspace data has independent SQLite storage and hash-verified draft/chain backups.
 
 - [Phase 5 preparation](docs/phase-5.md): cached broker charts and the isolated, disabled-by-default manually confirmed NSE/CNC pilot. Qualification, owner limits, genuine broker acceptance and broader automated protection remain pending. Do not represent this as a fully qualified or activated Phase 5 release.
@@ -70,6 +72,10 @@ validation references as work progresses.
 
 ## Repository map
 
+- `app/contract_research.py`, `app/research/contract_replay.py`, `static/contract-research.js`: MVP-2 immutable protocols, isolated shared-engine trials, receipt/cutoff clocks and private evidence packets. Baseline/reproduction/stress attempts retain failures and consume a frozen budget; dispatch recovery reuses deterministic run IDs. Preserve old records/build archives. Summary exports omit quote-bearing traces; trace export requires explicit permitted-use acknowledgment. Hash checks do not authenticate data or grant broker/team authority. `tests/test_contract_research.py`, `tools/contract_research_browser.py`, `tools/verify_contract_packet.py` and all-store restore checks cover this work. See the MVP-2 guide for exact bounds and pending external acceptance.
+
+- `app/contracts.py`, `static/contracts.js`, `static/contracts.css`: separate MVP-1 definitions, integer-paise bounded payoff, immutable revisions and actual dataset compatibility. Receipt-time provenance and commercial rights remain unverified; definition checks do not execute research or orders. `tests/test_contracts.py` and `tools/contracts_browser.py` cover the new flow; workspace backup checks include the new tables.
+
 - `app/workbench/templates.py`: structure classifications and normalized recipe-derived payoff previews. Single-expiry profiles use contractual intrinsic value; calendar/diagonal previews retain later-expiry model value. These are illustrative shapes, never live prices or market forecasts. The visible template library filters independently from the active basket.
 
 
@@ -126,7 +132,7 @@ environments. Existing checks from the project directory:
 .venv/bin/python -B tools/workbench_deployed_browser.py
 ```
 
-The first command runs full pytest, ten isolated browser suites, dependency checks and all
+The first command runs full pytest, twelve isolated browser suites, dependency checks and all
 JavaScript syntax checks, recording exact source/asset fingerprints. The second is a
 read-only deployed UI check. `--resume` is restricted to browser-harness changes with
 unchanged runtime, assets, unit tests and dependency locks; reused passed unit evidence

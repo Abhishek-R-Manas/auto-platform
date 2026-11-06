@@ -85,8 +85,19 @@ def _execute(root,identifier):
             check=capabilities(dataset,config)
             if not check['runnable']: raise ValueError('; '.join(check['blockers']))
             rows=catalog.rows(config['dataset_id'])
+            replay_type=Replay
+            if config.get('contract_protocol'):
+                from .contract_replay import ContractReplay,arrival_rows
+                required={config['contract_protocol']['reference_id']}|{l['instrument_id'] for l in config['strategies'][0]['legs']}
+                rows=arrival_rows([r for r in rows if r['instrument_id'] in required],config['contract_protocol']);replay_type=ContractReplay
             if config['end']: rows=[r for r in rows if aware(r['timestamp'])<=aware(config['end'])]
             groups=[list(group) for _,group in itertools.groupby(rows,key=lambda r:r['timestamp'])]
+            if config.get('contract_protocol'):
+                grouped={aware(group[0]['timestamp']):group for group in groups}
+                clock=config['contract_protocol']
+                for at in (clock['entry_at'],clock['entry_deadline'],clock['exit_at'],config['end']):
+                    grouped.setdefault(aware(at),dict(timer_at=at))
+                groups=[value for at,value in sorted(grouped.items())]
             if not groups: raise ValueError('No observations in the requested evaluation range')
             identity=copy.deepcopy(CURRENT_BUILD)
             checkpoint=db.execute('SELECT document FROM checkpoint WHERE id=1').fetchone()
@@ -108,7 +119,7 @@ def _execute(root,identifier):
             def emit(records,orders,current):
                 buffer.extend(records);changed.update(orders)
                 if current['cursor']%25==0: flush(current)
-            replay=Replay(dataset,config,emit,state)
+            replay=replay_type(dataset,config,emit,state)
             meta.update(status='RUNNING',worker_pid=os.getpid(),error=None)
             with db: save_meta(db,meta)
             start=time.monotonic()
@@ -119,7 +130,8 @@ def _execute(root,identifier):
                     status='PAUSED' if command[0]=='PAUSE' else 'CANCELLED'
                     flush(replay.state,status);return dict(id=identifier,status=status)
                 if time.monotonic()-start>300: raise ValueError('Worker time budget reached; reduce the dataset or strategy batch')
-                replay.step(group,cursor)
+                if isinstance(group,dict):replay.step([],cursor,timer_at=group['timer_at'])
+                else:replay.step(group,cursor)
             flush(replay.state)
             curve=[dict(time=r['time'],equity=r['equity']) for r in db.execute("SELECT time,json_extract(document,'$.account.equity') AS equity FROM events WHERE kind='EQUITY' ORDER BY sequence")]
             performance=metrics(curve,config['capital'],config['seed'])
@@ -206,16 +218,24 @@ class Research:
             if self.pool is None: self.pool=ProcessPoolExecutor(max_workers=self.workers,mp_context=multiprocessing.get_context('spawn'),initializer=worker_setup)
             self.futures[identifier]=self.pool.submit(execute,str(self.root),identifier)
 
-    def create(self,config):
-        with self.lock: return self._create(config)
+    def create(self,config,dispatch_key=None):
+        with self.lock: return self._create(config,dispatch_key)
 
-    def _create(self,config):
+    def _create(self,config,dispatch_key=None):
         config=Run.model_validate(config).model_dump(mode='json')
+        fixed_id=hashlib.sha256(dispatch_key.encode()).hexdigest()[:32] if dispatch_key else None
+        if fixed_id and (self.root/'runs'/fixed_id/'run.sqlite3').exists():
+            with closing(open_job(self.root/'runs'/fixed_id/'run.sqlite3')) as db:previous=metadata(db)
+            if previous:
+                if previous.get('dispatch_key')!=dispatch_key or previous['config_hash']!=digest(config) or previous['engine_hash']!=CURRENT_BUILD['code_hash']:raise ValueError('Dispatch identity binds different research inputs or build')
+                with self.catalog.lock,self.catalog.db:self.catalog.db.execute('INSERT OR IGNORE INTO runs VALUES(?,?,?)',(fixed_id,previous['created'],canonical(previous)))
+                if previous['status']=='QUEUED' and fixed_id not in self.futures:self.schedule(fixed_id)
+                return self.get(fixed_id)
         if sum(r['status'] in {'QUEUED','RUNNING'} for r in self.runs())>=64: raise ValueError('Research queue has reached its 64-job limit')
         dataset=self.catalog.verify(config['dataset_id']);check=capabilities(dataset,config)
-        identifier=uuid.uuid4().hex;directory=self.root/'runs'/identifier;directory.mkdir(parents=True,mode=0o700)
+        identifier=fixed_id or uuid.uuid4().hex;directory=self.root/'runs'/identifier;directory.mkdir(parents=True,mode=0o700,exist_ok=bool(fixed_id))
         document=dict(id=identifier,created=datetime.now(timezone.utc).isoformat(),status='QUEUED' if check['runnable'] else 'FAILED',progress=0,
-            engine_hash=CURRENT_BUILD['code_hash'],config=config,config_hash=digest(config),dataset_id=dataset['id'],name=config['name'],capability=check,
+            dispatch_key=dispatch_key,engine_hash=CURRENT_BUILD['code_hash'],config=config,config_hash=digest(config),dataset_id=dataset['id'],name=config['name'],capability=check,
             error=None if check['runnable'] else '; '.join(check['blockers']))
         with closing(open_job(directory/'run.sqlite3')) as db:
             with db:
@@ -284,6 +304,8 @@ class Research:
     def control(self,identifier,action):
         current=self.get(identifier)
         if action=='RESUME':
+            if current['status']=='FAILED' and (current.get('dispatch_key') or '').startswith('mvp2:'):
+                raise ValueError('Failed protocol attempts are terminal; start a new budgeted attempt to preserve failure evidence')
             if current['status'] not in {'PAUSED','FAILED'}: raise ValueError('Only paused/interrupted runs can resume')
             if current['status']=='FAILED' and not current['capability']['runnable']: raise ValueError('Capability failure requires a new experiment')
             prior=self.futures.get(identifier)
