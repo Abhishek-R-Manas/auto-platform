@@ -286,7 +286,7 @@ class ContractBook:
                          definition_ready=item["core"]["assessment"]["definition_ready"],
                          data_ready=item["core"]["assessment"]["data_ready"]) for row in rows]
 
-    def save(self, body):
+    def save(self, body, identity=None):
         request = Save.model_validate(body)
         normalized = request.model_dump(mode="json", exclude={"request_id"})
         input_hash = digest(normalized)
@@ -299,6 +299,7 @@ class ContractBook:
         report = self.check(request.definition, request.dataset_id)
         core = dict(definition=request.definition.model_dump(mode="json"), dataset_id=request.dataset_id,
                     parent_id=request.parent_id, assessment=report)
+        if identity is not None:core["authenticated_context"]=identity
         identifier = digest(core)
         with self.workspace.lock, self.workspace.db:
             existing = self.workspace.db.execute("SELECT input_hash, contract_id FROM mvp_contract_requests WHERE request_id=?", (request.request_id,)).fetchone()

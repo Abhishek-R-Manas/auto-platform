@@ -1,0 +1,21 @@
+[Unit]
+Description=Verified encrypted backup for Artha organization %i
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/etc/artha/team-backup-%i.env
+[Service]
+Type=oneshot
+User=artha-team-%i
+Group=artha-team-%i
+WorkingDirectory=/opt/artha
+EnvironmentFile=/etc/artha/team-backup-%i.env
+Environment=GNUPGHOME=/var/lib/artha-teams/%i/gnupg
+ExecStart=/opt/artha/.venv/bin/python -B /opt/artha/tools/team_ops.py backup-publish --root /var/lib/artha-teams/%i --host ${ARTHA_BACKUP_HOST} --directory ${ARTHA_BACKUP_DIRECTORY} --recipient ${ARTHA_BACKUP_RECIPIENT} --keep 7
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/artha-teams/%i
+TimeoutStartSec=300

@@ -89,6 +89,12 @@ def check_database(path):
                 if not row:raise ValueError('Strategy contract request backup reference failed')
                 request_matches(verify_record(json.loads(row[0])),expected)
             result['strategy_contracts_verified']=db.execute('SELECT count(*) FROM mvp_contracts').fetchone()[0]
+        if 'team_identity_users' in tables:
+            from app.team.auth import check_auth_database
+            result['team_identity']=check_auth_database(db)
+        if 'team_review_records' in tables:
+            from app.team.service import check_review_database
+            result['team_reviews']=check_review_database(db)
         if 'mvp_protocols' in tables:
             from app.contract_research import check_research_database
             result['contract_research']=check_research_database(db)
@@ -116,7 +122,9 @@ def snapshot(data_root,destination):
         target=destination/relative;target.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
         backup(source,target);files.append(dict(path=str(relative),sha256=file_hash(target),**check_database(target)))
     artifacts=[]
-    for relative_root in ('research/datasets','releases'):
+    artifact_roots=['research/datasets','releases']
+    artifact_roots.extend(str(p.relative_to(data_root)) for p in (data_root/'teams').glob('*/research/datasets'))
+    for relative_root in artifact_roots:
         directory=data_root/relative_root
         if not directory.exists():continue
         for source in sorted(directory.rglob('*')):
@@ -125,7 +133,7 @@ def snapshot(data_root,destination):
             __import__('shutil').copyfile(source,target);target.chmod(0o600)
             artifacts.append(dict(path=str(relative),sha256=file_hash(target)))
     manifest=dict(created_at=datetime.now(timezone.utc).isoformat(),files=files,artifacts=artifacts,secrets_included=False,
-        consistency='Each SQLite backup is consistent. Pause mutation/jobs first when a cross-database instant is required.')
+        password_verifiers_included=any('team_identity' in f for f in files),consistency='Each SQLite backup is consistent. Pause mutation/jobs first when a cross-database instant is required.')
     (destination/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');return manifest
 
 

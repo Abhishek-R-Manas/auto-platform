@@ -1,0 +1,8 @@
+[Unit]
+Description=Daily verified encrypted backup for Artha organization %i
+[Timer]
+OnCalendar=daily
+RandomizedDelaySec=900
+Persistent=true
+[Install]
+WantedBy=timers.target

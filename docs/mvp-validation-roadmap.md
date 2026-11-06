@@ -1,8 +1,8 @@
 # B2B strategy-validation MVP: five-stage roadmap and handoff
 
 Recorded: 2026-11-06 (Asia/Kolkata).
-Status: MVP-1 and MVP-2 engineering implemented and deployed; see their generated validation/deployment records. External customer/data acceptance remains pending.
-Current next engineering stage: MVP-3 — team identity, approval and recovery; continue only when requested.
+Status: MVP-1/MVP-2 deployed; MVP-3 engineering implemented and deployed, with actual evidence linked below. Real off-host destination/recipient and customer/data/public-host acceptance remain pending.
+Current next engineering stage: MVP-4 — independent financial validation, when requested; retain open MVP-3 acceptance dependencies.
 
 ## Purpose and conversation context
 
@@ -36,7 +36,7 @@ Recording this plan does not implement a stage, change deployment or expand orde
 | Technical feasibility assessment | Complete as a planning judgment | Scoped MVP is achievable; data quality and financial correctness are the hardest dependencies |
 | MVP-1 | ENGINEERING IMPLEMENTED; external acceptance pending | [Delivered guide, schemas, examples and actual validation](mvp-1/README.md); customer interviews, source rights and receipt-time acceptance remain pending |
 | MVP-2 | ENGINEERING IMPLEMENTED AND DEPLOYED; external acceptance pending | [Frozen research, evidence exports, API schemas and validation](mvp-2/README.md); commercial data/customer acceptance remains pending |
-| MVP-3 | NOT STARTED | Add actual team identity, approval and recovery |
+| MVP-3 | ENGINEERING IMPLEMENTED AND DEPLOYED; external off-host/customer acceptance pending | [Authenticated team workflow, schemas, recovery and actual evidence](mvp-3/README.md); real SSH target/recipient and public team-host acceptance remain pending |
 | MVP-4 | NOT STARTED | Independently validate the financial and software behavior |
 | MVP-5 | NOT STARTED | Operate repeated workflows with early customers and measure value |
 
@@ -182,13 +182,13 @@ Exit criteria:
 
 ## MVP-3 — Add team identity, approval and recovery
 
-Status: NOT STARTED.
-Estimate: approximately 2-3 weeks, partly parallel with MVP-2.
+Status: ENGINEERING IMPLEMENTED AND DEPLOYED; actual validation/deployment in [MVP-3 implementation record](mvp-3/implementation.json). Real off-host target/recipient and public customer-host acceptance remain pending.
+Original planning estimate: approximately 2-3 weeks, partly parallel with MVP-2.
 Suggested owners: backend and platform engineer.
 
 The existing [API](../app/api.py) is a local-user application. The
 [current forward review](../app/forward/service.py) records LOCAL_OWNER_ASSERTION.
-Neither is a commercial team-authorization system.
+Those local-owner paths retain that trust boundary. The new [team-only application](mvp-3/README.md) provides separately authenticated organization stores and roles; it does not expose the owner or broker APIs.
 
 Deliverables:
 
@@ -317,7 +317,7 @@ release. These references support the analysis, not a claim of authorization.
 1. Read [AGENTS.md](../AGENTS.md), this handoff and the linked current release evidence.
 2. Recheck the working tree, relevant implementation and dated deployment state. Do not treat
    the recorded fingerprint or runtime state above as permanently current.
-3. When asked to continue implementation, read the delivered MVP-1 and MVP-2 artifacts and their actual validation/deployment records, then begin MVP-3's team identity/approval/recovery work.
+3. When asked to continue implementation, read MVP-1 through MVP-3 and their actual records. Complete genuine off-host/public-host acceptance when the owner supplies the destination/recipient, and begin MVP-4's independent financial cases when requested.
    Work independently on items supported by available information; identify actual missing
    dependencies without creating an additional approval process for routine engineering.
 4. Preserve application source/locks before source changes as required by AGENTS.md.
@@ -334,3 +334,4 @@ release. These references support the analysis, not a claim of authorization.
 | 2026-11-06 | Repository/market analysis and technical feasibility assessment; owner requested durable five-stage handoff | Documentation only; MVP-1 through MVP-5 remain NOT STARTED. Next: supported strategy and data contracts. |
 | 2026-11-06 | MVP-1 implemented in the separate Strategy Contracts sidebar option; existing workflows preserved | 549 automated tests, 11 browser suites, 10 new controlled browser checks and 25 deployed read-only checks passed. Backups/restores and deployed stateless assessment passed. External customer/data acceptance pending; MVP-2 not started. |
 | 2026-11-06 | MVP-2 implemented and deployed in Strategy Contracts → Research & evidence; frozen protocols, shared-engine basket evaluation, receipt clocks, retained attempts and verifiable private packets | 571 automated tests, 12 isolated browser suites, 7 new browser checks and 26 deployed read-only checks passed. Pre/post backups restored; account/cache/authority preserved. [Actual handoff](mvp-2/implementation.json). External acceptance pending; MVP-3 not started. |
+| 2026-11-06 | MVP-3 implemented/deployed in separate Team workspace: authenticated roles, organization stores, independent snapshot reviews, bounded paper scopes and verified recovery | 595 automated tests, 13 isolated browser suites, 8 new two-user browser checks and 27 deployed checks passed. Real GPG and controlled SFTP/restore tested; genuine off-host target/recipient, first-admin setup and customer-host acceptance pending. [Actual handoff](mvp-3/implementation.json). No broker authority changed. |

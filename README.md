@@ -9,7 +9,7 @@ infrastructure for mass-affluent investors; this release remains a local paper s
 
 ## MVP planning and model handoff
 
-Open **Strategy Contracts** in the sidebar (`/#contracts`). **Define strategy** preserves the MVP-1 definitions, compatibility checks and immutable revisions; **Research & evidence** adds MVP-2 frozen protocols, baseline/reproduction/cost-stress runs and verifiable evidence exports. See [MVP-1](docs/mvp-1/README.md), [MVP-2](docs/mvp-2/README.md) and [the five-stage handoff](docs/mvp-validation-roadmap.md). Existing workflows remain available. Customer/source acceptance is pending; these stages are separate from existing engineering release phases.
+Open **Strategy Contracts** (`/#contracts`) for MVP-1 definitions and MVP-2 frozen research/evidence. The separate **Team workspace** sidebar link (`/team`) adds MVP-3 authenticated members/roles, organization stores, independent snapshot reviews, expiring/revocable paper-research scopes and verified private recovery. See [MVP-1](docs/mvp-1/README.md), [MVP-2](docs/mvp-2/README.md), [MVP-3 setup and recovery](docs/mvp-3/README.md) and [the five-stage handoff](docs/mvp-validation-roadmap.md). Existing workflows remain available. Real off-host destination/recipient, customer/source and public team-deployment acceptance remain pending. These stages are separate from existing engineering release phases.
 
 ## Guided Home, trading desk and strategy builder
 

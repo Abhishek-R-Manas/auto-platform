@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "request_id": {
+      "maxLength": 100,
+      "minLength": 8,
+      "title": "Request Id",
+      "type": "string"
+    },
+    "packet_id": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Packet Id",
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "ACCEPT",
+        "REQUEST_CHANGES",
+        "REJECT"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "comment": {
+      "maxLength": 4000,
+      "minLength": 1,
+      "title": "Comment",
+      "type": "string"
+    }
+  },
+  "required": [
+    "request_id",
+    "packet_id",
+    "decision",
+    "comment"
+  ],
+  "title": "Review",
+  "type": "object"
+}

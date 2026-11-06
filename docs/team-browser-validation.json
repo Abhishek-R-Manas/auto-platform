@@ -1,0 +1,21 @@
+{
+  "passed": 8,
+  "checks": [
+    "one-time owner setup creates an authenticated organization; standalone service exposes no owner or broker APIs",
+    "single-use invitation lets the reviewer choose a private password; role restrictions are enforced by the server and names render as text",
+    "authenticated researcher completes baseline/reproduction and captures five findings; administrator self-review is rejected",
+    "independent reviewer records attributable comments and snapshot acceptance, then grants a separate expiring paper-research scope",
+    "approved operation uses the declared scope; revocation blocks further execution without consuming an attempt",
+    "private evidence exports preserve authenticated authorship and verify without treating a review as live authority",
+    "administrator creates a verified private backup; disabling membership invalidates an existing reviewer session",
+    "desktop/mobile review journeys fit the viewport and sign-out removes authenticated access"
+  ],
+  "javascript_errors": [],
+  "controlled_identities": true,
+  "controlled_data": true,
+  "actual_process_workers": true,
+  "real_provider_calls": false,
+  "real_orders_sent": false,
+  "offhost_destination_tested": false,
+  "identity": "0d5e4abce1ffdfce836c63748615f9f35e0ae772309ce315b5443c736676346b"
+}

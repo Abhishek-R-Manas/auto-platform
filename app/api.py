@@ -127,6 +127,9 @@ def create_app(db_path=None,background=True,config_path=None):
     pilot=Pilot(research_root.parent/"pilot",kite,forward)
     workspace=Workspace(research_root.parent/"workspace",kite,hub,research)
     intelligence.policy_guard=forward.lock
+    from .team.service import Team
+    from .team.api import install as install_team
+    team=Team(research_root.parent/"teams/default")
     oauth_states={}
     setup=ConnectionSetup(kite,hub,engine,config)
     setup.ai_status=lambda:lab.provider.status()['configured']
@@ -228,6 +231,7 @@ def create_app(db_path=None,background=True,config_path=None):
         pilot_task=asyncio.create_task(pilot_loop(stop)) if background else None
         yield
         stop.set()
+        await asyncio.to_thread(team.close)
         if pilot_task:await pilot_task
         pilot.close();charts.close();workspace.close()
         if input_task:await input_task
@@ -249,6 +253,7 @@ def create_app(db_path=None,background=True,config_path=None):
 
     app=FastAPI(title="Artha Paper Trading",version="0.20.0",lifespan=lifespan,
                 description="Single-user paper research, cached market charts and a separately gated supervised broker pilot.",docs_url="/api/docs",redoc_url=None)
+    install_team(app,team)
     app.state.engine=engine
     app.state.kite=kite
     app.state.market_hub=hub
@@ -281,7 +286,8 @@ def create_app(db_path=None,background=True,config_path=None):
         except ValueError:
             return JSONResponse({"detail":"Invalid content length"},400)
         maximum=34000000 if request.url.path in {"/api/research/datasets/import","/api/research/datasets/kite"} else 1000000 if request.url.path.startswith(("/api/research/","/api/candidates/","/api/forward/","/api/intelligence/","/api/contract-research/verify")) else 16384
-        if request.url.path=='/api/contract-research/verify':maximum=16*1024*1024
+        if request.url.path in {'/api/contract-research/verify','/api/team/verify'}:maximum=16*1024*1024
+        if request.url.path=='/api/team/datasets':maximum=34000000
         if length>maximum:
             return JSONResponse({"detail":"Request exceeds the size limit"},413)
         if request.method not in {"GET","HEAD","OPTIONS"}:
@@ -309,6 +315,8 @@ def create_app(db_path=None,background=True,config_path=None):
             return JSONResponse({'detail':'Check the private provider configuration fields; credential values are never returned'},422)
         if request.url.path.startswith('/api/intelligence/'):
             return JSONResponse({'detail':'Check the report type, official public source URL, timestamps and input limits; submitted content is not echoed'},422)
+        if request.url.path.startswith('/api/team'):
+            return JSONResponse({'detail':'Check the team request fields; submitted values are not returned'},422)
         if request.url.path.startswith(('/api/contracts','/api/contract-research')):
             fields=[dict(loc=list(e['loc']),msg=e['msg'],type=e['type']) for e in exc.errors()]
             return JSONResponse({'detail':fields},422)

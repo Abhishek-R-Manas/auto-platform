@@ -1,0 +1,30 @@
+[Unit]
+Description=Artha isolated research organization %i
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+User=artha-team-%i
+Group=artha-team-%i
+WorkingDirectory=/opt/artha
+Environment=ARTHA_TEAM_PORT=8788
+Environment=ARTHA_TEAM_PUBLIC_HOST=localhost
+EnvironmentFile=-/etc/artha/team-%i.env
+ExecStart=/opt/artha/.venv/bin/python -B /opt/artha/tools/team_server.py --root /var/lib/artha-teams/%i --port ${ARTHA_TEAM_PORT} --public-host ${ARTHA_TEAM_PUBLIC_HOST}
+UMask=0077
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=180
+KillMode=control-group
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/artha-teams/%i
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+MemoryMax=2G
+TasksMax=64
+[Install]
+WantedBy=multi-user.target

@@ -125,6 +125,12 @@ def _execute(root,identifier):
             start=time.monotonic()
             for cursor,group in enumerate(groups,1):
                 if cursor<=replay.state['cursor']: continue
+                if meta.get('authorization'):
+                    from ..team.gates import authority_reason
+                    reason=authority_reason(root.parent,meta['authorization'],config=config)
+                    if reason:
+                        meta['error']=reason
+                        flush(replay.state,'CANCELLED');return dict(id=identifier,status='CANCELLED')
                 command=db.execute('SELECT command FROM control WHERE id=1').fetchone()
                 if command and command[0] in {'PAUSE','CANCEL'}:
                     status='PAUSED' if command[0]=='PAUSE' else 'CANCELLED'
@@ -218,16 +224,16 @@ class Research:
             if self.pool is None: self.pool=ProcessPoolExecutor(max_workers=self.workers,mp_context=multiprocessing.get_context('spawn'),initializer=worker_setup)
             self.futures[identifier]=self.pool.submit(execute,str(self.root),identifier)
 
-    def create(self,config,dispatch_key=None):
-        with self.lock: return self._create(config,dispatch_key)
+    def create(self,config,dispatch_key=None,authorization=None):
+        with self.lock: return self._create(config,dispatch_key,authorization)
 
-    def _create(self,config,dispatch_key=None):
+    def _create(self,config,dispatch_key=None,authorization=None):
         config=Run.model_validate(config).model_dump(mode='json')
         fixed_id=hashlib.sha256(dispatch_key.encode()).hexdigest()[:32] if dispatch_key else None
         if fixed_id and (self.root/'runs'/fixed_id/'run.sqlite3').exists():
             with closing(open_job(self.root/'runs'/fixed_id/'run.sqlite3')) as db:previous=metadata(db)
             if previous:
-                if previous.get('dispatch_key')!=dispatch_key or previous['config_hash']!=digest(config) or previous['engine_hash']!=CURRENT_BUILD['code_hash']:raise ValueError('Dispatch identity binds different research inputs or build')
+                if previous.get('authorization')!=authorization or previous.get('dispatch_key')!=dispatch_key or previous['config_hash']!=digest(config) or previous['engine_hash']!=CURRENT_BUILD['code_hash']:raise ValueError('Dispatch identity binds different research inputs or build')
                 with self.catalog.lock,self.catalog.db:self.catalog.db.execute('INSERT OR IGNORE INTO runs VALUES(?,?,?)',(fixed_id,previous['created'],canonical(previous)))
                 if previous['status']=='QUEUED' and fixed_id not in self.futures:self.schedule(fixed_id)
                 return self.get(fixed_id)
@@ -235,7 +241,7 @@ class Research:
         dataset=self.catalog.verify(config['dataset_id']);check=capabilities(dataset,config)
         identifier=fixed_id or uuid.uuid4().hex;directory=self.root/'runs'/identifier;directory.mkdir(parents=True,mode=0o700,exist_ok=bool(fixed_id))
         document=dict(id=identifier,created=datetime.now(timezone.utc).isoformat(),status='QUEUED' if check['runnable'] else 'FAILED',progress=0,
-            dispatch_key=dispatch_key,engine_hash=CURRENT_BUILD['code_hash'],config=config,config_hash=digest(config),dataset_id=dataset['id'],name=config['name'],capability=check,
+            authorization=authorization,dispatch_key=dispatch_key,engine_hash=CURRENT_BUILD['code_hash'],config=config,config_hash=digest(config),dataset_id=dataset['id'],name=config['name'],capability=check,
             error=None if check['runnable'] else '; '.join(check['blockers']))
         with closing(open_job(directory/'run.sqlite3')) as db:
             with db:

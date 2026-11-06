@@ -9,6 +9,10 @@ Engineering implemented and deployed 2026-11-06. Controlled checks passed: 571 a
 tests, 12 isolated browser suites and 26 deployed read-only checks. Customer/source
 acceptance remains pending.
 
+[MVP-3](../mvp-3/README.md) now adds authenticated organization research in the separate
+Team workspace. The local-owner MVP-2 routes retain their original trust boundary;
+commercial team deployments use the isolated team-only application.
+
 ## Use the workflow
 
 Open **Strategy Contracts → Research & evidence** at /#contracts. All existing sidebar

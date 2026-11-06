@@ -33,6 +33,15 @@ def main():
                 expect(page.locator('#builder-payoff')).to_contain_text('See the shape of your strategy');bounds=page.locator('#builder-payoff .desk-empty').bounding_box();container=page.locator('#builder-payoff').bounding_box();assert bounds['height']<=container['height']+2
             if view=='positions':assert page.locator('#portfolio-summary').is_visible()
             elif view=='pilot':expect(page.locator('#live-onboarding-steps')).to_be_visible()
+        page.get_by_role('link',name='Team workspace',exact=True).scroll_into_view_if_needed()
+        assert page.get_by_role('link',name='Team workspace',exact=True).get_attribute('href')=='/team'
+        team_page=browser.new_page();team_page.on('pageerror',lambda e:errors.append(str(e)));team_page.goto(base+'/team',wait_until='networkidle')
+        team_session=team_page.request.get(base+'/api/team/session').json()
+        expect(team_page.locator('#auth-submit')).to_be_visible()
+        assert team_page.request.get(base+'/api/team/dashboard').status==401
+        assert team_page.locator('#auth-password').input_value()==''
+        checks.append('team workspace opens at authenticated setup/sign-in; private team APIs reject anonymous access')
+        team_page.close()
         pilot=page.request.get(base+'/api/pilot/status').json();health=page.request.get(base+'/api/health').json();after=page.request.get(base+'/api/state').json()
         assert pilot['transport_enabled']==('--expect-live-transport' in sys.argv) and not pilot['armed'] and not pilot['orders'] and pilot['audit']['ok'];checks.append('expected transport capability, inactive account and zero real orders')
         assert health['status']=='ok' and health['reconciliation']['ok'];checks.append('healthy financial reconciliation')

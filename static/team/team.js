@@ -1,0 +1,146 @@
+(() => {
+'use strict';
+const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),base='/api/team';
+const money=v=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(v||0),uuid=()=>crypto.randomUUID();
+const mutationKeys=new Map();
+async function sendOnce(path,body){const signature=JSON.stringify(body);let prior=mutationKeys.get(path);if(!prior||prior.signature!==signature){prior={signature,id:uuid()};mutationKeys.set(path,prior);}return request(path,{...body,request_id:prior.id});}
+let session=null,data=null,detail=null,selected=null,busy=false,tab='research',generation=0,sequence=0,inviteToken=null,lastRequest=null;
+const fragment=new URLSearchParams(location.hash.slice(1));inviteToken=fragment.get('invite');if(inviteToken)history.replaceState(null,'',location.pathname);
+function toast(message,error=false){$('message').textContent=message;$('message').classList.toggle('error',error);setTimeout(()=>{$('message').textContent='';},8000);}
+function signedOut(){generation++;session=null;data=null;detail=null;selected=null;$('identity').replaceChildren();renderAuth(true);}
+async function request(path,body,raw=false){
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),30000);
+ try{
+  const response=await fetch(base+path,{method:body===undefined?'GET':'POST',headers:body===undefined?{}:{'Content-Type':'application/json','X-Artha-Client':'paper-workspace',...(session?{'X-Artha-CSRF':session.csrf}:{})},body:body===undefined?undefined:raw?body:JSON.stringify(body),signal:controller.signal});
+  if(!response.ok){let d=await response.json();if(response.status===401&&session)signedOut();throw new Error(typeof d.detail==='string'?d.detail:'Check the request fields.');}
+  return raw?await response.blob():await response.json();
+ }catch(error){if(error.name==='AbortError')throw new Error('Request timed out. Refresh the history before retrying.');throw error;}finally{clearTimeout(timer);}
+}
+const input=(label,id,value='',extra='')=>'<label>'+esc(label)+'<input id="'+id+'" value="'+esc(value)+'" '+extra+'></label>';
+const options=(rows,value)=>rows.map(([id,name])=>'<option value="'+esc(id)+'" '+(id===value?'selected':'')+'>'+esc(name)+'</option>').join('');
+const local=v=>new Date(v).toLocaleString('sv-SE',{timeZone:'Asia/Kolkata'}).replace(' ','T').slice(0,19);
+const role=r=>session?.user.roles.includes(r);
+async function action(fn){if(busy)return;busy=true;try{await fn();}catch(e){toast(e.message,true);}finally{busy=false;}}
+async function init(){
+ try{
+  const state=await request('/session');
+  if(state.authenticated&&!inviteToken){session=state;await refresh();render();}else renderAuth(state.configured);
+ }catch(e){$('app').textContent=e.message;}
+}
+function renderAuth(configured){
+ const accept=!!inviteToken,setup=!configured&&!accept;
+ $('app').innerHTML='<section class="card auth"><h1>'+(accept?'Join your research team':setup?'Initialize your team workspace':'Sign in to your team')+'</h1><p>Authenticated research, independent reviews and bounded paper authority.</p><form id="auth-form">'+
+ (setup?input('Organization name','setup-name','','required maxlength="120"')+input('One-time operator setup key','setup-key','','type="password" required autocomplete="off"'):'')+
+ (!accept?input('Email','auth-email','','type="email" required autocomplete="username"'):'')+
+ input(accept||setup?'Choose a password · at least 15 characters':'Password','auth-password','','type="password" required maxlength="256" autocomplete="'+(accept||setup?'new-password':'current-password')+'"')+
+ '<button class="primary" id="auth-submit">'+(accept?'Accept invitation':setup?'Initialize organization':'Sign in')+'</button><p id="auth-error" class="error-text" role="status"></p></form>'+
+ (setup?'<p class="muted">A local operator can read the owner-only bootstrap.key file in this organization’s team data directory, or run the documented team-admin setup command. No default account or password is created.</p>':'')+
+ '<div class="notice">Paper research only. Team approval does not authorize broker orders.</div></section>';
+ $('auth-form').onsubmit=e=>{e.preventDefault();action(async()=>{
+  const password=$('auth-password').value,email=$('auth-email')?.value;
+  try{
+   if(accept){await request('/invitations/accept',{token:inviteToken,password});inviteToken=null;renderAuth(true);toast('Invitation accepted. Sign in with your own password.');return;}
+   if(setup)await request('/bootstrap',{bootstrap_key:$('setup-key').value,organization_name:$('setup-name').value,email,password});
+   session=await request('/login',{email,password});generation++;await refresh();render();
+  }catch(error){$('auth-error').textContent=error.message;throw error;}
+  finally{if($('auth-password'))$('auth-password').value='';if($('setup-key'))$('setup-key').value='';}
+ });};
+}
+async function refresh(){
+ const current=generation;const result=await request('/dashboard');if(!session||current!==generation)return;
+ data=result;session.user=result.user;session.organization=result.organization;
+}
+function render(){
+ if(!session||!data)return;
+ $('identity').innerHTML=esc(data.organization.name)+' · '+esc(session.user.email)+' <span class="pill">'+esc(session.user.roles.join(' · '))+'</span><button id="team-refresh" type="button">Refresh workspace</button><button id="logout" type="button">Sign out</button>';
+ $('team-refresh').onclick=()=>action(async()=>{await refresh();if(selected)await loadDetail();render();});
+ $('logout').onclick=()=>action(async()=>{await request('/logout',{});signedOut();});
+ $('app').innerHTML='<h1>Research together. Keep approval explicit.</h1><p>One organization, isolated evidence and independently assigned roles.</p><div class="notice">Snapshot acceptance records a review of fixed evidence. A separate, expiring operating scope permits further paper research. Data authenticity, statistical edge and broker authority remain separate.</div><nav class="tabs">'+['research','reviews',...(role('ADMIN')?['members']:[])].map(t=>'<button data-tab="'+t+'" class="'+(t===tab?'active':'')+'">'+({research:'Research',reviews:'Reviews & scopes',members:'Members'})[t]+'</button>').join('')+'</nav><div id="panel"></div><details class="card"><summary>Change your password</summary><form id="password-form"><div class="grid">'+input('Current password','password-current','','type="password" required autocomplete="current-password"')+input('New password · at least 15 characters','password-new','','type="password" required minlength="15" autocomplete="new-password"')+'</div><button>Change password and sign out</button></form></details>';
+ document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render();});
+ $('password-form').onsubmit=e=>{e.preventDefault();action(async()=>{await request('/password',{current_password:$('password-current').value,new_password:$('password-new').value});signedOut();toast('Password changed. Sign in again.');});};
+ if(tab==='research')renderResearch();else if(tab==='reviews')renderReviews();else renderMembers();
+}
+function protocolPicker(){return '<label>Frozen protocol<select id="protocol-picker"><option value="">Select a protocol</option>'+options(data.protocols.map(p=>[p.id,p.core.definition.name+' · '+p.id.slice(0,10)]),selected)+'</select></label>';}
+function bindPicker(){
+ $('protocol-picker').onchange=()=>{selected=$('protocol-picker').value||null;detail=null;action(async()=>{await loadDetail();if(tab==='research')renderResearchDetail();else renderReviewDetail();});};
+ if(selected)loadDetail().then(()=>{if(tab==='research')renderResearchDetail();else if(tab==='reviews')renderReviewDetail();}).catch(e=>toast(e.message,true));
+}
+async function loadDetail(){
+ if(!selected){detail=null;return;}
+ const id=selected,n=++sequence,g=generation,result=await request('/protocols/'+id);
+ if(id===selected&&n===sequence&&g===generation&&session)detail=result;
+}
+function renderResearch(){
+ $('panel').innerHTML='<div class="layout"><div><article class="card"><h2>1. Prepare an organization-owned experiment</h2><div class="actions"><button id="load-example" '+(!role('RESEARCHER')?'disabled':'')+'>Load fictional example</button><button id="import-data" '+(!role('RESEARCHER')?'disabled':'')+'>Import quote dataset</button><button id="import-definition" '+(!role('RESEARCHER')?'disabled':'')+'>Import strategy definition</button></div><input class="hidden" id="dataset-file" type="file" accept=".json"><input class="hidden" id="definition-file" type="file" accept=".json"><form id="freeze-form"><div class="grid"><label>Saved strategy revision<select id="strategy-picker" required><option value="">Select a definition</option>'+options(data.contracts.map(p=>[p.id,p.core.definition.name]),null)+'</select></label><label>Immutable quote dataset<select id="dataset-picker" required><option value="">Select a dataset</option>'+options(data.datasets.map(p=>[p.id,p.manifest.name]),null)+'</select></label>'+
+ input('Virtual capital · INR','capital',10000000,'type="number" min="100" required')+input('Observation cutoff · IST','cutoff','','type="datetime-local" step="1" required')+input('Maximum attempts · all outcomes count','budget',8,'type="number" min="2" max="20" required')+input('Entry window · seconds','window',10,'type="number" min="1" max="300" required')+'</div><label class="check"><input type="checkbox" id="research-ack">I acknowledge unqualified research with incomplete source/customer evidence.</label><button id="freeze-button" class="primary" '+(!role('RESEARCHER')?'disabled':'')+'>Freeze protocol</button></form><p class="muted">The shared research risk policy is pinned when frozen. Import the supported Artha JSON formats; imported evidence is reassessed.</p></article><article class="card"><h2>2. Run and retain every attempt</h2>'+protocolPicker()+'<div id="research-detail"></div></article></div><aside class="card"><h2>Roles and independent review</h2><p>Researchers prepare evidence. Reviewers assess work they did not contribute to. Administrators manage membership; a role never overrides author/reviewer separation.</p><p>After an evidence capture, additional runs require an independent operating scope. Revocation, expiry and identity changes are rechecked inside workers.</p><p class="muted">Existing local-owner definitions can be exported and imported here. Organization stores share no broker credentials or main financial accounts.</p></aside></div>';
+ $('load-example').onclick=()=>action(async()=>{const result=await request('/example',{request_id:uuid()});await refresh();renderResearch();$('strategy-picker').value=result.contract.id;chooseStrategy();toast('Fictional inputs imported into this organization only.');});
+ $('strategy-picker').onchange=chooseStrategy;
+ $('import-data').onclick=()=>$('dataset-file').click();$('import-definition').onclick=()=>$('definition-file').click();
+ $('dataset-file').onchange=e=>action(async()=>{const f=e.target.files[0];if(!f)return;if(f.size>32000000)throw new Error('Dataset envelope exceeds the import limit.');await request('/datasets',JSON.parse(await f.text()));await refresh();renderResearch();toast('Dataset imported and checked.');});
+ $('definition-file').onchange=e=>action(async()=>{const f=e.target.files[0];if(!f)return;if(f.size>64000)throw new Error('Definition exceeds the import limit.');const raw=JSON.parse(await f.text());const definition=raw.core?.definition||raw.definition||raw;const saved=await request('/contracts',{request_id:uuid(),definition,dataset_id:$('dataset-picker').value||null,parent_id:null});await refresh();renderResearch();$('strategy-picker').value=saved.id;chooseStrategy();toast('Definition saved as an authenticated organization revision.');});
+ $('freeze-form').onsubmit=e=>{e.preventDefault();action(async()=>{const body={contract_id:$('strategy-picker').value,dataset_id:$('dataset-picker').value,capital_paise:Math.round(Number($('capital').value)*100),risk_policy:data.risk_defaults,observation_cutoff:$('cutoff').value+'+05:30',max_trials:Number($('budget').value),entry_window_seconds:Number($('window').value),latency_seconds:0,allow_unverified_data:$('research-ack').checked};
+ const signature=JSON.stringify(body);if(!lastRequest||lastRequest.signature!==signature)lastRequest={signature,id:uuid()};
+ const protocol=await request('/protocols',{...body,request_id:lastRequest.id});selected=protocol.id;await refresh();renderResearch();toast('Protocol frozen with authenticated authorship.');});};
+ bindPicker();renderResearchDetail();
+}
+function chooseStrategy(){
+ const item=data.contracts.find(p=>p.id===$('strategy-picker').value);if(!item)return;
+ if(item.core.dataset_id)$('dataset-picker').value=item.core.dataset_id;
+ $('cutoff').value=local(new Date(new Date(item.core.definition.rules.exit_at).getTime()+10000).toISOString());
+}
+function renderResearchDetail(){
+ if(!$('research-detail'))return;
+ if(!detail||detail.protocol.id!==selected){$('research-detail').innerHTML='<p class="muted">Choose a frozen protocol to inspect its history.</p>';return;}
+ const oldScope=$('scope-picker')?.value;
+ const p=detail.protocol.core,active=detail.trials.some(t=>['RESERVED','QUEUED','RUNNING','PAUSED'].includes(t.status)),blocked=!role('RESEARCHER')||active||!detail.current_build||detail.trials.length>=p.max_trials;
+ const grants=detail.reviews.filter(r=>r.core.kind==='SCOPE_GRANT'&&r.core.parent_id===selected);
+ $('research-detail').innerHTML='<p class="muted">'+esc(detail.trials.length+' / '+p.max_trials+' attempts · '+p.clock_mode)+' · '+(detail.current_build?'Current build':'Preserved older build')+'</p><details><summary>Inspect the exact strategy and risk interpretation</summary><pre>'+esc(JSON.stringify({strategy:p.run_config.strategies[0],risk:p.run_config.risk,execution:p.run_config.execution,contract:p.run_config.contract_protocol,identity:p.authenticated_context},null,2))+'</pre></details><label>Operating scope · required after capture<select id="scope-picker"><option value="">Initial evidence-building only</option>'+options(grants.map(r=>[r.id,r.id.slice(0,10)+' · expires '+new Date(r.core.expires_at).toLocaleString()]),oldScope)+'</select></label><div class="actions">'+[['BASELINE','Run baseline'],['REPRODUCE','Repeat identical inputs'],['COST_STRESS','Run cost stress']].map(([kind,label])=>'<button data-run="'+kind+'" '+(blocked||(kind==='REPRODUCE'&&!detail.trials.some(t=>t.core.kind==='BASELINE'&&t.status==='COMPLETED'))?'disabled':'')+'>'+label+'</button>').join('')+'</div><div class="scroll"><table><thead><tr><th>Attempt</th><th>Status</th><th>Net P&L</th><th>Costs</th><th></th></tr></thead><tbody>'+detail.trials.map(t=>'<tr><td>'+esc(t.core.kind)+'<small>'+esc(t.id.slice(0,10))+'</small></td><td>'+esc(t.status)+(t.error?'<small>'+esc(t.error)+'</small>':'')+'</td><td>'+esc(t.summary?money(t.summary.net_pnl):'—')+'</td><td>'+esc(t.summary?money(t.summary.fees):'—')+'</td><td>'+(['QUEUED','RUNNING','PAUSED'].includes(t.status)?'<button data-control="'+esc(t.id)+'" data-action="'+(t.status==='PAUSED'?'RESUME':'CANCEL')+'">'+(t.status==='PAUSED'?'Resume':'Cancel')+'</button>':t.status==='RESERVED'?'<button data-recover="'+esc(t.id)+'">Recover same attempt</button>':'')+'</td></tr>').join('')+'</tbody></table></div><div class="actions"><button class="primary" id="capture" '+(!role('RESEARCHER')||active||!detail.trials.length?'disabled':'')+'>Capture evidence</button><button id="open-reviews">Review packets & scopes</button></div><p class="muted">Cancellation retains committed fills/costs; it does not imply a completed liquidation.</p>';
+ document.querySelectorAll('[data-run]').forEach(b=>b.onclick=()=>action(async()=>{const body={protocol_id:selected,kind:b.dataset.run,grant_id:$('scope-picker').value||null};const signature=JSON.stringify([body,detail.trials.map(t=>t.id)]);if(!lastRequest||lastRequest.signature!==signature)lastRequest={signature,id:uuid()};await request('/trials',{...body,request_id:lastRequest.id});await loadDetail();renderResearchDetail();}));
+ document.querySelectorAll('[data-control]').forEach(b=>b.onclick=()=>action(async()=>{await request('/trials/'+b.dataset.control+'/control',{action:b.dataset.action});await loadDetail();renderResearchDetail();}));
+ document.querySelectorAll('[data-recover]').forEach(b=>b.onclick=()=>action(async()=>{await request('/trials/'+b.dataset.recover+'/recover',{});await loadDetail();renderResearchDetail();}));
+ $('capture').onclick=()=>action(async()=>{await request('/packets',{request_id:uuid(),protocol_id:selected});await refresh();await loadDetail();tab='reviews';render();toast('Evidence captured; independent review is now available.');});
+ $('open-reviews').onclick=()=>{tab='reviews';render();};
+}
+function renderReviews(){
+ $('panel').innerHTML='<article class="card"><h2>Independent evidence and operating reviews</h2>'+protocolPicker()+'<div id="review-detail"></div></article>';
+ bindPicker();renderReviewDetail();
+}
+function renderReviewDetail(){
+ if(!$('review-detail'))return;
+ if(!detail||detail.protocol.id!==selected){$('review-detail').innerHTML='<p class="muted">Choose a protocol and capture its evidence first.</p>';return;}
+ const packets=detail.packets;
+ $('review-detail').innerHTML='<label>Immutable evidence packet<select id="packet-picker"><option value="">Select a packet</option>'+options(packets.map(p=>[p.id,(p.historical?'Historical · ':'Current · ')+p.id.slice(0,12)]),packets[0]?.id)+'</select></label><div class="layout"><div><div id="packet-findings"></div><div class="actions"><button id="export-packet">Export packet JSON</button><button id="verify-packet">Verify a downloaded packet</button></div><label class="check"><input id="trace-ack" type="checkbox">Include quote-bearing traces; my source agreement permits private export.</label><input type="file" id="verify-file" class="hidden" accept=".json"><p id="verification" role="status"></p><form id="comment-form"><label>Comment<textarea id="comment" rows="3" required maxlength="4000"></textarea></label><button>Add comment</button></form><div id="review-log"></div></div><div><form class="card" id="review-form"><h3>Review this fixed evidence snapshot</h3><label>Decision<select id="review-decision"><option value="ACCEPT">Accept snapshot</option><option value="REQUEST_CHANGES">Request changes</option><option value="REJECT">Reject snapshot</option></select></label><label>Review rationale<textarea id="review-comment" rows="3" required maxlength="4000"></textarea></label><button class="primary" id="submit-review" '+(!role('REVIEWER')?'disabled':'')+'>Record independent review</button><p class="muted">The server derives reviewer identity and rejects contributor self-review. This decision grants no execution authority.</p></form><form class="card" id="scope-form"><h3>Approve a bounded paper-research scope</h3>'+input('Expiry · IST','scope-expiry',local(new Date(Date.now()+3600000).toISOString()),'type="datetime-local" step="1" required')+input('Maximum new attempts','scope-budget',2,'type="number" min="1" max="20" required')+'<label class="check"><input type="checkbox" id="scope-ack">I acknowledge unqualified research, source and statistical limitations.</label><button class="primary" id="grant-scope" '+(!role('REVIEWER')?'disabled':'')+'>Grant paper-research scope</button><p class="muted">All three predeclared scenarios; exact strategy, protocol, dataset, engine and policy. Maximum seven days. Changed material inputs require a new review.</p></form></div></div><h3>Operating scopes</h3><label>Revocation reason<input id="revoke-comment" maxlength="4000" placeholder="Explain why further execution must stop"></label><div id="scope-list"></div>';
+ $('packet-picker').onchange=()=>action(inspectPacket);
+ $('comment-form').onsubmit=e=>{e.preventDefault();action(async()=>{await sendOnce('/comments',{packet_id:$('packet-picker').value,comment:$('comment').value});await loadDetail();renderReviewDetail();});};
+ $('review-form').onsubmit=e=>{e.preventDefault();action(async()=>{await sendOnce('/reviews',{packet_id:$('packet-picker').value,decision:$('review-decision').value,comment:$('review-comment').value});await loadDetail();renderReviewDetail();toast('Independent snapshot review recorded.');});};
+ $('scope-form').onsubmit=e=>{e.preventDefault();action(async()=>{const packet=$('packet-picker').value,latest=detail.reviews.find(r=>r.core.kind==='SNAPSHOT_REVIEW'&&r.core.parent_id===packet);if(!latest)throw new Error('An independent snapshot review is required first.');await sendOnce('/scopes',{packet_id:packet,review_id:latest.id,expires_at:$('scope-expiry').value+'+05:30',max_new_trials:Number($('scope-budget').value),scenarios:['BASELINE','REPRODUCE','COST_STRESS'],acknowledge_unqualified_research:$('scope-ack').checked});await loadDetail();renderReviewDetail();toast('Bounded research scope recorded.');});};
+ $('export-packet').onclick=()=>action(async()=>{const id=$('packet-picker').value;if(!id)throw new Error('Select a packet.');const trace=$('trace-ack').checked,response=await fetch(base+'/packets/'+id+'/export?include_trace='+trace+'&rights_acknowledged='+trace);if(!response.ok)throw new Error((await response.json()).detail);const url=URL.createObjectURL(await response.blob()),a=document.createElement('a');a.href=url;a.download='team-evidence-'+id.slice(0,12)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
+ $('verify-packet').onclick=()=>$('verify-file').click();
+ $('verify-file').onchange=e=>action(async()=>{const file=e.target.files[0];if(!file)return;if(file.size>16*1024*1024)throw new Error('Packet exceeds the verification limit.');const text=await file.text();JSON.parse(text);const ids={expected_protocol:selected,expected_build:detail.protocol.core.build.code_hash,expected_dataset:detail.protocol.core.dataset_snapshot.id},suffix=JSON.stringify(ids).slice(1,-1),blob=await request('/verify','{"packet":'+text+','+suffix+'}',true),result=JSON.parse(await blob.text());$('verification').textContent=(result.integrity_valid?'Integrity valid. ':'Integrity failed. ')+(result.repeat_results_match?'Baseline and repeat match. ':'')+result.reason;e.target.value='';});
+ if(packets.length)inspectPacket().catch(e=>toast(e.message,true));
+ const grants=detail.reviews.filter(r=>r.core.kind==='SCOPE_GRANT'&&r.core.parent_id===selected);
+ $('scope-list').innerHTML=grants.map(r=>{const revoked=detail.reviews.some(v=>v.core.kind==='SCOPE_REVOKED'&&v.core.parent_id===r.id),expired=new Date(r.core.expires_at)<=new Date();return '<div class="entry"><strong>'+esc(r.id.slice(0,12))+'</strong><span class="pill">'+(revoked?'REVOKED':expired?'EXPIRED':'BOUNDED RESEARCH')+'</span><p>'+esc(r.core.max_new_trials+' attempts · expiry '+new Date(r.core.expires_at).toLocaleString())+'</p><small>Reviewer '+esc(r.core.authenticated_context.actor_id)+'</small><button data-revoke="'+esc(r.id)+'" '+(revoked||!role('ADMIN')&&!role('REVIEWER')?'disabled':'')+'>Revoke scope</button></div>';}).join('')||'<p class="muted">No operating scope has been granted.</p>';
+ document.querySelectorAll('[data-revoke]').forEach(b=>b.onclick=()=>action(async()=>{const comment=$('revoke-comment').value.trim();if(!comment)throw new Error('Enter a revocation reason.');await sendOnce('/scopes/revoke',{grant_id:b.dataset.revoke,comment});await loadDetail();renderReviewDetail();toast('Scope revoked. Workers recheck authority before processing more observations.');}));
+}
+async function inspectPacket(){
+ const id=$('packet-picker').value;if(!id)return;
+ const p=await request('/packets/'+id);if(!$('packet-findings'))return;
+ $('packet-findings').innerHTML='<h3>Separate evidence findings</h3>'+Object.entries(p.core.findings).map(([key,value])=>'<div class="entry"><strong>'+esc(key.replaceAll('_',' '))+'</strong><span class="pill">'+esc(value.status)+'</span><p>'+esc(value.note)+'</p></div>').join('');
+ $('review-log').innerHTML='<h3>Review history</h3>'+detail.reviews.filter(r=>['COMMENT','SNAPSHOT_REVIEW'].includes(r.core.kind)&&r.core.parent_id===id).map(r=>'<div class="entry"><strong>'+esc(r.core.decision||'COMMENT')+'</strong><p>'+esc(r.core.comment)+'</p><small>Authenticated member '+esc(r.core.authenticated_context.actor_id)+' · '+esc(new Date(r.core.recorded_at).toLocaleString())+'</small></div>').join('');
+}
+async function renderMembers(){
+ $('panel').innerHTML='<div class="layout"><article class="card"><h2>Invite a member</h2><form id="invite-form">'+input('Name','invite-name','','required maxlength="120"')+input('Email','invite-email','','required type="email"')+'<div class="member-roles">'+['RESEARCHER','REVIEWER','ADMIN'].map(r=>'<label class="check"><input name="invite-role" type="checkbox" value="'+r+'" '+(r==='RESEARCHER'?'checked':'')+'>'+r+'</label>').join('')+'</div><button class="primary">Create one-time invitation</button></form><div id="invitation-result"></div><p class="muted">Share the one-time link directly. The invitee sets their own password. No email is sent by this app.</p></article><article class="card"><h2>Organization membership</h2><div id="members-list">Loading…</div></article></div><article class="card"><h2>Recovery evidence</h2><p>Pause research at committed checkpoints, verify an owner-only snapshot and retain its source builds. Sessions and unused invitations are excluded. Restoring requires a new isolated directory and renewed operating authority.</p><button id="backup-create">Create verified local backup</button><p id="backup-result" role="status"></p><div id="backup-list"></div><p class="muted">Off-host delivery uses the local operator’s pinned SSH host and GPG recipient. No external target is inferred from this page.</p></article>';
+ $('invite-form').onsubmit=e=>{e.preventDefault();action(async()=>{const roles=[...document.querySelectorAll('[name=invite-role]:checked')].map(i=>i.value);const result=await request('/members',{email:$('invite-email').value,name:$('invite-name').value,roles});const link=location.origin+'/team#invite='+encodeURIComponent(result.invitation_token);$('invitation-result').innerHTML='<label>One-time invitation link<input id="invitation-link" readonly value="'+esc(link)+'"></label><small>Expires in 24 hours. This secret is shown only now.</small>';await memberList();});};
+ $('backup-create').onclick=()=>action(async()=>{const result=await request('/backups',{});$('backup-result').textContent='Verified snapshot '+result.name+'. Research remains paused.';await backupList();});
+ try{await memberList();await backupList();}catch(e){toast(e.message,true);}
+}
+async function backupList(){const result=await request('/backups');if($('backup-list'))$('backup-list').innerHTML=result.snapshots.map(s=>'<small>'+esc(s.name)+' · '+esc(new Date(s.created_at).toLocaleString())+'</small>').join('')+'<p class="muted">'+(result.last_offhost_delivery?'Last off-host readback verified: '+esc(result.last_offhost_delivery.snapshot):'Off-host destination and encryption recipient are not configured.')+'</p>';}
+async function memberList(){
+ const list=await request('/members');if(!$('members-list'))return;
+ $('members-list').innerHTML=list.map(u=>'<div class="entry member" data-member="'+esc(u.id)+'"><strong>'+esc(u.name)+'</strong><small>'+esc(u.email)+'</small><div class="member-roles">'+['RESEARCHER','REVIEWER','ADMIN'].map(r=>'<label class="check"><input data-member-role type="checkbox" value="'+r+'" '+(u.roles.includes(r)?'checked':'')+'>'+r+'</label>').join('')+'</div><label class="check"><input data-member-active type="checkbox" '+(u.active?'checked':'')+'>Active membership</label><button data-member-save="'+esc(u.id)+'">Save roles & status</button> <button data-member-invite="'+esc(u.id)+'">Issue new invitation</button></div>').join('');
+ document.querySelectorAll('[data-member-invite]').forEach(b=>b.onclick=()=>action(async()=>{const result=await request('/members/'+b.dataset.memberInvite+'/invitation',{});$('invitation-result').innerHTML='<label>One-time invitation link<input id="invitation-link" readonly value="'+esc(location.origin+'/team#invite='+encodeURIComponent(result.invitation_token))+'"></label>';await memberList();}));
+ document.querySelectorAll('[data-member-save]').forEach(b=>b.onclick=()=>action(async()=>{const row=b.closest('[data-member]'),roles=[...row.querySelectorAll('[data-member-role]:checked')].map(i=>i.value);await request('/members/'+b.dataset.memberSave,{roles,active:row.querySelector('[data-member-active]').checked});await memberList();toast('Membership changed; existing sessions and affected execution authority are invalidated.');}));
+}
+setInterval(async()=>{if(session&&!document.hidden&&!busy){try{const state=await request('/session');if(!state.authenticated){signedOut();return;}if(selected&&detail?.trials.some(t=>['QUEUED','RUNNING'].includes(t.status))){await loadDetail();if(tab==='research')renderResearchDetail();}}catch(e){toast(e.message,true);}}},1500);
+init();
+})();

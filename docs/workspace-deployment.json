@@ -1,9 +1,9 @@
 {
-  "deployed_at": "2026-11-06T10:10:07.144905+00:00",
+  "deployed_at": "2026-11-06T15:20:00.473443+00:00",
   "version": "0.20.0",
   "build": {
     "version": "research/2.0.0",
-    "code_hash": "92138ec4876096593cb592072ed7d43efd03810be2c0f879dbf3419ab268b339",
+    "code_hash": "0d32ce1e49d95d616f935728aaf1e679f911c757d81955e97709015159274bd7",
     "python": "3.13.13",
     "packages": {
       "pyarrow": "26.0.1",
@@ -12,13 +12,13 @@
       "httpx": "0.28.1"
     }
   },
-  "asset_identity": "d899fb63b504a6fcae4e6d6a33233c7a848ff4d0bc3ded896064f4d241c78b63",
-  "source_archive": "/root/amanas/temp/auto-platform/data/releases/92138ec4876096593cb592072ed7d43efd03810be2c0f879dbf3419ab268b339",
-  "pre_backup": "/root/amanas/temp/auto-platform/data/backups/pre-workspace-20261106T100905Z",
+  "asset_identity": "0d5e4abce1ffdfce836c63748615f9f35e0ae772309ce315b5443c736676346b",
+  "source_archive": "/root/amanas/temp/auto-platform/data/releases/0d32ce1e49d95d616f935728aaf1e679f911c757d81955e97709015159274bd7",
+  "pre_backup": "/root/amanas/temp/auto-platform/data/backups/pre-workspace-20261106T151900Z",
   "pre_databases": 29,
   "pre_restore_ok": true,
-  "post_backup": "/root/amanas/temp/auto-platform/data/backups/post-workspace-20261106T100905Z",
-  "post_databases": 29,
+  "post_backup": "/root/amanas/temp/auto-platform/data/backups/post-workspace-20261106T151900Z",
+  "post_databases": 30,
   "post_restore_ok": true,
   "paper_financial_state_preserved": true,
   "watchlist_preserved": true,
@@ -31,8 +31,8 @@
       "armed": false,
       "audit": {
         "ok": true,
-        "checked": 47,
-        "head": "50dafb004941575ee89140ad66046703c2ac855f9aa1be0f633b38a682d71ec4"
+        "checked": 49,
+        "head": "4cbdb5974d6233de6694c62a757f59c5eb1e33f4de006d2706b1dd02f9538790"
       }
     },
     "status": "ok",
@@ -53,7 +53,7 @@
     "forward": {
       "worker": {
         "healthy": true,
-        "last_tick": "2026-11-06T10:09:40.919249+00:00",
+        "last_tick": "2026-11-06T15:19:34.722362+00:00",
         "error": null
       },
       "audit": {

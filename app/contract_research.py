@@ -280,7 +280,7 @@ class ContractResearch:
         self.audit()
         return dataset
 
-    def freeze(self, body):
+    def freeze(self, body, identity=None):
         request = Freeze.model_validate(body)
         payload = request.model_dump(mode="json", exclude={"request_id"})
         with self.workspace.lock:
@@ -344,6 +344,9 @@ class ContractResearch:
                     risk_policy_hash=digest(config["risk"]), run_config=config, run_config_hash=digest(config),
                     observation_cutoff=request.observation_cutoff.isoformat(), max_trials=request.max_trials,
                     data_findings=report["findings"], clock_mode=clock, live_orders_enabled=False)
+        if identity is not None:
+            core["authenticated_context"]=identity
+            core["identity_assurance"]="AUTHENTICATED_ORGANIZATION"
         record = hashed_record(core)
         with self.workspace.lock, self.workspace.db:
             self.audit()
@@ -371,7 +374,7 @@ class ContractResearch:
             run = self.research.get(run_id)
         except ValueError:
             return dict(record, run_id=None, status="RESERVED", error="Dispatch is not attached; recover this exact attempt")
-        if run.get("dispatch_key") != key or run["config_hash"] != record["core"]["config_hash"] or digest(run["config"]) != record["core"]["config_hash"] or run["engine_hash"] != record["core"]["build_hash"]:
+        if run.get("dispatch_key") != key or run["config_hash"] != record["core"]["config_hash"] or digest(run["config"]) != record["core"]["config_hash"] or run["engine_hash"] != record["core"]["build_hash"] or run.get("authorization")!=record["core"].get("authorization"):
             raise ValueError("Research trial/run binding integrity failed")
         summary=None
         if run["status"]=="COMPLETED":
@@ -382,7 +385,7 @@ class ContractResearch:
                 fills=report["diagnostics"]["fills"],positions=len(report["positions"]),pending_orders=len(report["pending_orders"]),economic_hash=report["economic_hash"])
         return dict(record,run_id=run_id,status=run["status"],error=run.get("error"),progress=run.get("progress",0),summary=summary)
 
-    def start(self, body):
+    def start(self, body, identity=None, authorization=None):
         request = Start.model_validate(body)
         payload = request.model_dump(mode="json", exclude={"request_id"})
         protocol = self.get_protocol(request.protocol_id)
@@ -399,6 +402,9 @@ class ContractResearch:
             config = scenario_config(protocol["core"],request.kind)
             core = dict(protocol_id=request.protocol_id, kind=request.kind, nonce=uuid.uuid4().hex,
                         config=config, config_hash=digest(config), build_hash=CURRENT_BUILD["code_hash"])
+            if identity is not None:
+                core["authenticated_context"]=identity
+                core["authorization"]=authorization
             record = hashed_record(core)
             self.workspace.db.execute("INSERT INTO mvp_trials VALUES(?,?,?)", (record["id"], request.protocol_id, canonical(record)))
             self._bind(request.request_id, "TRIAL", payload, record["id"])
@@ -409,7 +415,9 @@ class ContractResearch:
         record = self._get("mvp_trials", identifier)
         self._current(self.get_protocol(record["core"]["protocol_id"]))
         try:
-            run = self.research.create(record["core"]["config"], dispatch_key="mvp2:"+identifier)
+            options=dict(dispatch_key="mvp2:"+identifier)
+            if record["core"].get("authorization") is not None:options["authorization"]=record["core"]["authorization"]
+            run = self.research.create(record["core"]["config"], **options)
         except Exception as error:
             message = str(error) if isinstance(error, ValueError) else "Research dispatch interrupted; recover the same attempt"
             with self.workspace.lock, self.workspace.db:
@@ -429,7 +437,7 @@ class ContractResearch:
             self._event("TRIAL_CONTROL", identifier, dict(action=action, run_id=record["run_id"]))
         return self.trial(identifier)
 
-    def capture(self, body):
+    def capture(self, body, identity=None):
         request = Capture.model_validate(body)
         payload = request.model_dump(mode="json", exclude={"request_id"})
         protocol = self.get_protocol(request.protocol_id)
@@ -445,6 +453,8 @@ class ContractResearch:
         for item in trials:
             record = dict(id=item["id"], kind=item["core"]["kind"], run_id=item["run_id"], status=item["status"],
                           error=item.get("error"), config_hash=item["core"]["config_hash"], report=None, trace_hash=None)
+            for key in ("authenticated_context","authorization"):
+                if key in item["core"]:record[key]=item["core"][key]
             if item["run_id"]:
                 with closing(open_job(self.research.path(item["run_id"]))) as db:
                     report_row=db.execute("SELECT document FROM report WHERE id=1").fetchone()
@@ -495,6 +505,7 @@ class ContractResearch:
                         captured_at=datetime.now(timezone.utc).isoformat(), event_head=self.audit(),
                         source_authenticity_verified=False, live_orders_enabled=False,
                         export_scope="PRIVATE_RESEARCH_NO_RAW_DATASET")
+            if identity is not None:core["authenticated_context"]=identity
             packet = dict(schema_version=VERSION, core=core, packet_hash=digest(core), attachments=attachments)
             if len(canonical(packet).encode())>MAX_PACKET_BYTES:raise ValueError("Evidence exceeds 16 MB; use a smaller scoped evaluation")
             if not verify_packet(packet,expected_protocol=request.protocol_id)["integrity_valid"]:raise ValueError("Execution evidence failed verification before capture")

@@ -1,6 +1,6 @@
 {
-  "checked_at": "2026-11-06T10:11:26.122734+00:00",
-  "passed": 26,
+  "checked_at": "2026-11-06T16:17:19.668541+00:00",
+  "passed": 27,
   "checks": [
     "guided home and next step",
     "hovering anywhere on the sidebar rail expands navigation and More tools without changing workspace width",
@@ -25,6 +25,7 @@
     "mobile Portfolio",
     "mobile Connections",
     "mobile Trading setup",
+    "team workspace opens at authenticated setup/sign-in; private team APIs reject anonymous access",
     "expected transport capability, inactive account and zero real orders",
     "healthy financial reconciliation",
     "read-only journey preserves financial state"

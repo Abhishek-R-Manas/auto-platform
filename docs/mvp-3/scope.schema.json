@@ -1,0 +1,61 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "request_id": {
+      "maxLength": 100,
+      "minLength": 8,
+      "title": "Request Id",
+      "type": "string"
+    },
+    "packet_id": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Packet Id",
+      "type": "string"
+    },
+    "review_id": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Review Id",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "max_new_trials": {
+      "maximum": 20,
+      "minimum": 1,
+      "title": "Max New Trials",
+      "type": "integer"
+    },
+    "scenarios": {
+      "items": {
+        "enum": [
+          "BASELINE",
+          "REPRODUCE",
+          "COST_STRESS"
+        ],
+        "type": "string"
+      },
+      "maxItems": 3,
+      "minItems": 1,
+      "title": "Scenarios",
+      "type": "array"
+    },
+    "acknowledge_unqualified_research": {
+      "default": false,
+      "title": "Acknowledge Unqualified Research",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "request_id",
+    "packet_id",
+    "review_id",
+    "expires_at",
+    "max_new_trials",
+    "scenarios"
+  ],
+  "title": "Grant",
+  "type": "object"
+}

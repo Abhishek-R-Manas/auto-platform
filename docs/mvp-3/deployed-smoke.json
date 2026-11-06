@@ -1,0 +1,16 @@
+{
+  "checked_at": "2026-11-06T16:17:12.458701+00:00",
+  "team_routes_present": true,
+  "anonymous_private_access_denied": true,
+  "validation_redacted": true,
+  "mvp1_mvp2_apis_preserved": true,
+  "paper_state_preserved": true,
+  "healthy": true,
+  "team_initialized": false,
+  "production_accounts_created": false,
+  "production_examples_or_trials_created": false,
+  "offhost_data_sent": false,
+  "live_connection_preserved": true,
+  "account_armed": false,
+  "real_orders_sent": false
+}
