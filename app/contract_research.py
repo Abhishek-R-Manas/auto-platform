@@ -563,6 +563,16 @@ def router(workspace):
     service = ContractResearch(workspace)
     api = APIRouter(prefix="/api/contract-research", tags=["Frozen contract research — paper only"])
 
+    @api.get("/validation")
+    def validation():
+        from .validation.evidence import read_evidence
+        return read_evidence()
+
+    @api.get("/validation/export")
+    def validation_export():
+        from .validation.evidence import export_evidence
+        return Response(export_evidence(), media_type="application/json", headers={"Content-Disposition": "attachment; filename=artha-financial-validation.json"})
+
     @api.get("/catalog")
     def catalog():
         return dict(schema_version=VERSION,risk_defaults=Risk().model_dump(mode="json"),capital_paise=1000000000,

@@ -271,3 +271,13 @@ The versioned navigation controller manages temporary sidebar and More tools dis
 ## Contract stepping · 0.20
 
 The read-only contract-grid API returns scoped instrument-master strike, expiry, lot and tick terms without quote or order calls. The builder uses this grid for adjacent-contract selection and premium steps. Metadata remains outside immutable baskets. Cached matching chain observations can reprice a selected contract; unavailable prices retain explicit manual entry assumptions. Hypothetical strike spacing remains a model input.
+
+
+## MVP-4 software financial validation
+
+The [MVP-4 operating and architecture guide](mvp-4/README.md) describes an offline, isolated golden-case runner against the existing contract/shared replay engines, ten permission/holdout/recovery gates, an atomic build-bound report and read-only owner/authenticated-team views. The reader checks expected inventory, actual results, summaries and exact source/build identities. Report downloads retain numeric types and hash integrity. This adds no economic engine, account migration, live authority or automatic approval. Independent reviewer and genuine-data acceptance remain separate and pending.
+
+
+## MVP-5 customer operating evidence
+
+The [MVP-5 guide](mvp-5/README.md) describes the organization-owned Customer pilot workspace. New append-only tables in the existing team workspace database link exact research packets to measured independent-review rounds, precommitted operator observation journals, discrepancy assessments, effort, integration needs and administrator-only commercial records. Existing SQLite backup and isolated restore verification include the new record/request/event inventory. Typed offline reports aggregate distinct organizations once and exclude controlled exercises. The journal uses references to separately operated paper books; it adds no financial engine, forward worker, billing-provider connection or broker authority. Actual customer/payments/renewals/elapsed-use evidence and earlier financial/source/deployment acceptance remain pending.

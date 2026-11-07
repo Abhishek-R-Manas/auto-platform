@@ -1,0 +1,27 @@
+/* Shared read-only financial validation view for owner and authenticated team members. */
+(() => {
+'use strict';
+const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+window.ArthaValidation={mount:async(root,request,download)=>{
+ const token={};root.validationToken=token;
+ root.innerHTML='<article class="fv-card"><h1>Financial validation</h1><p role="status">Loading recorded checks…</p></article>';
+ let value;
+ try{value=await request();}catch(error){if(root.isConnected&&root.validationToken===token){root.replaceChildren();const p=document.createElement('p');p.setAttribute('role','alert');p.textContent='Unable to load validation. '+error.message;root.append(p);}return;}
+ if(!root.isConnected||root.validationToken!==token)return;
+ const core=value.report?.core,summary=core?.summary;
+ const status={NOT_RUN:'Not run',INVALID:'Evidence invalid',STALE:'Earlier build',PASS_CONTROLLED:'Controlled checks passed',FAIL:'Checks need attention'}[value.status]||'Evidence unavailable';
+ root.innerHTML='<article class="fv-card"><div class="fv-heading"><div><h1>Financial validation</h1><p>Inspect the software checks before relying on a research result.</p></div><span class="fv-badge" data-validation-status="'+esc(value.status)+'">'+esc(status)+'</span></div><p role="status">'+esc(value.message)+'</p><p class="fv-notice"><strong>External acceptance pending.</strong> These fictional cases check software behavior. Independent financial review, genuine-data calibration and customer acceptance remain open. A pass grants no trading approval.</p><div class="fv-actions"><button type="button" data-fv-refresh>Refresh validation</button>'+(core?'<button type="button" data-fv-download>Download validation report</button>':'')+'</div>'+(core?'<p>Recorded '+esc(new Date(core.checked_at).toLocaleString())+' · '+esc(value.current?'Current source snapshot':'Source snapshot has changed')+'</p>':'')+'</article>'+
+ (summary?'<div class="fv-metrics"><article class="fv-card"><strong>'+esc(summary.passed)+' / '+esc(summary.total)+'</strong><span>Controlled cases passed</span></article><article class="fv-card"><strong>'+esc(summary.clean_control_failures)+' / '+esc(summary.clean_controls)+'</strong><span>Clean controls that failed</span></article><article class="fv-card"><strong>'+esc(summary.missed_fault_controls)+' / '+esc(summary.faulty_controls)+'</strong><span>Fault controls missed</span></article></div>':'')+
+ '<article class="fv-card"><h2>What still needs acceptance</h2>'+value.dependencies.map(d=>'<div class="fv-dependency"><h3>'+esc(d.title)+' <span class="fv-badge">'+esc(d.status.replaceAll('_',' '))+'</span></h3><p>'+esc(d.detail)+'</p></div>').join('')+'</article>'+
+ (core?'<article class="fv-card"><h2>Expected and actual case results</h2><p>Monetary values use integer paise: 100 paise = ₹1. Exact comparisons apply to these declared fixtures. Sample counts describe these cases only.</p><div class="fv-actions"><label>Category<select data-fv-category><option value="">All categories</option>'+[...new Set(core.cases.map(c=>c.category))].map(c=>'<option>'+esc(c)+'</option>').join('')+'</select></label><label>Result<select data-fv-result><option value="">All results</option><option value="fail">Needs attention</option><option value="pass">Passed</option></select></label></div><div data-fv-cases></div></article><article class="fv-card"><h2>Permissions, information boundaries and recovery</h2><p>'+esc(core.regression_gates.passed?'Passed':'Failed')+' · '+esc(core.regression_gates.tests.length)+' focused regression checks.</p><details><summary>Inspect validation scope and identities</summary><pre>'+esc(JSON.stringify({build:core.build,source_identity:core.identity.sha256,report_hash:value.report.report_hash,checks:core.regression_gates.tests},null,2))+'</pre></details></article>':'');
+ root.querySelector('[data-fv-refresh]').onclick=()=>window.ArthaValidation.mount(root,request,download);
+ if(!core)return;
+ root.querySelector('[data-fv-download]').onclick=async()=>{try{const blob=await download();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='artha-financial-validation.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(error){const p=document.createElement('p');p.setAttribute('role','alert');p.textContent=error.message;root.append(p);}};
+ function renderCases(){
+  const category=root.querySelector('[data-fv-category]').value,result=root.querySelector('[data-fv-result]').value;
+  const rows=core.cases.filter(c=>(!category||c.category===category)&&(!result||c.passed===(result==='pass')));
+  root.querySelector('[data-fv-cases]').innerHTML=rows.length?rows.map(c=>'<details class="fv-case"><summary><span class="fv-badge">'+(c.passed?'PASS':'FAIL')+'</span> '+esc(c.id)+' <small>'+esc(c.label==='CLEAN'?'Clean control':'Fault control')+'</small></summary><p>'+esc(c.rationale)+'</p><div class="fv-comparison"><div><h3>Expected</h3><pre>'+esc(JSON.stringify(c.expected,null,2))+'</pre></div><div><h3>Actual</h3><pre>'+esc(JSON.stringify(c.actual,null,2))+'</pre></div></div>'+(!c.passed?'<p role="alert">'+esc(JSON.stringify(c.mismatches))+'</p>':'')+'</details>').join(''):'<p>No cases match these filters.</p>';
+ }
+ root.querySelector('[data-fv-category]').onchange=renderCases;root.querySelector('[data-fv-result]').onchange=renderCases;renderCases();
+}};
+})();

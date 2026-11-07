@@ -167,6 +167,67 @@ def router(team):
     def dashboard(user=Depends(actor)):
         return team.dashboard(user)
 
+    def customers():
+        team.workspace
+        return team.customers
+
+    from .customer import Engagement, Cycle, Timer, Plan, Observation, CorrectionReview, Effort, Finance, Demand
+
+    @api.get("/customer/dashboard")
+    def customer_dashboard(user=Depends(actor)):
+        return customers().dashboard(user)
+
+    @api.get("/customer/report")
+    def customer_report(user=Depends(actor)):
+        return Response(canonical(customers().report(user)), media_type="application/json",
+            headers={"Content-Disposition":"attachment; filename=artha-customer-operation.json"})
+
+    @api.post("/customer/engagements")
+    def customer_engagement(body:Engagement,user=Depends(actor)):
+        return customers().create_engagement(user,body.model_dump(mode="json"))
+
+    @api.post("/customer/cycles")
+    def customer_cycle(body:Cycle,user=Depends(actor)):
+        return customers().create_cycle(user,body.model_dump(mode="json"))
+
+    @api.post("/customer/timers")
+    def customer_timer(body:Timer,user=Depends(actor)):
+        return customers().timer(user,body.model_dump(mode="json"))
+
+    @api.post("/customer/plans")
+    def customer_plan(body:Plan,user=Depends(actor)):
+        return customers().plan(user,body.model_dump(mode="json"))
+
+    @api.post("/customer/observations")
+    def customer_observation(body:Observation,user=Depends(actor)):
+        return customers().observe(user,body.model_dump(mode="json"))
+
+    @api.post("/customer/corrections")
+    def customer_correction(body:CorrectionReview,user=Depends(actor)):
+        return customers().correction(user,body.model_dump(mode="json"))
+
+    @api.post("/customer/effort")
+    def customer_effort(body:Effort,user=Depends(actor)):
+        return customers().effort(user,body.model_dump(mode="json"))
+
+    @api.post("/customer/finance")
+    def customer_finance(body:Finance,user=Depends(actor)):
+        return customers().finance(user,body.model_dump(mode="json"))
+
+    @api.post("/customer/demand")
+    def customer_demand(body:Demand,user=Depends(actor)):
+        return customers().demand(user,body.model_dump(mode="json"))
+
+    @api.get("/validation")
+    def validation(user=Depends(actor)):
+        from ..validation.evidence import read_evidence
+        return read_evidence()
+
+    @api.get("/validation/export")
+    def validation_export(user=Depends(actor)):
+        from ..validation.evidence import export_evidence
+        return Response(export_evidence(), media_type="application/json", headers={"Content-Disposition": "attachment; filename=artha-financial-validation.json"})
+
     @api.post("/example")
     def example(body:Example,user=Depends(actor)):
         return team.example(user,body.request_id)

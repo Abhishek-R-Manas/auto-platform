@@ -1,0 +1,101 @@
+{
+  "recorded_at": "2026-11-07T04:24:31.133612+00:00",
+  "stage": "MVP-4",
+  "status": "ENGINEERING_IMPLEMENTED_AND_DEPLOYED_INDEPENDENT_FINANCIAL_DATA_ACCEPTANCE_PENDING",
+  "build": {
+    "version": "research/2.0.0",
+    "code_hash": "9713d29a3bca543b59f527354ae212954ea5d2c17812e949bdac8c4071ad28d0",
+    "python": "3.13.13",
+    "packages": {
+      "pyarrow": "26.0.1",
+      "fastapi": "0.162.0",
+      "pydantic": "2.14.2",
+      "httpx": "0.28.1"
+    }
+  },
+  "source_identity": "314cee002c400d47c8a68df9065b9fd0cd76d00de9cd1a3a429e1bcec631d1c5",
+  "source_archive": "/root/amanas/temp/auto-platform/data/releases/9713d29a3bca543b59f527354ae212954ea5d2c17812e949bdac8c4071ad28d0",
+  "source_archive_files_verified": 227,
+  "prior_mvp3_source_archive": "/root/amanas/temp/auto-platform/data/releases/0d32ce1e49d95d616f935728aaf1e679f911c757d81955e97709015159274bd7",
+  "automated_tests": 640,
+  "new_financial_and_evidence_tests": 45,
+  "financial_cases": {
+    "total": 33,
+    "passed": 33,
+    "clean_controls": 19,
+    "faulty_controls": 14,
+    "clean_control_failures": 0,
+    "missed_fault_controls": 0,
+    "clean_control_failure_rate": 0.0,
+    "missed_fault_control_rate": 0.0,
+    "population_claim": "Finite controlled cases only; not market-wide detection or profitability"
+  },
+  "focused_boundary_gates": 10,
+  "browser_suite_count": 14,
+  "controlled_validation_browser_checks": 4,
+  "deployed_general_read_only_checks": 27,
+  "deployed_mvp4_read_only_checks": 7,
+  "javascript_errors": [],
+  "report_hash": "4ba6b27cb3951e81e59e3555e39e1d0202dd74062bf527060d9b7c704f11a256",
+  "download_hash_preserved": true,
+  "current_source_and_build_verified": true,
+  "expected_values_derived_separately_from_tested_outputs": true,
+  "independent_human_review_verified": false,
+  "genuine_data_calibrated": false,
+  "genuine_provider_calls": false,
+  "ai_explanation_offered_in_team_flow": false,
+  "pre_backup": "/root/amanas/temp/auto-platform/data/backups/pre-workspace-20261107T041713Z",
+  "pre_databases": 30,
+  "pre_restore_ok": true,
+  "post_backup": "/root/amanas/temp/auto-platform/data/backups/post-workspace-20261107T041713Z",
+  "post_databases": 30,
+  "post_restore_ok": true,
+  "paper_financial_state_preserved": true,
+  "watchlist_preserved": true,
+  "cached_broker_portfolio_preserved": true,
+  "candidate_registry_preserved": true,
+  "live_connection_preserved": true,
+  "account_armed": false,
+  "real_order_count": 0,
+  "real_orders_sent": false,
+  "production_users_or_trials_created": false,
+  "customer_source_acceptance": false,
+  "real_offhost_delivery_restore_acceptance": false,
+  "public_customer_tls_acceptance": false,
+  "existing_candidate_forward_broker_gates_preserved": true,
+  "mvp4_external_acceptance_complete": false,
+  "mvp5_started": false,
+  "implementation_uncommitted": false,
+  "validation_artifact": "validation.json",
+  "workspace_validation_artifact": "../workspace-validation.json",
+  "browser_artifact": "../financial-validation-browser.json",
+  "deployment_artifact": "../workspace-deployment.json",
+  "deployed_smoke_artifact": "deployed-smoke.json",
+  "deployed_general_browser_artifact": "../workspace-deployed-browser.json",
+  "external_dependencies": [
+    {
+      "id": "quant",
+      "status": "PENDING",
+      "title": "Independent financial reviewer",
+      "detail": "A separate qualified reviewer must inspect the expected calculations, tolerances and actual outcomes for this exact build."
+    },
+    {
+      "id": "market",
+      "status": "PENDING",
+      "title": "Genuine-data calibration",
+      "detail": "A permitted, provenance-checked dataset and broker or exchange comparisons are needed for spread, depth, latency, fills and dated charges."
+    },
+    {
+      "id": "source",
+      "status": "PENDING",
+      "title": "Customer and source acceptance",
+      "detail": "Carry forward the actual workflow, data rights and receipt-time acceptance requirements from MVP-1 through MVP-3."
+    },
+    {
+      "id": "operations",
+      "status": "PENDING",
+      "title": "Customer deployment and off-host recovery",
+      "detail": "An approved SSH destination, pinned encryption recipient, actual external restore and public team TLS acceptance remain open."
+    }
+  ]
+}

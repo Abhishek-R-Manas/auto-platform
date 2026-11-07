@@ -1,0 +1,20 @@
+{
+  "checked_at": "2026-11-07T04:22:32.533243+00:00",
+  "passed": true,
+  "checks": [
+    "Deployed API serves the exact validated build and all 33 controlled cases",
+    "Desktop Validation view shows controlled results and pending external acceptance",
+    "Actual deployed report download retains numeric types and verifies its original hash",
+    "Mobile Validation view fits the viewport",
+    "Both team evidence and team report exports reject anonymous requests",
+    "Read-only deployed journey preserves paper cash, orders and positions",
+    "Existing broker connection remains unarmed with an empty order journal"
+  ],
+  "javascript_errors": [],
+  "source_identity": "314cee002c400d47c8a68df9065b9fd0cd76d00de9cd1a3a429e1bcec631d1c5",
+  "report_hash": "4ba6b27cb3951e81e59e3555e39e1d0202dd74062bf527060d9b7c704f11a256",
+  "read_only": true,
+  "production_users_or_trials_created": false,
+  "real_orders_sent": false,
+  "screenshots_created": false
+}

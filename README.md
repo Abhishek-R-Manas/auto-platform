@@ -11,6 +11,14 @@ infrastructure for mass-affluent investors; this release remains a local paper s
 
 Open **Strategy Contracts** (`/#contracts`) for MVP-1 definitions and MVP-2 frozen research/evidence. The separate **Team workspace** sidebar link (`/team`) adds MVP-3 authenticated members/roles, organization stores, independent snapshot reviews, expiring/revocable paper-research scopes and verified private recovery. See [MVP-1](docs/mvp-1/README.md), [MVP-2](docs/mvp-2/README.md), [MVP-3 setup and recovery](docs/mvp-3/README.md) and [the five-stage handoff](docs/mvp-validation-roadmap.md). Existing workflows remain available. Real off-host destination/recipient, customer/source and public team-deployment acceptance remain pending. These stages are separate from existing engineering release phases.
 
+## MVP-4 financial validation
+
+Open **Strategy Contracts → Validation** or **Team workspace → Validation** for build-bound financial cases, expected/actual results and report downloads. The offline benchmark exercises payoff, charges, partial/rejected fills, delayed information, reproducibility and permission/recovery boundaries. Independent financial reviewer, genuine-data and customer/source acceptance remain pending. See [MVP-4 architecture, operation and acceptance](docs/mvp-4/README.md) and its actual validation/deployment record. MVP-5 operating software is described below; actual customer operation and acceptance remain pending.
+
+## MVP-5 customer operation
+
+Open **Team workspace → Customer pilot** to bind research cycles to exact evidence, measure independent review rounds, precommit prospective paper-observation journals, document discrepancies/effort, and record administrator-only invoices, receipts, refunds, renewals and delivery costs. Controlled exercises are excluded from customer metrics. Download per-organization reports and aggregate explicitly selected organizations with the offline cohort tool. This journal adds no execution authority or payment-provider connection. Genuine customer operation, payment/renewal verification, four-week usage and earlier financial/source/deployment acceptance remain pending. See [MVP-5 operation, architecture and acceptance](docs/mvp-5/README.md).
+
 ## Guided Home, trading desk and strategy builder
 
 Start at **Home** for the connection/practice next step. **Trade** brings named watchlists, a streamed quote feed, saved historical/developing charts, quote/depth and the Buy/Sell ticket together. **Strategy Builder** provides 51 options templates, custom baskets, expiry payoff, price/date/IV scenarios, Greeks, model POP and expected P&L, OI/IV views and a stock/futures rule editor. **My Strategies** keeps immutable drafts, comparisons, backtests and paused forward-paper tests in one place.
@@ -142,7 +150,7 @@ node --check static/app.js
 .venv/bin/python -B tools/validate_workbench.py
 ```
 
-The release validator runs pytest, seven isolated browser suites, dependency checks and JavaScript syntax checks, and records exact source/asset fingerprints plus screenshots under `docs/`. The workspace browser suite uses localhost:8796. It does not use or change the main paper account. Browser binaries use Playwright's configured cache.
+The release validator runs pytest, the MVP-4 financial benchmark, fifteen isolated browser suites, dependency checks and JavaScript syntax checks, and records exact source/asset fingerprints plus screenshots under `docs/`. The workspace browser suite uses localhost:8796. It does not use or change the main paper account. Browser binaries use Playwright's configured cache.
 
 See [implementation status](docs/phase-1.md) and [architecture](docs/architecture.md). No Git operations, repository initialisation, commits or remote publication were performed.
 

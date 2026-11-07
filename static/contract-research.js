@@ -9,16 +9,23 @@ function input(label,id,value,extra=''){return '<label>'+esc(label)+'<input id="
 function pick(values,selected){return values.map(v=>'<option value="'+esc(v[0])+'" '+(v[0]===selected?'selected':'')+'>'+esc(v[1])+'</option>').join('');}
 const local=v=>new Date(v).toLocaleString('sv-SE',{timeZone:'Asia/Kolkata'}).replace(' ','T').slice(0,19);
 function showResearch(){
+ $('contract-validation-root').classList.add('hidden');$('ct-tab-validation').classList.remove('active');
  $('contracts-root').classList.add('hidden');root.classList.remove('hidden');
  $('ct-tab-research').classList.add('active');$('ct-tab-definition').classList.remove('active');
  load();
 }
 function showDefinition(){
+ $('contract-validation-root').classList.add('hidden');$('ct-tab-validation').classList.remove('active');
  root.classList.add('hidden');$('contracts-root').classList.remove('hidden');
  $('ct-tab-research').classList.remove('active');$('ct-tab-definition').classList.add('active');
 }
 $('ct-tab-research').addEventListener('click',showResearch);
 $('ct-tab-definition').addEventListener('click',showDefinition);
+$('ct-tab-validation').addEventListener('click',()=>{
+ root.classList.add('hidden');$('contracts-root').classList.add('hidden');$('contract-validation-root').classList.remove('hidden');
+ for(const id of ['definition','research','validation'])$('ct-tab-'+id).classList.toggle('active',id==='validation');
+ window.ArthaValidation.mount($('contract-validation-root'),()=>api(base+'/validation'),()=>rawRequest(base+'/validation/export'));
+});
 window.addEventListener('artha:contract-saved',event=>{preferred=event.detail.id;if(loaded)refreshChoices();});
 window.addEventListener('artha:navigate',event=>{if(event.detail.view==='contracts'&&!root.classList.contains('hidden'))load();});
 async function load(){

@@ -53,6 +53,8 @@ class Team:
                   CREATE TABLE IF NOT EXISTS team_review_events(sequence INTEGER PRIMARY KEY,document TEXT NOT NULL);
                 """)
                 (self.root/"workspace.sqlite3").chmod(0o600)
+                from .customer import CustomerOperations
+                self.customers=CustomerOperations(self)
             return self._workspace
 
     def context(self,actor):

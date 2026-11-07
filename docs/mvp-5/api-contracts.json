@@ -1,0 +1,525 @@
+{
+  "Engagement": {
+    "additionalProperties": false,
+    "properties": {
+      "request_id": {
+        "maxLength": 100,
+        "minLength": 8,
+        "title": "Request Id",
+        "type": "string"
+      },
+      "name": {
+        "maxLength": 120,
+        "minLength": 1,
+        "title": "Name",
+        "type": "string"
+      },
+      "evidence_kind": {
+        "enum": [
+          "CONTROLLED_EXERCISE",
+          "CUSTOMER_REPORTED"
+        ],
+        "title": "Evidence Kind",
+        "type": "string"
+      },
+      "workflow_reference": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Workflow Reference",
+        "type": "string"
+      },
+      "baseline_review_seconds": {
+        "exclusiveMinimum": 0,
+        "maximum": 10000000,
+        "title": "Baseline Review Seconds",
+        "type": "integer"
+      },
+      "baseline_reference": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Baseline Reference",
+        "type": "string"
+      }
+    },
+    "required": [
+      "request_id",
+      "name",
+      "evidence_kind",
+      "workflow_reference",
+      "baseline_review_seconds",
+      "baseline_reference"
+    ],
+    "title": "Engagement",
+    "type": "object"
+  },
+  "Cycle": {
+    "additionalProperties": false,
+    "properties": {
+      "request_id": {
+        "maxLength": 100,
+        "minLength": 8,
+        "title": "Request Id",
+        "type": "string"
+      },
+      "engagement_id": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "Engagement Id",
+        "type": "string"
+      },
+      "packet_id": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "Packet Id",
+        "type": "string"
+      },
+      "question": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Question",
+        "type": "string"
+      }
+    },
+    "required": [
+      "request_id",
+      "engagement_id",
+      "packet_id",
+      "question"
+    ],
+    "title": "Cycle",
+    "type": "object"
+  },
+  "Timer": {
+    "additionalProperties": false,
+    "properties": {
+      "request_id": {
+        "maxLength": 100,
+        "minLength": 8,
+        "title": "Request Id",
+        "type": "string"
+      },
+      "cycle_id": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "Cycle Id",
+        "type": "string"
+      },
+      "action": {
+        "enum": [
+          "START",
+          "FINISH",
+          "ABANDON"
+        ],
+        "title": "Action",
+        "type": "string"
+      },
+      "review_id": {
+        "anyOf": [
+          {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Review Id"
+      }
+    },
+    "required": [
+      "request_id",
+      "cycle_id",
+      "action"
+    ],
+    "title": "Timer",
+    "type": "object"
+  },
+  "Plan": {
+    "additionalProperties": false,
+    "properties": {
+      "request_id": {
+        "maxLength": 100,
+        "minLength": 8,
+        "title": "Request Id",
+        "type": "string"
+      },
+      "cycle_id": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "Cycle Id",
+        "type": "string"
+      },
+      "review_id": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "Review Id",
+        "type": "string"
+      },
+      "paper_book_reference": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Paper Book Reference",
+        "type": "string"
+      }
+    },
+    "required": [
+      "request_id",
+      "cycle_id",
+      "review_id",
+      "paper_book_reference"
+    ],
+    "title": "Plan",
+    "type": "object"
+  },
+  "Observation": {
+    "additionalProperties": false,
+    "properties": {
+      "request_id": {
+        "maxLength": 100,
+        "minLength": 8,
+        "title": "Request Id",
+        "type": "string"
+      },
+      "plan_id": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "Plan Id",
+        "type": "string"
+      },
+      "observed_at": {
+        "format": "date-time",
+        "title": "Observed At",
+        "type": "string"
+      },
+      "kind": {
+        "enum": [
+          "ON_TRACK",
+          "DATA_GAP",
+          "EXECUTION_DIFFERENCE",
+          "MATERIAL_CHANGE",
+          "ENDED"
+        ],
+        "title": "Kind",
+        "type": "string"
+      },
+      "note": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Note",
+        "type": "string"
+      },
+      "evidence_reference": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Evidence Reference",
+        "type": "string"
+      },
+      "reported_pnl_paise": {
+        "anyOf": [
+          {
+            "maximum": 1000000000000,
+            "minimum": -1000000000000,
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Reported Pnl Paise"
+      }
+    },
+    "required": [
+      "request_id",
+      "plan_id",
+      "observed_at",
+      "kind",
+      "note",
+      "evidence_reference"
+    ],
+    "title": "Observation",
+    "type": "object"
+  },
+  "CorrectionReview": {
+    "additionalProperties": false,
+    "properties": {
+      "request_id": {
+        "maxLength": 100,
+        "minLength": 8,
+        "title": "Request Id",
+        "type": "string"
+      },
+      "observation_id": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "Observation Id",
+        "type": "string"
+      },
+      "decision": {
+        "enum": [
+          "CONFIRMED",
+          "REJECTED"
+        ],
+        "title": "Decision",
+        "type": "string"
+      },
+      "note": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Note",
+        "type": "string"
+      },
+      "evidence_reference": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Evidence Reference",
+        "type": "string"
+      }
+    },
+    "required": [
+      "request_id",
+      "observation_id",
+      "decision",
+      "note",
+      "evidence_reference"
+    ],
+    "title": "CorrectionReview",
+    "type": "object"
+  },
+  "Effort": {
+    "additionalProperties": false,
+    "properties": {
+      "request_id": {
+        "maxLength": 100,
+        "minLength": 8,
+        "title": "Request Id",
+        "type": "string"
+      },
+      "engagement_id": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "Engagement Id",
+        "type": "string"
+      },
+      "kind": {
+        "enum": [
+          "ONBOARDING",
+          "SUPPORT",
+          "REVIEW"
+        ],
+        "title": "Kind",
+        "type": "string"
+      },
+      "minutes": {
+        "maximum": 100000,
+        "minimum": 1,
+        "title": "Minutes",
+        "type": "integer"
+      },
+      "evidence_reference": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Evidence Reference",
+        "type": "string"
+      }
+    },
+    "required": [
+      "request_id",
+      "engagement_id",
+      "kind",
+      "minutes",
+      "evidence_reference"
+    ],
+    "title": "Effort",
+    "type": "object"
+  },
+  "Finance": {
+    "additionalProperties": false,
+    "properties": {
+      "request_id": {
+        "maxLength": 100,
+        "minLength": 8,
+        "title": "Request Id",
+        "type": "string"
+      },
+      "engagement_id": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "Engagement Id",
+        "type": "string"
+      },
+      "kind": {
+        "enum": [
+          "INVOICE",
+          "PAYMENT",
+          "REFUND",
+          "COST",
+          "VOID_INVOICE",
+          "REVERSE_ENTRY"
+        ],
+        "title": "Kind",
+        "type": "string"
+      },
+      "amount_paise": {
+        "anyOf": [
+          {
+            "exclusiveMinimum": 0,
+            "maximum": 1000000000000,
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Amount Paise"
+      },
+      "reference": {
+        "maxLength": 120,
+        "minLength": 1,
+        "title": "Reference",
+        "type": "string"
+      },
+      "evidence_reference": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Evidence Reference",
+        "type": "string"
+      },
+      "occurred_at": {
+        "format": "date-time",
+        "title": "Occurred At",
+        "type": "string"
+      },
+      "invoice_id": {
+        "anyOf": [
+          {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Invoice Id"
+      },
+      "target_record_id": {
+        "anyOf": [
+          {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Target Record Id"
+      },
+      "renews_invoice_id": {
+        "anyOf": [
+          {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Renews Invoice Id"
+      },
+      "period_start": {
+        "anyOf": [
+          {
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Period Start"
+      },
+      "period_end": {
+        "anyOf": [
+          {
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Period End"
+      },
+      "cost_category": {
+        "anyOf": [
+          {
+            "enum": [
+              "DATA",
+              "MODEL",
+              "COMPUTE",
+              "REVIEW",
+              "SUPPORT",
+              "OTHER"
+            ],
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Cost Category"
+      }
+    },
+    "required": [
+      "request_id",
+      "engagement_id",
+      "kind",
+      "reference",
+      "evidence_reference",
+      "occurred_at"
+    ],
+    "title": "Finance",
+    "type": "object"
+  },
+  "Demand": {
+    "additionalProperties": false,
+    "properties": {
+      "request_id": {
+        "maxLength": 100,
+        "minLength": 8,
+        "title": "Request Id",
+        "type": "string"
+      },
+      "engagement_id": {
+        "pattern": "^[a-f0-9]{64}$",
+        "title": "Engagement Id",
+        "type": "string"
+      },
+      "integration": {
+        "pattern": "^[a-z0-9][a-z0-9_-]{1,79}$",
+        "title": "Integration",
+        "type": "string"
+      },
+      "problem": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Problem",
+        "type": "string"
+      },
+      "evidence_reference": {
+        "maxLength": 2000,
+        "minLength": 1,
+        "title": "Evidence Reference",
+        "type": "string"
+      }
+    },
+    "required": [
+      "request_id",
+      "engagement_id",
+      "integration",
+      "problem",
+      "evidence_reference"
+    ],
+    "title": "Demand",
+    "type": "object"
+  }
+}

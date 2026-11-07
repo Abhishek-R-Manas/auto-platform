@@ -95,6 +95,9 @@ def check_database(path):
         if 'team_review_records' in tables:
             from app.team.service import check_review_database
             result['team_reviews']=check_review_database(db)
+        if 'team_customer_records' in tables:
+            from app.team.customer import check_customer_database
+            result['customer_operations']=check_customer_database(db)
         if 'mvp_protocols' in tables:
             from app.contract_research import check_research_database
             result['contract_research']=check_research_database(db)

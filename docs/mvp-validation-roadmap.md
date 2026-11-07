@@ -1,8 +1,9 @@
 # B2B strategy-validation MVP: five-stage roadmap and handoff
 
 Recorded: 2026-11-06 (Asia/Kolkata).
-Status: MVP-1/MVP-2 deployed; MVP-3 engineering implemented and deployed, with actual evidence linked below. Real off-host destination/recipient and customer/data/public-host acceptance remain pending.
-Current next engineering stage: MVP-4 — independent financial validation, when requested; retain open MVP-3 acceptance dependencies.
+Updated: 2026-11-07.
+Status: MVP-1/MVP-2/MVP-3 engineering implemented and deployed. MVP-4 software validation is implemented and deployed; independent financial review and genuine-data calibration remain pending. Real off-host destination/recipient and customer/data/public-host acceptance also remain pending.
+Current handoff: finish external financial/source/deployment acceptance and operate the MVP-5 workflow on actual customer work. MVP-5 operating software is implemented and deployed; customer adoption, payment/renewal verification and genuine elapsed operation remain pending. Check the stage implementation records for actual release/deployment evidence.
 
 ## Purpose and conversation context
 
@@ -29,7 +30,7 @@ Recording this plan does not implement a stage, change deployment or expand orde
 
 ## Where we are now
 
-| Work item | Status on 2026-11-06 | Evidence / next action |
+| Work item | Status on 2026-11-07 | Evidence / next action |
 |---|---|---|
 | Repository and workflow analysis | Complete for this planning discussion | Inspected research, candidates, forward, workbench, pilot, API, operations, docs and recorded validation |
 | Competitive and commercial assessment | Complete as a dated assessment | See findings and source links below; refresh changing claims before relying on them |
@@ -37,8 +38,8 @@ Recording this plan does not implement a stage, change deployment or expand orde
 | MVP-1 | ENGINEERING IMPLEMENTED; external acceptance pending | [Delivered guide, schemas, examples and actual validation](mvp-1/README.md); customer interviews, source rights and receipt-time acceptance remain pending |
 | MVP-2 | ENGINEERING IMPLEMENTED AND DEPLOYED; external acceptance pending | [Frozen research, evidence exports, API schemas and validation](mvp-2/README.md); commercial data/customer acceptance remains pending |
 | MVP-3 | ENGINEERING IMPLEMENTED AND DEPLOYED; external off-host/customer acceptance pending | [Authenticated team workflow, schemas, recovery and actual evidence](mvp-3/README.md); real SSH target/recipient and public team-host acceptance remain pending |
-| MVP-4 | NOT STARTED | Independently validate the financial and software behavior |
-| MVP-5 | NOT STARTED | Operate repeated workflows with early customers and measure value |
+| MVP-4 | ENGINEERING IMPLEMENTED AND DEPLOYED; independent financial/data acceptance pending | [Golden financial cases, read-only results, validation and acceptance handoff](mvp-4/README.md) |
+| MVP-5 | ENGINEERING IMPLEMENTED AND DEPLOYED; actual customer operation/acceptance pending | [Customer pilot workflow, reports, cohort measurement and actual evidence](mvp-5/README.md) |
 
 The initial planning discussion performed no MVP implementation or customer validation.
 The subsequent owner-authorized MVP-1 and MVP-2 implementations are now recorded below; see [MVP-2](mvp-2/README.md) and
@@ -212,7 +213,8 @@ Exit criteria:
 
 ## MVP-4 — Validate with independent financial cases
 
-Status: NOT STARTED.
+Status: ENGINEERING IMPLEMENTED AND DEPLOYED; independent reviewer and genuine-data acceptance remain pending.
+The [MVP-4 guide](mvp-4/README.md) describes golden cases, read-only owner/team views, build-bound evidence, regression gates and the independent-review handoff. Actual outcomes belong in [implementation.json](mvp-4/implementation.json). Software checks do not satisfy the external acceptance exit criteria below.
 Estimate: approximately 3-4 weeks, partly parallel with MVP-2 and MVP-3.
 Suggested owners: independent quant reviewer, data engineer and backend engineer.
 
@@ -239,7 +241,8 @@ Exit criteria:
 
 ## MVP-5 — Operate with early customers
 
-Status: NOT STARTED.
+Status: ENGINEERING IMPLEMENTED AND DEPLOYED; actual repeated customer operation, payments/renewals and four-week evidence remain pending.
+The [MVP-5 guide](mvp-5/README.md) records exact-cycle binding, independent-review timing, prospective observation journals, discrepancy review, effort and administrator-only commercial records, plus distinct-organization cohort reporting. This journal references a separately operated paper book and grants no execution authority. Actual validation/deployment belong in [implementation.json](mvp-5/implementation.json). The external exit criteria below are not satisfied by implementation or controlled test clocks.
 Estimate: 4+ weeks, overlapping development once customer-facing dependencies are ready.
 Suggested owners: product/founder, customer team and engineering.
 
